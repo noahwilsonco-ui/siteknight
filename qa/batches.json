@@ -7,7 +7,8 @@
     "self-check",
     "runner",
     "reliability",
-    "responses"
+    "responses",
+    "budget"
   ],
   "full": [
     "scanner",
@@ -22,7 +23,8 @@
     "crawl-js",
     "crawl-wordpress",
     "responses",
-    "daily-sites"
+    "daily-sites",
+    "budget"
   ],
   "cases": {
     "scanner": {
@@ -208,6 +210,12 @@
       "maxPages": 3,
       "complete": false,
       "steps": "Run the scanner on an unfamiliar public website, pause after three checked pages while finishing in-flight work, verify mobile content map and complete report output. Explicitly report blocked/unverified coverage."
+    },
+    "budget": {
+      "name": "Total page deadlines and responsive stopping",
+      "script": "tests/budget.cjs",
+      "timeoutSeconds": 25,
+      "steps": "Verify that retries share one total page budget, temporary limits recover, cancellation is immediate, and paused/cancelled scans never start queued destinations."
     }
   },
   "rendering": [
