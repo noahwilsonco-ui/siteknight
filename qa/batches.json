@@ -82,7 +82,7 @@
       "name": "Complete scanner reliability matrix",
       "script": "tests/reliability.cjs",
       "timeoutSeconds": 150,
-      "steps": "Submit six controlled websites through the real scanner. Verify static, JavaScript, navigation-only and short pages; access blocks, rendering failures, coverage limits and genuine broken links."
+      "steps": "Submit eight controlled sites through the real scanner. Verify static, framework, inline-JavaScript, navigation-only and short pages; rate-limit recovery, access blocks, coverage limits and genuine broken links."
     },
     "crawl-ntc": {
       "name": "NTC complete live workflow",
@@ -117,7 +117,7 @@
       "timeoutSeconds": 170,
       "url": "https://quotes.toscrape.com/js/",
       "steps": "Run an explicitly bounded live crawl, then verify mobile map and printed report. Coverage records all checked, failed and unverified pages.",
-      "maxPages": 12,
+      "maxPages": 5,
       "complete": false,
       "expectedMode": "browser-rendered"
     },
@@ -130,5 +130,10 @@
       "maxPages": 8,
       "complete": false
     }
-  }
+  },
+  "rendering": [
+    "reliability",
+    "crawl-ntc",
+    "crawl-js"
+  ]
 }

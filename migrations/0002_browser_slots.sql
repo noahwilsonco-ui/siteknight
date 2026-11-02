@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS sk_browser_slots(name TEXT PRIMARY KEY,next_at INTEGER NOT NULL);
