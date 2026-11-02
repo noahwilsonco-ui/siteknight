@@ -635,6 +635,8 @@ async function skBrowserContent(env,options){
  for(let attempt=0;attempt<3;attempt++){
   if(env.SK_DB){const now=Date.now(),latest=now+Math.max(0,Math.min(30000,55000-(now-started)-22000));const slot=await env.SK_DB.prepare("INSERT INTO sk_browser_slots(name,next_at) VALUES('content',?) ON CONFLICT(name) DO UPDATE SET next_at=MAX(sk_browser_slots.next_at,?)+10000 WHERE sk_browser_slots.next_at<=? RETURNING next_at").bind(now+10000,now,latest).first();if(!slot){const e=Error('Browser rendering is busy. This page will retry automatically.');e.status=429;e.retryAfterSeconds=10;throw e}const wait=Math.max(0,Number(slot.next_at)-10000-now);if(wait)await delay(wait);}
   const response=await env.BROWSER.quickAction('content',options);if(response.status!==429)return response;
+  // An independent rendering engine can remain available when Chromium is limited.
+  if(attempt===0){try{const alternative=await env.BROWSER.quickAction('content',{...options,browser:'kitesurf'});if(alternative.ok){await response.body?.cancel().catch(()=>{});return alternative}await alternative.body?.cancel().catch(()=>{});}catch{/* Preserve Chromium retry behavior if the alternate engine is unavailable. */}}
   const reader=response.body?.getReader();let errorText='';if(reader){const decoder=new TextDecoder();while(errorText.length<4096){const r=await reader.read();if(r.done)break;errorText+=decoder.decode(r.value,{stream:true})}await reader.cancel().catch(()=>{})}
   if(/time limit exceeded for today|daily.*(?:limit|quota)|daily browser/i.test(errorText))throw Error('Browser rendering daily allowance exhausted. Page content remains unverified; retry when the allowance resets.');
   if(attempt===2){const e=Error('Browser rendering is temporarily rate limited. This page will retry automatically.');e.status=429;e.retryAfterSeconds=10;throw e}
@@ -661,7 +663,7 @@ async function skRenderedFallback(loaded,env,fetcher=fetch,routeURL=null,force=f
  html=html.replace(/<script\b[\s\S]*?<\/script>/gi,'');return {url:finalURL.href,html,renderMode:'browser-rendered',browserMilliseconds:Number(response.headers.get('X-Browser-Ms-Used'))||null,directUrlStatus:routeURL?404:null,accessMethod:routeURL?'site-navigation':'direct-url'};
 }
 
-DASHBOARD = DASHBOARD.replace(/(\/app\.(?:js|css))\?[^"\s<>]+/g, "$1?v=78-general-6");
+DASHBOARD = DASHBOARD.replace(/(\/app\.(?:js|css))\?[^"\s<>]+/g, "$1?v=78-general-7");
 async function skLoadScannablePage(value,env){
  try{return await skRenderedFallback(await loadPage(value),env)}catch(error){
   const requested=publicURL(value);if(/HTTP (?:403|429|503)\b|Access-block page returned with HTTP 200/i.test(error.message))return await skRenderedFallback({url:requested.href,html:''},env,fetch,null,true);if(!/HTTP 404\b/i.test(error.message)||requested.pathname==='/')throw error;
