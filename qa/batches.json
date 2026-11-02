@@ -9,7 +9,8 @@
     "reliability",
     "responses",
     "budget",
-    "metadata"
+    "metadata",
+    "autopsy-workflow"
   ],
   "full": [
     "scanner",
@@ -26,7 +27,8 @@
     "responses",
     "daily-sites",
     "budget",
-    "metadata"
+    "metadata",
+    "autopsy-workflow"
   ],
   "cases": {
     "scanner": {
@@ -224,6 +226,12 @@
       "script": "tests/metadata.cjs",
       "timeoutSeconds": 75,
       "steps": "Inspect declared favicon, search/social cards, business graph, malformed JSON-LD, duplicate metadata, public asset URLs, mobile width, full print report, site files and browser metadata preservation."
+    },
+    "autopsy-workflow": {
+      "name": "Inline autopsy through complete scan workflow",
+      "script": "tests/autopsy-workflow.cjs",
+      "timeoutSeconds": 75,
+      "steps": "Submit two website scans with the real form; confirm the autopsy appears directly under the score, fills in automatically, scrolls from navigation, stays visible across tools and fits mobile."
     }
   },
   "rendering": [
