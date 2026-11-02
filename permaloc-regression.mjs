@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 const source=fs.readFileSync(new URL('./worker.mjs',import.meta.url),'utf8');
-const app=JSON.parse(source.match(/^const APP_SCRIPT=(.*);$/m)[1]);
+const app=JSON.parse(source.match(/^(?:const|var) APP_SCRIPT\s*=\s*(.*);$/m)[1]);
 function block(name,next){const start=app.indexOf('function '+name+'(');assert(start>=0);return app.slice(start,next?app.indexOf(next,start):app.indexOf('\n',start));}
 const api=new Function([
  block('isStyleCaution'),block('isErrorFinding'),block('styleCount'),block('errorCount'),

@@ -5,7 +5,8 @@
     "mobile",
     "workspace",
     "self-check",
-    "runner"
+    "runner",
+    "reliability"
   ],
   "full": [
     "scanner",
@@ -15,7 +16,12 @@
     "live-site",
     "permaloc",
     "self-check",
-    "runner"
+    "runner",
+    "reliability",
+    "crawl-ntc",
+    "crawl-static",
+    "crawl-js",
+    "crawl-wordpress"
   ],
   "cases": {
     "scanner": {
@@ -71,6 +77,58 @@
       "script": "qa/self-test.cjs",
       "timeoutSeconds": 25,
       "steps": "Run controlled passing, failing, hanging and incomplete tests. Repair failures and verify only failed checks rerun. Verify setup failures stay Not tested."
+    },
+    "reliability": {
+      "name": "Complete scanner reliability matrix",
+      "script": "tests/reliability.cjs",
+      "timeoutSeconds": 150,
+      "steps": "Submit six controlled websites through the real scanner. Verify static, JavaScript, navigation-only and short pages; access blocks, rendering failures, coverage limits and genuine broken links."
+    },
+    "crawl-ntc": {
+      "name": "NTC complete live workflow",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 170,
+      "url": "https://ntc-tool.vercel.app/",
+      "steps": "Run the complete discovered-site scan, then verify mobile map and printed report.",
+      "maxPages": 25,
+      "complete": true,
+      "expectedPaths": [
+        "/",
+        "/about",
+        "/contact"
+      ],
+      "expectedMode": "browser-rendered"
+    },
+    "crawl-static": {
+      "name": "Static site complete workflow",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 170,
+      "url": "https://example.com/",
+      "steps": "Run the complete discovered-site scan, then verify mobile map and printed report.",
+      "maxPages": 10,
+      "complete": true,
+      "expectedPaths": [
+        "/"
+      ]
+    },
+    "crawl-js": {
+      "name": "JavaScript site crawl sample",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 170,
+      "url": "https://quotes.toscrape.com/js/",
+      "steps": "Run an explicitly bounded live crawl, then verify mobile map and printed report. Coverage records all checked, failed and unverified pages.",
+      "maxPages": 12,
+      "complete": false,
+      "expectedMode": "browser-rendered"
+    },
+    "crawl-wordpress": {
+      "name": "WordPress crawl sample",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 170,
+      "url": "https://wordpress.org/news/",
+      "steps": "Run an explicitly bounded live crawl, then verify mobile map and printed report. Coverage records all checked, failed and unverified pages.",
+      "maxPages": 8,
+      "complete": false
     }
   }
 }

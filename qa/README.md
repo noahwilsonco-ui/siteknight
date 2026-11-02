@@ -1,6 +1,6 @@
 # Site Knight unattended batch tester
 
-Control panel: https://github.com/noahwilsonco-ui/sitesitter/actions/workflows/siteknight-qa.yml
+Control panel: https://github.com/noahwilsonco-ui/siteknight/actions/workflows/siteknight-qa.yml
 
 The quick batch runs on each relevant push to main. The full batch runs daily at 13:23 UTC (09:23 Toronto during daylight time, 08:23 during standard time). GitHub can queue or delay scheduled jobs. No browser tab or local computer is required.
 
@@ -23,3 +23,11 @@ The self-check intentionally removes a fixture error and verifies that the test 
 ## Local use
 
 Node 24+, Playwright 1.62.1 and Chromium are required. Install Playwright outside the application runtime, then run `node qa/run.cjs --batch quick`. `SITEKNIGHT_PLAYWRIGHT` may point to its module, `SITEKNIGHT_CHROME` to an installed Chromium executable and `SK_REPORT_DIR` to a new report directory. `node qa/run.cjs --from path/to/results.json` retries failed checks. Reports and local runner dependencies must not be committed.
+
+## Reliability coverage
+
+Quick batches also submit six controlled websites through the real scanner: static HTML, client-rendered routes, navigation-only routes with genuine direct 404s, short rendered applications, access blocks and browser limits. These are complete workflow tests with mocked external responses, not real-world accuracy measurements.
+
+Full batches additionally crawl NTC and example.com to discovery completion, plus explicitly bounded JavaScript and WordPress samples. The report records all pages checked, failures, unverified links, the mobile content map and a complete print report for the captured scan. A bounded sample is never described as a complete audit of that website.
+
+The browser fallback uses the production BROWSER binding, with deterministic analysis after rendering. Rendered snapshots do not certify interaction flows or form submissions. Actual direct-link HTTP 404s remain broken even when content can be read through site navigation. Partial content is excluded from content scoring; incomplete/capped scans are labelled with coverage gaps.
