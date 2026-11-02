@@ -31,3 +31,11 @@ Quick batches also submit six controlled websites through the real scanner: stat
 Full batches additionally crawl NTC and example.com to discovery completion, plus explicitly bounded JavaScript and WordPress samples. The report records all pages checked, failures, unverified links, the mobile content map and a complete print report for the captured scan. A bounded sample is never described as a complete audit of that website.
 
 The browser fallback uses the production BROWSER binding, with deterministic analysis after rendering. Rendered snapshots do not certify interaction flows or form submissions. Actual direct-link HTTP 404s remain broken even when content can be read through site navigation. Partial content is excluded from content scoring; incomplete/capped scans are labelled with coverage gaps.
+
+## Rotating unfamiliar-site audits
+
+The full daily batch selects three websites from an eight-site public corpus covering corporate, public-sector, ecommerce, marketing, documentation, software, tourism and industrial-supply websites. Selection rotates deterministically each UTC day; `results.json` records the actual selected cases. Specific reported URLs remain optional regression checks, not the definition of overall compatibility.
+
+Each unfamiliar-site audit exercises the URL form, collection, analysis, link checks, mobile map and print report. It pauses discovery after a small checked-page threshold, then finishes in-flight work. This is explicitly a bounded sample, never a claim that the entire external website was audited. Access restrictions produce **Not tested** with screenshots and no healthy score; they are not converted into successful audits.
+
+Quick regressions now also verify successful HTTP responses against bounded content prefixes, distinguish security/soft-404 pages and image rewrites, and confirm browser recovery when ordinary public fetching is restricted. Ten controlled full scanner workflows cover normal HTML, several JavaScript patterns, client routes, retry recovery, browser-only public access, authentication and access limits.

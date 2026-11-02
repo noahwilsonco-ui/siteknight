@@ -6,7 +6,8 @@
     "workspace",
     "self-check",
     "runner",
-    "reliability"
+    "reliability",
+    "responses"
   ],
   "full": [
     "scanner",
@@ -18,10 +19,10 @@
     "self-check",
     "runner",
     "reliability",
-    "crawl-ntc",
-    "crawl-static",
     "crawl-js",
-    "crawl-wordpress"
+    "crawl-wordpress",
+    "responses",
+    "daily-sites"
   ],
   "cases": {
     "scanner": {
@@ -82,7 +83,7 @@
       "name": "Complete scanner reliability matrix",
       "script": "tests/reliability.cjs",
       "timeoutSeconds": 150,
-      "steps": "Submit eight controlled sites through the real scanner. Verify static, framework, inline-JavaScript, navigation-only and short pages; rate-limit recovery, access blocks, coverage limits and genuine broken links."
+      "steps": "Submit ten complete controlled scans covering ordinary HTML, several JavaScript patterns, client routing, public browser recovery, authentication, temporary limits and blocked content."
     },
     "crawl-ntc": {
       "name": "NTC complete live workflow",
@@ -129,11 +130,102 @@
       "steps": "Run an explicitly bounded live crawl, then verify mobile map and printed report. Coverage records all checked, failed and unverified pages.",
       "maxPages": 8,
       "complete": false
+    },
+    "responses": {
+      "name": "Response truth and bounded link verification",
+      "script": "tests/responses.cjs",
+      "timeoutSeconds": 25,
+      "steps": "Verify that HTTP 200 security screens, soft 404s and HTML at image URLs cannot pass as healthy destinations; confirm normal pages and real 404s."
+    },
+    "daily-mozilla": {
+      "name": "Rotating audit: Corporate and product website",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 170,
+      "url": "https://www.mozilla.org/",
+      "maxPages": 3,
+      "complete": false,
+      "steps": "Run the scanner on an unfamiliar public website, pause after three checked pages while finishing in-flight work, verify mobile content map and complete report output. Explicitly report blocked/unverified coverage."
+    },
+    "daily-govuk": {
+      "name": "Rotating audit: Public-sector website",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 170,
+      "url": "https://www.gov.uk/",
+      "maxPages": 3,
+      "complete": false,
+      "steps": "Run the scanner on an unfamiliar public website, pause after three checked pages while finishing in-flight work, verify mobile content map and complete report output. Explicitly report blocked/unverified coverage."
+    },
+    "daily-allbirds": {
+      "name": "Rotating audit: Ecommerce website",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 170,
+      "url": "https://www.allbirds.com/",
+      "maxPages": 3,
+      "complete": false,
+      "steps": "Run the scanner on an unfamiliar public website, pause after three checked pages while finishing in-flight work, verify mobile content map and complete report output. Explicitly report blocked/unverified coverage."
+    },
+    "daily-webflow": {
+      "name": "Rotating audit: Marketing website",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 170,
+      "url": "https://webflow.com/",
+      "maxPages": 3,
+      "complete": false,
+      "steps": "Run the scanner on an unfamiliar public website, pause after three checked pages while finishing in-flight work, verify mobile content map and complete report output. Explicitly report blocked/unverified coverage."
+    },
+    "daily-w3": {
+      "name": "Rotating audit: Documentation website",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 170,
+      "url": "https://www.w3.org/",
+      "maxPages": 3,
+      "complete": false,
+      "steps": "Run the scanner on an unfamiliar public website, pause after three checked pages while finishing in-flight work, verify mobile content map and complete report output. Explicitly report blocked/unverified coverage."
+    },
+    "daily-blender": {
+      "name": "Rotating audit: Software product website",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 170,
+      "url": "https://www.blender.org/",
+      "maxPages": 3,
+      "complete": false,
+      "steps": "Run the scanner on an unfamiliar public website, pause after three checked pages while finishing in-flight work, verify mobile content map and complete report output. Explicitly report blocked/unverified coverage."
+    },
+    "daily-nps": {
+      "name": "Rotating audit: Tourism and information website",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 170,
+      "url": "https://www.nps.gov/",
+      "maxPages": 3,
+      "complete": false,
+      "steps": "Run the scanner on an unfamiliar public website, pause after three checked pages while finishing in-flight work, verify mobile content map and complete report output. Explicitly report blocked/unverified coverage."
+    },
+    "daily-industrial": {
+      "name": "Rotating audit: Industrial supplier website",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 170,
+      "url": "https://www.mcmaster.com/",
+      "maxPages": 3,
+      "complete": false,
+      "steps": "Run the scanner on an unfamiliar public website, pause after three checked pages while finishing in-flight work, verify mobile content map and complete report output. Explicitly report blocked/unverified coverage."
     }
   },
   "rendering": [
     "reliability",
     "crawl-ntc",
     "crawl-js"
-  ]
+  ],
+  "rotation": {
+    "count": 3,
+    "cases": [
+      "daily-mozilla",
+      "daily-govuk",
+      "daily-allbirds",
+      "daily-webflow",
+      "daily-w3",
+      "daily-blender",
+      "daily-nps",
+      "daily-industrial"
+    ]
+  }
 }
