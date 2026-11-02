@@ -8,7 +8,8 @@
     "runner",
     "reliability",
     "responses",
-    "budget"
+    "budget",
+    "metadata"
   ],
   "full": [
     "scanner",
@@ -24,7 +25,8 @@
     "crawl-wordpress",
     "responses",
     "daily-sites",
-    "budget"
+    "budget",
+    "metadata"
   ],
   "cases": {
     "scanner": {
@@ -216,6 +218,12 @@
       "script": "tests/budget.cjs",
       "timeoutSeconds": 25,
       "steps": "Verify that retries share one total page budget, temporary limits recover, cancellation is immediate, and paused/cancelled scans never start queued destinations."
+    },
+    "metadata": {
+      "name": "Metadata previews, indexing and structured data",
+      "script": "tests/metadata.cjs",
+      "timeoutSeconds": 75,
+      "steps": "Inspect declared favicon, search/social cards, business graph, malformed JSON-LD, duplicate metadata, public asset URLs, mobile width, full print report, site files and browser metadata preservation."
     }
   },
   "rendering": [
