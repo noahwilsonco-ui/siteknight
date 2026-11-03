@@ -196,6 +196,7 @@ async function loadPage(value, fetcher = fetch) {
         r = await fetcher(url.href, { headers: { Accept: "text/html", "User-Agent": "WebsiteQC/2.0 (page quality review)" }, redirect: "manual", signal: AbortSignal.timeout(10e3) });
         if (![408, 429, 500, 502, 503, 504].includes(r.status) || attempt === 1) break;
       } catch (e) {
+        if(e.name==="AbortError")throw e;
         if (attempt === 1) throw Error("Unable to verify this page after retries: " + (e?.message || "network timeout"));
       }
       await new Promise(resolve => setTimeout(resolve, 300 * (attempt + 1)));
