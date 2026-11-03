@@ -196,7 +196,7 @@ async function loadPage(value, fetcher = fetch) {
         r = await fetcher(url.href, { headers: { Accept: "text/html", "User-Agent": "WebsiteQC/2.0 (page quality review)" }, redirect: "manual", signal: AbortSignal.timeout(10e3) });
         if (![408, 429, 500, 502, 503, 504].includes(r.status) || attempt === 1) break;
       } catch (e) {
-        if (attempt === 2) throw Error("Unable to verify this page after retries: " + (e?.message || "network timeout"));
+        if (attempt === 1) throw Error("Unable to verify this page after retries: " + (e?.message || "network timeout"));
       }
       await new Promise(resolve => setTimeout(resolve, 300 * (attempt + 1)));
     }
@@ -632,6 +632,8 @@ function skDeliveredText(html){return String(html).replace(/<!--[\s\S]*?-->/g,' 
 function skNeedsBrowser(html){const scripts=[...String(html).matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).join(' '),textLength=skDeliveredText(html).length;return /<script\b/i.test(html)&&((textLength<350&&/(?:id\s*=\s*["'](?:root|app|__next|__nuxt)["']|data-reactroot|ng-version|<app-root\b|type\s*=\s*["']module["'])/i.test(html))||(textLength<1000&&/document\.write\s*\(|\.innerHTML\s*=|\.insertAdjacentHTML\s*\(/.test(scripts)))}
 async function skBrowserContent(env,options){
  const started=Date.now(),delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+ // Start with the responsive one-shot engine; retain Chromium when it cannot render the page.
+ try{const fast=await env.BROWSER.quickAction('content',{...options,browser:'kitesurf'});if(fast.ok)return fast;await fast.body?.cancel().catch(()=>{})}catch{}
  for(let attempt=0;attempt<3;attempt++){
   if(env.SK_DB){const now=Date.now(),latest=now+Math.max(0,Math.min(30000,55000-(now-started)-22000));const slot=await env.SK_DB.prepare("INSERT INTO sk_browser_slots(name,next_at) VALUES('content',?) ON CONFLICT(name) DO UPDATE SET next_at=MAX(sk_browser_slots.next_at,?)+10000 WHERE sk_browser_slots.next_at<=? RETURNING next_at").bind(now+10000,now,latest).first();if(!slot){const e=Error('Browser rendering is busy. This page will retry automatically.');e.status=429;e.retryAfterSeconds=10;throw e}const wait=Math.max(0,Number(slot.next_at)-10000-now);if(wait)await delay(wait);}
   const response=await env.BROWSER.quickAction('content',options);if(response.status!==429)return response;
@@ -663,13 +665,23 @@ async function skRenderedFallback(loaded,env,fetcher=fetch,routeURL=null,force=f
  html=html.replace(/<script\b([^>]*)>[\s\S]*?<\/script>/gi,(all,attrs)=>/type\s*=\s*["']application\/ld\+json["']/i.test(attrs)?all:'');return {url:finalURL.href,html,xRobotsTag:renderedHeaders?.['x-robots-tag']||'',headerCoverage:renderedHeaders?'Browser origin response headers':'Browser origin response headers unavailable',renderMode:'browser-rendered',browserMilliseconds:Number(response.headers.get('X-Browser-Ms-Used'))||null,directUrlStatus:routeURL?404:null,accessMethod:routeURL?'site-navigation':'direct-url'};
 }
 
-DASHBOARD = DASHBOARD.replace(/(\/app\.(?:js|css))\?[^"\s<>]+/g, "$1?v=80-recovery-3");
-async function skLoadScannablePage(value,env){
- try{return await skRenderedFallback(await loadPage(value),env)}catch(error){
-  const requested=publicURL(value);if(/HTTP (?:403|429|503)\b|Access-block page returned with HTTP 200|Unable to verify this page after retries/i.test(error.message))return await skRenderedFallback({url:requested.href,html:''},env,fetch,null,true);if(!/HTTP 404\b/i.test(error.message)||requested.pathname==='/')throw error;
-  const home=await loadPage(requested.origin+'/');if(!skNeedsBrowser(home.html))throw error;
-  return await skRenderedFallback(home,env,fetch,requested.href);
+DASHBOARD = DASHBOARD.replace(/(\/app\.(?:js|css))\?[^"\s<>]+/g, "$1?v=80-opening-4");
+async function skLoadScannablePageOriginal(value,env,fetcher=fetch){
+ try{return await skRenderedFallback(await loadPage(value,fetcher),env,fetcher)}catch(error){
+  const requested=publicURL(value);if(/HTTP (?:403|429|503)\b|Access-block page returned with HTTP 200|Unable to verify this page after retries/i.test(error.message))return await skRenderedFallback({url:requested.href,html:''},env,fetcher,null,true);if(!/HTTP 404\b/i.test(error.message)||requested.pathname==='/')throw error;
+  const home=await loadPage(requested.origin+'/',fetcher);if(!skNeedsBrowser(home.html))throw error;
+  return await skRenderedFallback(home,env,fetcher,requested.href);
  }
+}
+
+async function skLoadScannablePage(value,env){
+ const url=publicURL(value);
+ if(url.pathname!=='/'||!env?.BROWSER?.quickAction)return skLoadScannablePageOriginal(value,env);
+ const abort=new AbortController(),fetcher=(input,init={})=>fetch(input,{...init,signal:AbortSignal.any([abort.signal,...(init.signal?[init.signal]:[])])});
+ let settled=false,fatal=null,plainError=null,timer;
+ const plain=skLoadScannablePageOriginal(value,env,fetcher).catch(e=>{plainError=e;if(/HTTP (?:400|401)|public website|does not resolve|not resolve to a public/i.test(e.message)){fatal=e;abort.abort()}throw e});
+ const browser=(async()=>{await new Promise(resolve=>{timer=setTimeout(resolve,Number(env.SK_OPEN_HEDGE_MS)||2000);abort.signal.addEventListener('abort',resolve,{once:true})});if(settled||fatal||abort.signal.aborted)throw fatal||Error('Opening attempt completed');await checkDNS(url.hostname,fetcher);return skRenderedFallback({url:url.href,html:''},env,fetcher,null,true)})();
+ try{const result=await Promise.any([plain,browser]);settled=true;return result}catch(e){throw fatal||plainError||e.errors?.[0]||e}finally{settled=true;clearTimeout(timer);abort.abort()}
 }
 
 function skAccessScreen(html){const title=(String(html).match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]||'').replace(/<[^>]+>/g,' ').trim();const body=skDeliveredText(html);return /access denied|attention required|just a moment|robot check|security verification|verify.{0,25}(?:human|browser)/i.test(title)||(body.length<1800&&/your request has been blocked|sorry,? you have been blocked|automated requests.{0,90}blocked|checking your browser|verify (?:that )?you are (?:a )?human/i.test(body))}
