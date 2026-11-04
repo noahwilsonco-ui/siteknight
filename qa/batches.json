@@ -18,7 +18,8 @@
     "catalog-skip",
     "scale-small",
     "adaptive-queue",
-    "pipeline-overlap"
+    "pipeline-overlap",
+    "link-batches"
   ],
   "full": [
     "scanner",
@@ -45,7 +46,8 @@
     "scale-large",
     "adaptive-queue",
     "crawl-tisa-large",
-    "pipeline-overlap"
+    "pipeline-overlap",
+    "link-batches"
   ],
   "cases": {
     "scanner": {
@@ -315,6 +317,12 @@
       "script": "tests/pipeline-overlap.cjs",
       "timeoutSeconds": 60,
       "steps": "Hold the final page open and prove external and same-site image verification begins before it completes. Check deduplication, final counts and saved previews."
+    },
+    "link-batches": {
+      "name": "Streamed link verification batches",
+      "script": "tests/link-batches.cjs",
+      "timeoutSeconds": 25,
+      "steps": "Verify fast destinations stream ahead of slow ones, hostname DNS is shared, HTTP failures remain honest, and batch input and origin checks are enforced."
     }
   },
   "rendering": [
