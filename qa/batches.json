@@ -17,7 +17,8 @@
     "sitemap-urls",
     "catalog-skip",
     "scale-small",
-    "adaptive-queue"
+    "adaptive-queue",
+    "pipeline-overlap"
   ],
   "full": [
     "scanner",
@@ -43,7 +44,8 @@
     "catalog-skip",
     "scale-large",
     "adaptive-queue",
-    "crawl-tisa-large"
+    "crawl-tisa-large",
+    "pipeline-overlap"
   ],
   "cases": {
     "scanner": {
@@ -307,6 +309,12 @@
       "complete": false,
       "skipProducts": false,
       "steps": "Run the live browser workflow on TiSA with products included, pause after 100 audited pages, and record link completion, failed pages, screenshots, mobile map and printed report. This is a bounded real-site sample, not proof of 5000 real pages per minute."
+    },
+    "pipeline-overlap": {
+      "name": "Overlapping crawl and verification phases",
+      "script": "tests/pipeline-overlap.cjs",
+      "timeoutSeconds": 60,
+      "steps": "Hold the final page open and prove external and same-site image verification begins before it completes. Check deduplication, final counts and saved previews."
     }
   },
   "rendering": [
