@@ -11,7 +11,9 @@
     "budget",
     "metadata",
     "autopsy-workflow",
-    "efficiency"
+    "efficiency",
+    "counts",
+    "asset-queue"
   ],
   "full": [
     "scanner",
@@ -30,7 +32,9 @@
     "budget",
     "metadata",
     "autopsy-workflow",
-    "efficiency"
+    "efficiency",
+    "counts",
+    "asset-queue"
   ],
   "cases": {
     "scanner": {
@@ -240,6 +244,18 @@
       "script": "tests/efficiency.cjs",
       "timeoutSeconds": 25,
       "steps": "Verify fast recovery on home and inner pages, one render per target, DNS deduplication and definitive failure handling."
+    },
+    "counts": {
+      "name": "Consistent scan counts and honest scores",
+      "script": "tests/counts.cjs",
+      "timeoutSeconds": 25,
+      "steps": "Reproduce the 500-page screenshot; check all count partitions and withhold incomplete scores."
+    },
+    "asset-queue": {
+      "name": "Bounded image and file checking throughput",
+      "script": "tests/asset-queue.cjs",
+      "timeoutSeconds": 25,
+      "steps": "Check that the asset queue uses bounded concurrency without serial per-page waiting."
     }
   },
   "rendering": [
