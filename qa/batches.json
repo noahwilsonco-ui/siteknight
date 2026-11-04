@@ -42,7 +42,8 @@
     "sitemap-urls",
     "catalog-skip",
     "scale-large",
-    "adaptive-queue"
+    "adaptive-queue",
+    "crawl-tisa-large"
   ],
   "cases": {
     "scanner": {
@@ -296,6 +297,16 @@
       "script": "tests/adaptive-queue.cjs",
       "timeoutSeconds": 30,
       "steps": "Verify host concurrency ramps gradually, repeated references share one request, and Retry-After is respected."
+    },
+    "crawl-tisa-large": {
+      "name": "TiSA large-site live workflow sample",
+      "script": "tests/live-crawl.cjs",
+      "timeoutSeconds": 180,
+      "url": "https://tisacanada.com/",
+      "maxPages": 100,
+      "complete": false,
+      "skipProducts": false,
+      "steps": "Run the live browser workflow on TiSA with products included, pause after 100 audited pages, and record link completion, failed pages, screenshots, mobile map and printed report. This is a bounded real-site sample, not proof of 5000 real pages per minute."
     }
   },
   "rendering": [
