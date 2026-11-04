@@ -194,7 +194,8 @@ async function loadPage(value, fetcher = fetch) {
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
         r = await fetcher(url.href, { headers: { Accept: "text/html", "User-Agent": "WebsiteQC/2.0 (page quality review)" }, redirect: "manual", signal: AbortSignal.timeout(10e3) });
-        if (![408, 429, 500, 502, 503, 504].includes(r.status) || attempt === 1) break;
+        if (![408, 500, 502, 504].includes(r.status) || attempt === 1) break;
+        await r.body?.cancel();
       } catch (e) {
         if(e.name==="AbortError")throw e;
         if (attempt === 1) throw Error("Unable to verify this page after retries: " + (e?.message || "network timeout"));
@@ -204,10 +205,12 @@ async function loadPage(value, fetcher = fetch) {
     if ([301, 302, 303, 307, 308].includes(r.status)) {
       const location = r.headers.get("Location");
       if (!location) throw Error("The website returned a redirect without an address.");
+      await r.body?.cancel();
       url = publicURL(new URL(location, url).href);
       continue;
     }
     if (!r.ok) {
+      await r.body?.cancel();
       if ([401, 403, 429, 503].includes(r.status)) throw Error("Scan restricted or rate limited (HTTP " + r.status + "). This is not a confirmed website error.");
       throw Error("Website response HTTP " + r.status + ". Page content could not be verified.");
     }
@@ -634,7 +637,9 @@ function skNeedsBrowser(html){const scripts=[...String(html).matchAll(/<script\b
 async function skBrowserContent(env,options){
  const started=Date.now(),delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 
- if(env.SK_BROWSER_FAST_ONLY)return env.BROWSER.quickAction('content',{...options,browser:'kitesurf'});
+ // Try the independent engine before reserving a Chromium slot.
+ try{const alternate=await env.BROWSER.quickAction('content',{...options,browser:'kitesurf'});if(alternate.ok)return alternate;await alternate.body?.cancel().catch(()=>{});}catch{}
+
  for(let attempt=0;attempt<3;attempt++){
   if(env.SK_DB){const now=Date.now(),latest=now+Math.max(0,Math.min(30000,55000-(now-started)-22000));const slot=await env.SK_DB.prepare("INSERT INTO sk_browser_slots(name,next_at) VALUES('content',?) ON CONFLICT(name) DO UPDATE SET next_at=MAX(sk_browser_slots.next_at,?)+10000 WHERE sk_browser_slots.next_at<=? RETURNING next_at").bind(now+10000,now,latest).first();if(!slot){const e=Error('Browser rendering is busy. This page will retry automatically.');e.status=429;e.retryAfterSeconds=10;throw e}const wait=Math.max(0,Number(slot.next_at)-10000-now);if(wait)await delay(wait);}
   const response=await env.BROWSER.quickAction('content',options);if(response.status!==429)return response;
@@ -649,6 +654,13 @@ async function skBrowserContent(env,options){
 }
 
 async function skRenderedFallback(loaded,env,fetcher=fetch,routeURL=null,force=false){
+ if(!force&&!routeURL&&!skNeedsBrowser(loaded.html))return {...loaded,renderMode:'server-html'};
+ const jobs=env?.SK_RENDER_JOBS,key=loaded.url+'|'+(routeURL||'');
+ if(!jobs)return skRenderedFallbackOnce(loaded,env,fetcher,routeURL,force);
+ if(!jobs.has(key))jobs.set(key,skRenderedFallbackOnce(loaded,env,fetcher,routeURL,force));
+ return jobs.get(key);
+}
+async function skRenderedFallbackOnce(loaded,env,fetcher=fetch,routeURL=null,force=false){
  if(!force&&!routeURL&&!skNeedsBrowser(loaded.html))return {...loaded,renderMode:'server-html'};
  if(!env?.BROWSER?.quickAction)throw Error('This page loads its content with JavaScript. Browser rendering is unavailable; page content is unverified and excluded from scoring.');
  const routeScript=routeURL?'const wanted=new URL('+JSON.stringify(routeURL)+');const a=[...document.querySelectorAll("a[href]")].find(a=>{try{const u=new URL(a.href);return u.origin===wanted.origin&&u.pathname===wanted.pathname&&u.search===wanted.search}catch{return false}});if(a){a.click();}document.documentElement.setAttribute("data-sk-route-found",a?"yes":"no");':'';
@@ -677,11 +689,20 @@ async function skLoadScannablePageOriginal(value,env,fetcher=fetch){
 
 async function skLoadScannablePage(value,env){
  const url=publicURL(value);
- if(url.pathname!=='/'||!env?.BROWSER?.quickAction)return skLoadScannablePageOriginal(value,env);
- const abort=new AbortController(),fetcher=(input,init={})=>fetch(input,{...init,signal:AbortSignal.any([abort.signal,...(init.signal?[init.signal]:[])])});
+ if(!env?.BROWSER?.quickAction)return skLoadScannablePageOriginal(value,env);
+ env={...env,SK_RENDER_JOBS:new Map()};
+ const abort=new AbortController(),dns=new Map();
+ const fetcher=(input,init={})=>{
+  const request=()=>fetch(input,{...init,signal:AbortSignal.any([abort.signal,...(init.signal?[init.signal]:[])])});
+  if(String(input).startsWith('https://cloudflare-dns.com/dns-query?')){
+   if(!dns.has(String(input)))dns.set(String(input),request());
+   return dns.get(String(input)).then(r=>r.clone());
+  }
+  return request();
+ };
  let settled=false,fatal=null,plainError=null,timer;
- const plain=skLoadScannablePageOriginal(value,env,fetcher).catch(e=>{plainError=e;if(/HTTP (?:400|401)|public website|does not resolve|not resolve to a public/i.test(e.message)){fatal=e;abort.abort()}throw e});
- const browser=(async()=>{await new Promise(resolve=>{timer=setTimeout(resolve,Number(env.SK_OPEN_HEDGE_MS)||2000);abort.signal.addEventListener('abort',resolve,{once:true})});if(settled||fatal||abort.signal.aborted)throw fatal||Error('Opening attempt completed');await checkDNS(url.hostname,fetcher);return skRenderedFallback({url:url.href,html:''},{...env,SK_BROWSER_FAST_ONLY:true},fetcher,null,true)})();
+ const plain=skLoadScannablePageOriginal(value,env,fetcher).catch(e=>{plainError=e;if((/HTTP (?:400|401)|public website|does not resolve|not resolve to a public/i.test(e.message)||url.pathname==='/'&&/HTTP 404\b/.test(e.message))){fatal=e;abort.abort()}throw e});
+ const browser=(async()=>{await new Promise(resolve=>{timer=setTimeout(resolve,Number(env.SK_OPEN_HEDGE_MS)||2000);abort.signal.addEventListener('abort',resolve,{once:true})});if(settled||fatal||abort.signal.aborted)throw fatal||Error('Opening attempt completed');await checkDNS(url.hostname,fetcher);return skRenderedFallback({url:url.href,html:''},env,fetcher,null,true)})();
  try{const result=await Promise.any([plain,browser]);settled=true;return result}catch(e){throw fatal||plainError||e.errors?.[0]||e}finally{settled=true;clearTimeout(timer);abort.abort()}
 }
 
