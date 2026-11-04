@@ -693,9 +693,10 @@ async function skLoadScannablePage(value,env){
  const url=publicURL(value);
  if(!env?.BROWSER?.quickAction)return skLoadScannablePageOriginal(value,env);
  env={...env,SK_RENDER_JOBS:new Map()};
+ let directMissing=false;
  const abort=new AbortController(),dns=new Map();
  const fetcher=(input,init={})=>{
-  const request=()=>fetch(input,{...init,signal:AbortSignal.any([abort.signal,...(init.signal?[init.signal]:[])])});
+  const request=async()=>{const response=await fetch(input,{...init,signal:AbortSignal.any([abort.signal,...(init.signal?[init.signal]:[])])});if(String(input)===url.href&&response.status===404)directMissing=true;return response;};
   if(String(input).startsWith('https://cloudflare-dns.com/dns-query?')){
    if(!dns.has(String(input)))dns.set(String(input),request());
    return dns.get(String(input)).then(r=>r.clone());
@@ -704,7 +705,7 @@ async function skLoadScannablePage(value,env){
  };
  let settled=false,fatal=null,plainError=null,timer;
  const plain=skLoadScannablePageOriginal(value,env,fetcher).catch(e=>{plainError=e;if((/HTTP (?:400|401)|public website|does not resolve|not resolve to a public/i.test(e.message)||url.pathname==='/'&&/HTTP 404\b/.test(e.message))){fatal=e;abort.abort()}throw e});
- const browser=(async()=>{await new Promise(resolve=>{timer=setTimeout(resolve,Number(env.SK_OPEN_HEDGE_MS)||2000);abort.signal.addEventListener('abort',resolve,{once:true})});if(settled||fatal||abort.signal.aborted)throw fatal||Error('Opening attempt completed');await checkDNS(url.hostname,fetcher);return skRenderedFallback({url:url.href,html:''},env,fetcher,null,true)})();
+ const browser=(async()=>{await new Promise(resolve=>{timer=setTimeout(resolve,Number(env.SK_OPEN_HEDGE_MS)||2000);abort.signal.addEventListener('abort',resolve,{once:true})});if(settled||fatal||directMissing||abort.signal.aborted)throw fatal||Error('Opening attempt completed');await checkDNS(url.hostname,fetcher);return skRenderedFallback({url:url.href,html:''},env,fetcher,null,true)})();
  try{const result=await Promise.any([plain,browser]);settled=true;return result}catch(e){throw fatal||plainError||e.errors?.[0]||e}finally{settled=true;clearTimeout(timer);abort.abort()}
 }
 
