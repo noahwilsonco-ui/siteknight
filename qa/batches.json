@@ -13,7 +13,8 @@
     "autopsy-workflow",
     "efficiency",
     "counts",
-    "asset-queue"
+    "asset-queue",
+    "sitemap-urls"
   ],
   "full": [
     "scanner",
@@ -34,7 +35,8 @@
     "autopsy-workflow",
     "efficiency",
     "counts",
-    "asset-queue"
+    "asset-queue",
+    "sitemap-urls"
   ],
   "cases": {
     "scanner": {
@@ -256,6 +258,12 @@
       "script": "tests/asset-queue.cjs",
       "timeoutSeconds": 25,
       "steps": "Check that the asset queue uses bounded concurrency without serial per-page waiting."
+    },
+    "sitemap-urls": {
+      "name": "Stale sitemap and navigation address reconciliation",
+      "script": "tests/sitemap-urls.cjs",
+      "timeoutSeconds": 25,
+      "steps": "Require explicit matching navigation and recorded sitemap 404 before replacing stale URLs; preserve ambiguous and working addresses."
     }
   },
   "rendering": [
