@@ -14,7 +14,8 @@
     "efficiency",
     "counts",
     "asset-queue",
-    "sitemap-urls"
+    "sitemap-urls",
+    "catalog-skip"
   ],
   "full": [
     "scanner",
@@ -36,7 +37,8 @@
     "efficiency",
     "counts",
     "asset-queue",
-    "sitemap-urls"
+    "sitemap-urls",
+    "catalog-skip"
   ],
   "cases": {
     "scanner": {
@@ -264,6 +266,12 @@
       "script": "tests/sitemap-urls.cjs",
       "timeoutSeconds": 25,
       "steps": "Require explicit matching navigation and recorded sitemap 404 before replacing stale URLs; preserve ambiguous and working addresses."
+    },
+    "catalog-skip": {
+      "name": "Product and category exclusion",
+      "script": "tests/catalog-skip.cjs",
+      "timeoutSeconds": 25,
+      "steps": "Check WooCommerce and Shopify paths, flat product link evidence, markup detection, skipped counters and the disabled setting."
     }
   },
   "rendering": [
