@@ -1,6 +1,6 @@
 const fs=require('fs'),assert=require('node:assert/strict');
 const s=fs.readFileSync(__dirname+'/../worker.mjs','utf8');
-const api=new Function(s.replace(/export\s*\{\s*worker_default as default\s*\};/,'')+';return {skLoadScannablePage,skBrowserContent}')();
+const api=new Function(s.replace(/export\s*\{\s*worker_default as default\s*\};/,'')+';return {skLoadScannablePage,skBrowserContent,skRenderedFallback,discoverSite}')();
 const original=global.fetch;
 const html=url=>'<html data-sk-rendered-url="'+url+'"><head><title>Company</title></head><body><main><h1>Our company</h1><p>Reliable professional products and services delivered to customers around the world.</p></main></body></html>';
 (async()=>{try{
@@ -11,5 +11,8 @@ const html=url=>'<html data-sk-rendered-url="'+url+'"><head><title>Company</titl
  }
  let renders=0,fetches=0;global.fetch=async(url)=>{if(String(url).includes('cloudflare-dns.com'))return Response.json({Answer:[{type:1,data:'93.184.215.14'}]});fetches++;return new Response('Limited',{status:429})};await api.skLoadScannablePage('https://fixture.com/about',{SK_OPEN_HEDGE_MS:10,BROWSER:{quickAction:async(a,o)=>{renders++;await new Promise(r=>setTimeout(r,40));return new Response(html(o.url))}}});assert.equal(renders,1,'Hedge and recovery must share one render');assert.equal(fetches,1,'Do not repeat rate-limited ordinary requests before recovery');
  for(const status of [401,404]){renders=0;global.fetch=async(url)=>String(url).includes('cloudflare-dns.com')?Response.json({Answer:[{type:1,data:'93.184.215.14'}]}):new Response('Unavailable',{status});await assert.rejects(()=>api.skLoadScannablePage('https://fixture.com/',{SK_OPEN_HEDGE_MS:20,BROWSER:{quickAction:async()=>{renders++;throw Error('Unexpected render')}}}),new RegExp(String(status)));assert.equal(renders,0)}
+global.fetch=async()=>Response.json({Answer:[{type:1,data:'93.184.215.14'}]});
+await assert.rejects(()=>api.skRenderedFallback({url:'https://fixture.com/',html:''},{BROWSER:{quickAction:async()=>new Response('<html data-sk-rendered-url="https://fixture.com/"><head><title>404: NOT_FOUND</title></head><body>This page does not exist. It may have moved, been removed or never existed.</body></html>')}},global.fetch,null,true),/missing-page/);
+for(const skipCatalog of [true,false]){const calls=[];const result=await api.discoverSite('https://fixture.com',async url=>{calls.push(url);return new Response(url.endsWith('/sitemap.xml')?'<sitemapindex><sitemap><loc>https://fixture.com/sitemap_products_1.xml</loc></sitemap><sitemap><loc>https://fixture.com/sitemap_collections_1.xml</loc></sitemap><sitemap><loc>https://fixture.com/sitemap_pages_1.xml</loc></sitemap></sitemapindex>':'<urlset><url><loc>https://fixture.com/about</loc></url></urlset>')},async()=>{},{skipCatalog});assert.equal(calls.length,skipCatalog?2:4);assert(result.urls.includes('https://fixture.com/about'))}
  console.log('PASS: alternate engine avoids queue; homepage and inner-page hedges; DNS deduplication; render deduplication; immediate 429 recovery; 401/404 remain failures.');
 }finally{global.fetch=original}})().catch(e=>{console.error(e);process.exitCode=1});
