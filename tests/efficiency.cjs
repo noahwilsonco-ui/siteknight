@@ -1,0 +1,15 @@
+const fs=require('fs'),assert=require('node:assert/strict');
+const s=fs.readFileSync(__dirname+'/../worker.mjs','utf8');
+const api=new Function(s.replace(/export\s*\{\s*worker_default as default\s*\};/,'')+';return {skLoadScannablePage,skBrowserContent}')();
+const original=global.fetch;
+const html=url=>'<html data-sk-rendered-url="'+url+'"><head><title>Company</title></head><body><main><h1>Our company</h1><p>Reliable professional products and services delivered to customers around the world.</p></main></body></html>';
+(async()=>{try{
+ let engines=[];const response=await api.skBrowserContent({SK_DB:{prepare(){throw Error('Should not queue a working alternate engine')}},BROWSER:{quickAction:async(a,o)=>{engines.push(o.browser);return new Response(html(o.url))}}},{url:'https://fixture.com/about'});assert(response.ok);assert.deepEqual(engines,['kitesurf']);
+ for(const pathname of ['/','/about']){
+ let calls=0,dns=0,aborted=false;global.fetch=async(url,options={})=>{if(String(url).includes('cloudflare-dns.com')){dns++;return Response.json({Answer:[{type:1,data:'93.184.215.14'}]})}return new Promise((resolve,reject)=>options.signal.addEventListener('abort',()=>{aborted=true;reject(new DOMException('Aborted','AbortError'))},{once:true}))};
+ const t=Date.now(),result=await api.skLoadScannablePage('https://fixture.com'+pathname,{SK_OPEN_HEDGE_MS:20,BROWSER:{quickAction:async(a,o)=>{calls++;return new Response(html(o.url))}}});assert.equal(result.renderMode,'browser-rendered');assert(Date.now()-t<500);assert.equal(calls,1);assert.equal(dns,2);assert(aborted);
+ }
+ let renders=0,fetches=0;global.fetch=async(url)=>{if(String(url).includes('cloudflare-dns.com'))return Response.json({Answer:[{type:1,data:'93.184.215.14'}]});fetches++;return new Response('Limited',{status:429})};await api.skLoadScannablePage('https://fixture.com/about',{SK_OPEN_HEDGE_MS:10,BROWSER:{quickAction:async(a,o)=>{renders++;await new Promise(r=>setTimeout(r,40));return new Response(html(o.url))}}});assert.equal(renders,1,'Hedge and recovery must share one render');assert.equal(fetches,1,'Do not repeat rate-limited ordinary requests before recovery');
+ for(const status of [401,404]){renders=0;global.fetch=async(url)=>String(url).includes('cloudflare-dns.com')?Response.json({Answer:[{type:1,data:'93.184.215.14'}]}):new Response('Unavailable',{status});await assert.rejects(()=>api.skLoadScannablePage('https://fixture.com/',{SK_OPEN_HEDGE_MS:20,BROWSER:{quickAction:async()=>{renders++;throw Error('Unexpected render')}}}),new RegExp(String(status)));assert.equal(renders,0)}
+ console.log('PASS: alternate engine avoids queue; homepage and inner-page hedges; DNS deduplication; render deduplication; immediate 429 recovery; 401/404 remain failures.');
+}finally{global.fetch=original}})().catch(e=>{console.error(e);process.exitCode=1});
