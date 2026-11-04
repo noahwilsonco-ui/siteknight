@@ -15,7 +15,9 @@
     "counts",
     "asset-queue",
     "sitemap-urls",
-    "catalog-skip"
+    "catalog-skip",
+    "scale-small",
+    "adaptive-queue"
   ],
   "full": [
     "scanner",
@@ -38,7 +40,9 @@
     "counts",
     "asset-queue",
     "sitemap-urls",
-    "catalog-skip"
+    "catalog-skip",
+    "scale-large",
+    "adaptive-queue"
   ],
   "cases": {
     "scanner": {
@@ -272,6 +276,26 @@
       "script": "tests/catalog-skip.cjs",
       "timeoutSeconds": 25,
       "steps": "Check WooCommerce and Shopify paths, flat product link evidence, markup detection, skipped counters and the disabled setting."
+    },
+    "scale-small": {
+      "name": "Large-scan pipeline quick regression",
+      "script": "tests/scale.cjs",
+      "pages": 200,
+      "timeoutSeconds": 75,
+      "steps": "Run 200 complete pages against an explicit local origin fixture; verify findings, shared links, memory compaction, card pagination and saved preview recovery."
+    },
+    "scale-large": {
+      "name": "5000-page controlled browser load test",
+      "script": "tests/scale.cjs",
+      "pages": 5000,
+      "timeoutSeconds": 180,
+      "steps": "Measure complete 5000-page scanning with 20ms simulated origin latency and ~22KB HTML per page. Check all pages, planted errors, shared-link verification, memory compression and page navigation. Timing is not a live internet benchmark."
+    },
+    "adaptive-queue": {
+      "name": "Adaptive link checks and origin backoff",
+      "script": "tests/adaptive-queue.cjs",
+      "timeoutSeconds": 30,
+      "steps": "Verify host concurrency ramps gradually, repeated references share one request, and Retry-After is respected."
     }
   },
   "rendering": [
