@@ -10,7 +10,8 @@
     "responses",
     "budget",
     "metadata",
-    "autopsy-workflow"
+    "autopsy-workflow",
+    "efficiency"
   ],
   "full": [
     "scanner",
@@ -28,7 +29,8 @@
     "daily-sites",
     "budget",
     "metadata",
-    "autopsy-workflow"
+    "autopsy-workflow",
+    "efficiency"
   ],
   "cases": {
     "scanner": {
@@ -232,6 +234,12 @@
       "script": "tests/autopsy-workflow.cjs",
       "timeoutSeconds": 75,
       "steps": "Submit two website scans with the real form; confirm the autopsy appears directly under the score, fills in automatically, scrolls from navigation, stays visible across tools and fits mobile."
+    },
+    "efficiency": {
+      "name": "Scan recovery efficiency",
+      "script": "tests/efficiency.cjs",
+      "timeoutSeconds": 25,
+      "steps": "Verify fast recovery on home and inner pages, one render per target, DNS deduplication and definitive failure handling."
     }
   },
   "rendering": [
