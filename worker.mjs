@@ -172,18 +172,20 @@ function publicIP(ip) {
   if (ip.includes(":")) return /^[23][0-9a-f]{3}:/i.test(ip) && !/^2001:(db8|0):/i.test(ip);
   const n = ip.split(".").map(Number);
   if (n.length !== 4 || n.some((x) => !Number.isInteger(x) || x < 0 || x > 255)) return false;
-  const [a, b] = n;
-  return a > 0 && a < 224 && a !== 10 && a !== 127 && !(a === 100 && b >= 64 && b <= 127) && !(a === 169 && b === 254) && !(a === 172 && b >= 16 && b <= 31) && !(a === 192 && (b === 168 || b === 0)) && !(a === 198 && (b === 18 || b === 19 || b === 51)) && !(a === 203 && b === 0);
+  const [a, b, c] = n;
+  return a > 0 && a < 224 && a !== 10 && a !== 127 && !(a === 100 && b >= 64 && b <= 127) && !(a === 169 && b === 254) && !(a === 172 && b >= 16 && b <= 31) && !(a === 192 && (b === 168 || (b === 0 && (c === 0 || c === 2)))) && !(a === 198 && (b === 18 || b === 19 || (b === 51 && c === 100))) && !(a === 203 && b === 0 && c === 113);
 }
 __name(publicIP, "publicIP");
 async function checkDNS(host, fetcher = fetch) {
   const records = await Promise.all(["A", "AAAA"].map(async (type) => {
     const r = await fetcher("https://cloudflare-dns.com/dns-query?name=" + encodeURIComponent(host) + "&type=" + type, { headers: { Accept: "application/dns-json" }, signal: AbortSignal.timeout(6e3) });
     if (!r.ok) throw Error("Could not resolve the website address.");
-    return (await r.json()).Answer || [];
+    return await r.json();
   }));
-  const ips = records.flat().filter((r) => r.type === 1 || r.type === 28).map((r) => r.data);
-  if (!ips.length || ips.some((ip) => !publicIP(ip))) throw Error("The address does not resolve to a public website.");
+  if(records.every(r=>r.Status===3))throw Error("The destination domain does not exist (DNS NXDOMAIN).");
+  const ips = records.flatMap(r=>r.Answer||[]).filter((r) => r.type === 1 || r.type === 28).map((r) => r.data);
+  if(!ips.length)throw Error(records.some(r=>r.Status===2)?"DNS lookup temporarily failed (SERVFAIL). Retry this destination later.":"No public IP address was returned for this domain.");
+  if(ips.some(ip=>!publicIP(ip)))throw Error("The destination resolves to a private or reserved IP address. Automated checks are blocked.");
 }
 __name(checkDNS, "checkDNS");
 async function loadPage(value, fetcher = fetch) {
