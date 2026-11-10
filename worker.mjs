@@ -515,9 +515,9 @@ body:not(.has-report) main{max-width:1180px}
 .checker-header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%;max-width:1370px;margin:auto;min-height:98px}
 .checker-brand{display:flex;align-items:center;gap:13px;text-decoration:none!important;min-width:0}
 .checker-brand img{width:70px;height:70px;object-fit:contain;filter:drop-shadow(0 0 14px #c366ff99)}
-.checker-brand-name{display:flex;flex-direction:column;font-family:'Space Grotesk',sans-serif!important;font-size:31px!important;font-weight:800;color:#fff!important;line-height:.94;white-space:nowrap;letter-spacing:-1.7px}
+.checker-brand-name{display:block;font-family:'Space Grotesk',sans-serif!important;font-size:31px!important;font-weight:800;color:#fff!important;line-height:.94;white-space:nowrap;letter-spacing:-1.7px}
 .checker-brand-name>span{display:inline!important;color:#d096ff!important;font:inherit!important}
-.checker-brand-name small{font-family:'Plus Jakarta Sans',sans-serif;font-size:8px;letter-spacing:2.3px;color:#c3a1da;margin-top:9px;font-weight:800}
+.checker-brand-name small{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:8px;letter-spacing:2.3px;color:#c3a1da;margin-top:9px;font-weight:800}
 .checker-header nav{display:flex;align-items:center;gap:14px}
 .checker-header nav a,.checker-current{font:800 12px 'Plus Jakarta Sans',sans-serif;letter-spacing:.06em;text-decoration:none;white-space:nowrap}
 .checker-back{padding:13px 19px;color:#e9d5fa!important;border:1px solid #69418c;border-radius:11px;background:#1c102b;transition:background .2s,box-shadow .2s}
