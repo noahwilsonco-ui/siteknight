@@ -183,6 +183,41 @@ body{background:#f8f7f5}
 .coming-cta{display:inline-block;margin-top:12px;border-radius:9px;background:#25202d;color:white;padding:12px 17px;font-weight:800;font-size:12px}
 .coming-cta:hover{background:#763a99}
 @media(max-width:620px){.hero{padding:19px 0 19px}.hero h1{font-size:35px}.board-head{padding-top:10px}.playground{overflow:visible!important}.card-art{border-radius:17px 17px 0 0}}
+
+/* SiteKnight identity: black hero, Knighty, precise violet touches. No generic gallery. */
+:root{--purple:#9f59d1;--ink:#211c27;--paper:#f6f6f5}
+body{background:#f6f6f5}
+.top{background:#151019;border-bottom-color:#372540}
+.brand-text b{color:#da9bff}
+.hero{position:relative;isolation:isolate;align-items:center;min-height:175px;padding:27px 0 31px}
+.hero:before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);background:radial-gradient(ellipse 35% 110% at 18% 80%,#6c348b4f,transparent 85%),linear-gradient(120deg,#18111f,#1f1527 60%,#160f1d);border-bottom:1px solid #452c53}
+.hero-brand{display:flex;align-items:center;gap:22px;min-width:0}
+.knighty-hero{width:103px;height:103px;object-fit:contain;flex:none;filter:drop-shadow(0 7px 14px #030106aa) drop-shadow(0 0 18px #9f53d066)}
+.hero .eyebrow{color:#d7a8ed;letter-spacing:1.7px}
+.hero .eyebrow:before{background:#b96fe7}
+.hero h1{color:#f7f4f9;margin:12px 0 9px;font-size:clamp(34px,3.55vw,51px)}
+.hero h1 em{color:#c785f4}
+.hero p{color:#c7bbc9;font-size:13px}
+.search-wrap label{color:#e9dceb;font-size:11px}
+.search-box{background:#f8f6fb;border-color:#674776;box-shadow:0 9px 24px #08030e38}
+.search-box input{color:#241a2e}
+.categories{margin-top:18px}
+.category-filter[aria-pressed=true]{background:#2a1b35;border-color:#633e81;color:white}
+.category-filter:hover{border-color:#a06ebd}
+.board-head h2{font-weight:700;color:#26192c}
+.board-head p{color:#756a7a}
+.float-card{border:1px solid #ded7e2;background:#fff;box-shadow:0 8px 24px #28203516,0 2px 5px #2819360d}
+.float-card:hover{box-shadow:0 12px 26px #39244622,0 5px 12px #3924460d}
+.float-card .card-art{border-bottom:2px solid #b574d452}
+.float-card .card-art:after{content:"SK";position:absolute;top:9px;right:10px;border-radius:5px;border:1px solid #ffffff99;background:#21152fbd;color:white;z-index:3;padding:4px 5px;font:800 9px/1 'Space Grotesk',sans-serif;letter-spacing:.4px}
+.float-card .card-overline{color:#79469b}
+.float-card .card-route{color:#7535a2}
+.float-card.is-pending .card-route{color:#9e89aa}
+.stage-bottom{color:#877a8c}
+.stage-bottom strong{color:#79439a}
+@media(max-width:960px){.hero{grid-template-columns:minmax(0,1fr) minmax(240px,360px)}.knighty-hero{width:80px;height:80px}.hero-brand{gap:15px}.hero h1{font-size:clamp(31px,3.8vw,42px)}}
+@media(max-width:620px){.hero{min-height:0;grid-template-columns:1fr;gap:19px;padding:22px 0 23px}.knighty-hero{width:67px;height:67px}.hero-brand{gap:11px}.hero h1{font-size:33px;margin:8px 0 6px}.hero p{font-size:11px}.hero .eyebrow{font-size:8px;letter-spacing:1.15px}.search-wrap label{font-size:10px}.categories{margin-top:13px}}
+@media(prefers-reduced-motion:reduce){.float-card{transition:none!important}}
 </style></head><body>
 <header class="top"><div class="top-inner">
 <a class="brand" href="/" aria-label="SiteKnight home"><img src="/knighty-approved.webp?v=8" alt="" width="49" height="49"><span class="brand-text">Site<b>Knight</b><small>YOUR MARKETING TOOLKIT</small></span></a>
@@ -190,7 +225,7 @@ body{background:#f8f7f5}
 </div></header>
 <main class="shell">
 <section class="hero">
-<div><div class="eyebrow">THE SITEKNIGHT TOOLBOX</div><h1>All your tools. <em>Right here.</em></h1><p>No digging through menus. Pick what you need and get straight to it.</p></div>
+<div class="hero-brand"><img class="knighty-hero" src="/knighty-approved.webp?v=8" alt="Knighty, the SiteKnight mascot" width="105" height="105"><div><div class="eyebrow">YOUR SITEKNIGHT TOOLKIT</div><h1>Make your <em>next move.</em></h1><p>Check your website. Build your campaigns. Get things done.</p></div></div>
 <div class="search-wrap"><label for="tool-search">What are you working on?</label><div class="search-box"><span class="glass" aria-hidden="true"></span><input type="search" id="tool-search" placeholder="Try 'QR code', 'social' or 'website audit'" autocomplete="off" aria-controls="cards"><button class="clear-search" type="button" id="clear-search" hidden>Clear</button></div></div>
 </section>
 <section class="explorer" id="explorer" aria-label="Interactive tool explorer">
@@ -203,11 +238,11 @@ body{background:#f8f7f5}
 <span class="cat-info">8 available / 2 in development</span>
 </div>
 <div class="board-head">
-<div><h2 id="board-title">Choose a tool</h2><p id="board-caption">Click to open. Drag to move things around.</p></div>
+<div><h2 id="board-title">The SiteKnight tools</h2><p id="board-caption">Pick a tool and get right to work.</p></div>
 <div class="board-actions"><button class="board-btn" id="board-back" type="button" hidden>Show all tools</button></div>
 </div>
 <div class="playground" id="playground"><div class="card-layer" id="cards"></div><div class="empty" id="empty" hidden>No tools found. Try a different search.</div></div>
-<div class="stage-bottom"><span><strong>CLICK TO OPEN</strong> &nbsp; Drag and flick to move cards</span><span id="visible-count">10 tools</span></div>
+<div class="stage-bottom"><span><strong>YOUR NEXT MOVE</strong> &nbsp; Click to open. Drag to play.</span><span id="visible-count">10 tools</span></div>
 </section>
 <dialog class="coming-dialog" id="coming-dialog" aria-labelledby="coming-title"><button type="button" class="close-dialog" id="close-dialog" aria-label="Close">×</button><span class="coming-kicker">IN DEVELOPMENT</span><h2 id="coming-title">Coming soon</h2><p id="coming-desc"></p><p class="coming-explain">This tool is not live yet. The other tools are ready to use now.</p><a href="/website-checker" class="coming-cta">Try Website Checker ↗</a></dialog>
 <footer class="footer"><span>© 2026 SiteKnight. Tools without the clutter.</span><a href="/website-checker">Start a website check</a></footer>
@@ -294,10 +329,10 @@ function positionCards(entries){
   const y=clamp(originY+row*(cardH+gapY)+Math.cos((i+1)*1.7+seed)*wobble,0,H-cardH);
   const node=buildCard(entry,i);node.style.width=cardW+"px";node.style.height=cardH+"px";
   node.style.zIndex=String(2+i%3);layer.append(node);
-  const b={node,x,y,homeX:x,homeY:y,w:cardW,h:cardH,vx:Math.cos(i*2.7+seed)*.48,vy:Math.sin(i*2.3+seed)*.48,angle:(Math.sin(i*2.1+1+seed)*2.8),drag:null,moved:false};
+  const b={node,x,y,homeX:x,homeY:y,w:cardW,h:cardH,vx:0,vy:0,angle:0,drag:null,moved:false};
   node.addEventListener("pointerdown",e=>{if(e.button!==undefined&&e.button!==0)return;b.drag={id:e.pointerId,x:e.clientX,y:e.clientY,startX:b.x,startY:b.y,time:performance.now()};b.moved=false;node.classList.add("dragging");node.style.zIndex="15";node.setPointerCapture?.(e.pointerId);});
-  node.addEventListener("pointermove",e=>{if(!b.drag||e.pointerId!==b.drag.id)return;const dx=e.clientX-b.drag.x,dy=e.clientY-b.drag.y;if(Math.hypot(dx,dy)>7)b.moved=true;if(!b.moved)return;const px=b.x,py=b.y;b.x=clamp(b.drag.startX+dx,0,W-b.w);b.y=clamp(b.drag.startY+dy,0,H-b.h);b.vx=clamp((b.x-px)*.8,-9,9);b.vy=clamp((b.y-py)*.8,-9,9);paint();e.preventDefault();});
-  function release(e){if(!b.drag||e.pointerId!==b.drag.id)return;b.drag=null;node.classList.remove("dragging");node.style.zIndex=String(2+i%3);if(b.moved){node.dataset.suppress="1";b.homeX=clamp(b.x,0,W-b.w);b.homeY=clamp(b.y,0,H-b.h);start();}try{if(node.hasPointerCapture?.(e.pointerId))node.releasePointerCapture(e.pointerId)}catch{}}
+  node.addEventListener("pointermove",e=>{if(!b.drag||e.pointerId!==b.drag.id)return;const dx=e.clientX-b.drag.x,dy=e.clientY-b.drag.y;if(Math.hypot(dx,dy)>7)b.moved=true;if(!b.moved)return;const px=b.x,py=b.y;b.x=clamp(b.drag.startX+dx,0,W-b.w);b.y=clamp(b.drag.startY+dy,0,H-b.h);b.vx=clamp((b.x-px)*.28,-3,3);b.vy=clamp((b.y-py)*.28,-3,3);b.angle=clamp(dx*.012,-1.5,1.5);paint();e.preventDefault();});
+  function release(e){if(!b.drag||e.pointerId!==b.drag.id)return;b.drag=null;node.classList.remove("dragging");node.style.zIndex=String(2+i%3);if(b.moved){node.dataset.suppress="1";b.vx=clamp(b.vx,-2.5,2.5);b.vy=clamp(b.vy,-2.5,2.5);start();}try{if(node.hasPointerCapture?.(e.pointerId))node.releasePointerCapture(e.pointerId)}catch{}}
   node.addEventListener("pointerup",release);node.addEventListener("pointercancel",release);
   bodies.push(b);
  });
@@ -305,19 +340,31 @@ function positionCards(entries){
 }
 function paint(){for(const b of bodies)b.node.style.transform="translate3d("+b.x.toFixed(1)+"px,"+b.y.toFixed(1)+"px,0) rotate("+b.angle.toFixed(2)+"deg)";}
 function frame(time){
- raf=0;if(reduced()||!seen||document.hidden)return;
- const dt=Math.min(1.5,Math.max(.45,(time-(lastTime||time))/16.7));lastTime=time;frameNo+=dt;
+ raf=0;
+ if(reduced()||!seen||document.hidden)return;
+ const dt=Math.min(1.5,Math.max(.5,(time-(lastTime||time))/16.7));lastTime=time;
  const W=board.clientWidth,H=board.clientHeight;
- for(const b of bodies){if(b.drag)continue;const spring=.0014,drag=.991;b.vx=(b.vx+(b.homeX-b.x)*spring*dt+Math.sin(frameNo*.016+b.homeX*.025)*.024*dt)*Math.pow(drag,dt);b.vy=(b.vy+(b.homeY-b.y)*spring*dt+Math.cos(frameNo*.017+b.homeY*.025)*.024*dt)*Math.pow(drag,dt);b.x+=clamp(b.vx,-5,5)*dt;b.y+=clamp(b.vy,-5,5)*dt;}
- for(let i=0;i<bodies.length;i++)for(let j=i+1;j<bodies.length;j++){const a=bodies[i],b=bodies[j];const overlapX=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x),overlapY=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);if(overlapX>0&&overlapY>0){const axis=overlapX<overlapY?"x":"y",penetration=Math.min(axis==="x"?overlapX:overlapY,18),sign=(axis==="x"?a.x+a.w/2-b.x-b.w/2:a.y+a.h/2-b.y-b.h/2)<0?-1:1;const shareA=a.drag?0:b.drag?1:.5,shareB=b.drag?0:a.drag?1:.5;const k=axis==="x"?"vx":"vy";if(axis==="x"){a.x+=sign*penetration*shareA;b.x-=sign*penetration*shareB}else{a.y+=sign*penetration*shareA;b.y-=sign*penetration*shareB}const av=a[k],bv=b[k];if(!a.drag)a[k]=bv*.68;if(!b.drag)b[k]=av*.68;}}
- for(const b of bodies){if(b.drag)continue;if(b.x<0){b.x=0;b.vx=Math.abs(b.vx)*.73}else if(b.x>W-b.w){b.x=W-b.w;b.vx=-Math.abs(b.vx)*.73}if(b.y<0){b.y=0;b.vy=Math.abs(b.vy)*.73}else if(b.y>H-b.h){b.y=H-b.h;b.vy=-Math.abs(b.vy)*.73}}
- paint();start();
+ let moving=false;
+ for(const b of bodies){
+  if(b.drag)continue;
+  const dx=b.homeX-b.x,dy=b.homeY-b.y;
+  b.vx=(b.vx+dx*.028*dt)*Math.pow(.76,dt);
+  b.vy=(b.vy+dy*.028*dt)*Math.pow(.76,dt);
+  b.x=clamp(b.x+clamp(b.vx,-5,5)*dt,0,Math.max(0,W-b.w));
+  b.y=clamp(b.y+clamp(b.vy,-5,5)*dt,0,Math.max(0,H-b.h));
+  b.angle*=Math.pow(.72,dt);
+  if(Math.abs(dx)+Math.abs(dy)+Math.abs(b.vx)+Math.abs(b.vy)+Math.abs(b.angle)>.3)moving=true;
+  else {b.x=b.homeX;b.y=b.homeY;b.vx=0;b.vy=0;b.angle=0;}
+ }
+ paint();
+ if(moving)start();
+ else lastTime=0;
 }
 function render(){
  const entries=getEntries();filters.forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.category==="all"&&!category&&!query)||(b.dataset.category===category&&!query))));clear.hidden=!search.value;
  back.hidden=!category&&!query;
- title.textContent=query?"Search results":category?categories[category]+" tools":"Choose a tool";
- caption.textContent=query?"Showing matches for “"+query+"”":category?"Showing only "+categories[category].toLowerCase()+" tools. Click to open.":"All 10 options are here. Click to launch any available tool.";
+ title.textContent=query?"Search results":category?categories[category]+" tools":"The SiteKnight tools";
+ caption.textContent=query?"Showing matches for “"+query+"”":category?"Showing only "+categories[category].toLowerCase()+" tools. Click to open.":"Choose a tool and get right to work. No extra screens.";
  count.textContent=entries.length+" "+(entries.length===1?"tool":"tools")+(query?" matching":" available to explore");
  positionCards(entries);resizeKey=board.clientWidth+"x"+entries.length;
 }
