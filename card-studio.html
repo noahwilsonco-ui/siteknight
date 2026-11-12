@@ -412,7 +412,35 @@ function parseLogo(file){return new Promise((resolve,reject)=>{
  img.onerror=()=>{URL.revokeObjectURL(url);reject(Error("Unable to read logo image."))};
  img.src=url;
  })}
- function normalizedURL(v){const raw=clip(v,250);return raw?(/^https?:\/\//i.test(raw)?raw:"https://"+raw):""}
+ 
+function loadBackground(src){
+ bgImage=null;const source=String(src||"");
+ if(!source){render();return Promise.resolve()}
+ const img=new Image();
+ return new Promise(resolve=>{
+  img.onload=()=>{bgImage=img;render();resolve()};
+  img.onerror=()=>{bgImage=null;status("Background image couldn't be loaded; upload it again.",true);render();resolve()};
+  img.src=source;
+ });
+}
+function parseBackground(file){return new Promise((resolve,reject)=>{
+ if(!file){resolve("");return}
+ if(!["image/png","image/jpeg","image/webp"].includes(file.type)){reject(Error("Use a PNG, JPG or WebP background."));return}
+ if(file.size>9e6){reject(Error("Background photo must be under 9 MB."));return}
+ const url=URL.createObjectURL(file),img=new Image();
+ img.onload=()=>{
+  try{
+   const canvas=document.createElement("canvas"),w=1200,h=700;canvas.width=w;canvas.height=h;
+   const x=canvas.getContext("2d");if(!x)throw Error("Image editing unavailable.");
+   const scale=Math.max(w/img.width,h/img.height),iw=img.width*scale,ih=img.height*scale;
+   x.drawImage(img,(w-iw)/2,(h-ih)/2,iw,ih);
+   const data=canvas.toDataURL("image/jpeg",.77);URL.revokeObjectURL(url);resolve(data)
+  }catch(e){URL.revokeObjectURL(url);reject(e)}
+ };
+ img.onerror=()=>{URL.revokeObjectURL(url);reject(Error("Unable to read the background image."))};
+ img.src=url;
+ })}
+function normalizedURL(v){const raw=clip(v,250);return raw?(/^https?:\/\//i.test(raw)?raw:"https://"+raw):""}
  function escV(s){return String(s||"").replace(/\\/g,"\\\\").replace(/\r?\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;")}
  function vcard(p){
   const n=clip(p.name,100);if(!n)throw Error("Enter an employee name first.");
@@ -674,7 +702,7 @@ function updateTemplates(){
   company={...companyDefaults,...t.company};
   design={...DEFAULT_DESIGN,...t.design};
   $("template-name").value=t.name||"";
-  applyFields();loadLogo(company.logo);store();render();
+  applyFields();loadLogo(company.logo);loadBackground(company.background);store();render();
  }
  async function readJSON(file){if(!file||file.size>3e6)throw Error("JSON file is missing or too large (maximum 3 MB).");return JSON.parse(await file.text())}
  async function uploadTemplate(file){
@@ -686,7 +714,7 @@ function updateTemplates(){
   try{const data=await readJSON(file);if(data.kind!=="siteknight-team-workspace"||!Array.isArray(data.people)||!data.company||!data.design)throw Error("Not a SiteKnight team workspace.");
    if(data.people.length>250)throw Error("Maximum 250 employees.");
    people=data.people.map(normalizePerson).filter(p=>p.name);company={...companyDefaults,...data.company};design={...DEFAULT_DESIGN,...data.design};templates=Array.isArray(data.templates)?data.templates.slice(0,20):[];
-   activeId="";person={...personDefaults};applyFields();loadLogo(company.logo);updateTemplates();updateRoster();store();render();status("Workspace restored: "+people.length+" employees.");
+   activeId="";person={...personDefaults};applyFields();loadLogo(company.logo);loadBackground(company.background);updateTemplates();updateRoster();store();render();status("Workspace restored: "+people.length+" employees.");
   }catch(e){status("Restore failed: "+e.message,true)}
   $("restore-workspace").value="";
  }
@@ -787,6 +815,13 @@ document.querySelectorAll("[data-go-view]").forEach(b=>b.addEventListener("click
   catch(e){status("Logo upload failed: "+e.message,true)}
   $("logo").value="";
  });
+on("background-image","change",async()=>{
+ const file=$("background-image").files?.[0];if(!file)return;
+ try{company.background=await parseBackground(file);await loadBackground(company.background);store();render();status("Background photo applied. Control its visibility below.");schedulePresetPreviews()}
+ catch(e){status("Background upload failed: "+e.message,true)}
+ $("background-image").value="";
+});
+on("remove-background","click",()=>{company.background="";bgImage=null;store();render();status("Background image removed.");schedulePresetPreviews()});
  on("reset-style","click",()=>{design={...DEFAULT_DESIGN};applyFields();store();render();status("Card style reset. Your company and employees were kept.")});
  on("reset-position","click",()=>{["logoX","logoY","nameX","nameY","qrX","qrY"].forEach(k=>design[k]=0);applyFields();store();render();status("Element positions reset.")});
  on("save-person","click",savePerson);on("new-person","click",freshPerson);on("remove-person","click",removePerson);
@@ -805,7 +840,7 @@ document.querySelectorAll("[data-go-view]").forEach(b=>b.addEventListener("click
  on("download-qr","click",async()=>{try{const p=getPerson();if(!p.name)throw Error("Enter a name first.");const q=makeQR(p);if(!q)throw Error("Enable QR code in Card design.");const c=document.createElement("canvas");c.width=c.height=960;qrPaint(c.getContext("2d"),q,0,0,960);fileDownload(await imageBlob(c),safeName(p.name)+"-contact-qr.png");status("Contact QR downloaded.")}catch(e){status(e.message,true)}});
  on("download-vcf","click",()=>{try{const p=getPerson();fileDownload(new Blob([vcard(p)],{type:"text/vcard;charset=utf-8"}),safeName(p.name)+".vcf");status("Contact VCF downloaded.")}catch(e){status(e.message,true)}});
  on("download-team","click",exportTeam);
- restore();applyFields();updateTemplates();updateRoster();loadLogo(company.logo);setWorkflow("design");renderPresetGallery();
+ restore();applyFields();updateTemplates();updateRoster();loadLogo(company.logo);loadBackground(company.background);setWorkflow("design");renderPresetGallery();
  if(document.fonts?.ready)document.fonts.ready.then(render);
  render();
 })();
