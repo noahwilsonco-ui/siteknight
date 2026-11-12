@@ -360,7 +360,7 @@ nameSize:Number($("name-size").value)||72,jobSize:Number($("job-size").value)||3
 qr:$("show-qr").checked,qrPosition:$("qr-position").value,qrSize:Number($("qr-size").value)||190,qrInk:$("qr-ink").value,qrLabel:$("qr-label").checked,
 company:$("show-company").checked,email:$("show-email").checked,phone:$("show-phone").checked,mobile:$("show-mobile").checked,website:$("show-website").checked,address:$("show-address").checked,linkedin:$("show-linkedin").checked,tagline:$("show-tagline").checked,divider:$("show-divider").checked};}
 function applyFields(){
- for(const k of Object.keys(companyDefaults))if(k!=="logo")$(k).value=company[k]||"";
+ for(const k of Object.keys(companyDefaults))if(k!=="logo"&&k!=="background")$(k).value=company[k]||"";
  for(const k of Object.keys(personDefaults))$(k).value=person[k]||"";
  $("color-one").value=design.one;$("color-two").value=design.two;$("color-three").value=design.three;$("use-three").checked=design.useThree;
  $("text-color").value=design.text;$("accent-color").value=design.accent;$("angle").value=design.angle;$("layout").value=design.layout;$("font").value=design.font;
