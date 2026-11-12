@@ -323,7 +323,7 @@ function render(){
 }
 filters.forEach(b=>b.addEventListener("click",()=>choose(b.dataset.category==="all"?null:b.dataset.category)));
 back.addEventListener("click",()=>choose(null));
-search.addEventListener("input",()=>{query=search.value.trim();render();});
+search.addEventListener("input",()=>{query=search.value.trim();if(query)category=null;render();});
 search.addEventListener("keydown",e=>{if(e.key==="Escape"){search.value="";query="";render();}else if(e.key==="Enter"){e.preventDefault();const first=getEntries()[0];if(first?.type==="tool"&&first.data.live)location.href=first.data.href;else if(first?.type==="category")choose(first.data.key);}});
 clear.addEventListener("click",()=>{search.value="";query="";render();search.focus();});
 
