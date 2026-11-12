@@ -310,6 +310,7 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 <script>
 (function(){
 "use strict";
+try{
 const $=id=>document.getElementById(id);
 const STORAGE="siteknight-card-studio-v2";
 const DEFAULT_DESIGN={mode:"gradient",one:"#2349b6",two:"#17101f",three:"#552f84",useThree:false,text:"#ffffff",accent:"#a974ee",angle:120,layout:"classic",font:"grotesk",qr:true,address:false,preset:"custom",pattern:"none",patternStrength:16,backgroundOpacity:45,qrFrame:"badge",logoX:0,logoY:0,nameX:0,nameY:0,qrX:0,qrY:0,detailsX:0,detailsY:0,logoPosition:"left",logoTreatment:"original",logoSize:100,nameSize:72,jobSize:30,detailSize:23,contentSpacing:34,qrPosition:"bottom-right",qrSize:190,qrInk:"#201627",qrLabel:true,company:true,email:true,phone:true,mobile:false,website:true,linkedin:false,tagline:false,divider:true};
@@ -965,5 +966,6 @@ on("remove-background","click",()=>{company.background="";bgImage=null;store();r
  restore();applyFields();updateTemplates();updateRoster();loadLogo(company.logo);loadBackground(company.background);setWorkflow("design");renderPresetGallery();
  if(document.fonts?.ready)document.fonts.ready.then(render);
  render();
+}catch(e){const st=document.getElementById("status");if(st){st.dataset.error="true";st.textContent="Card Studio initialization error: "+e.message;}console.error("SiteKnight card studio",e)}
 })();
 </script></body></html>
