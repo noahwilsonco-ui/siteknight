@@ -218,6 +218,28 @@ body{background:#f6f6f5}
 @media(max-width:960px){.hero{grid-template-columns:minmax(0,1fr) minmax(240px,360px)}.knighty-hero{width:80px;height:80px}.hero-brand{gap:15px}.hero h1{font-size:clamp(31px,3.8vw,42px)}}
 @media(max-width:620px){.hero{min-height:0;grid-template-columns:1fr;gap:19px;padding:22px 0 23px}.knighty-hero{width:67px;height:67px}.hero-brand{gap:11px}.hero h1{font-size:33px;margin:8px 0 6px}.hero p{font-size:11px}.hero .eyebrow{font-size:8px;letter-spacing:1.15px}.search-wrap label{font-size:10px}.categories{margin-top:13px}}
 @media(prefers-reduced-motion:reduce){.float-card{transition:none!important}}
+
+/* Deliberately still at rest. Interaction supplies all the motion. */
+.float-card{cursor:pointer!important;touch-action:pan-y;transition:box-shadow .22s ease, border-color .22s ease, filter .22s ease}
+.float-card:hover{border-color:#ba8cd3;box-shadow:0 15px 31px #45225a28,0 4px 16px #8a50bc18;filter:brightness(1.015)}
+.float-card.pressed .card-art{transform:scale(.987)}
+.float-card.dragging{cursor:grabbing!important;box-shadow:0 19px 35px #45225a36,0 0 0 2px #a96cc7}
+.float-card .card-art{transition:transform .28s cubic-bezier(.2,.9,.2,1),filter .28s;transform-origin:center}
+.float-card:hover:not(.dragging) .card-art{transform:scale(1.035)}
+.float-card .card-route{transition:background .2s,color .2s,transform .2s;display:inline-block;background:#f0e5f7;color:#743b99!important;padding:7px 9px;border-radius:7px;font-size:10px!important;right:12px;bottom:9px;letter-spacing:.05px}
+.float-card:hover .card-route{background:#7f3ca1;color:#fff!important;transform:translateX(2px)}
+.float-card.is-pending .card-route{background:#eee8f0;color:#7d7283!important}
+.float-card.is-pending .card-overline{color:#8b667a}
+.float-card .card-meta{padding-bottom:43px!important}
+.float-card.is-tool .card-meta{padding-bottom:43px!important}
+.float-card .card-art:before{transition:opacity .35s;opacity:.5}
+.float-card:hover .card-art:before{opacity:1}
+.nudge-btn{border-color:#c7a5da;color:#743597;background:#f5eaf9}
+.nudge-btn:hover{background:#e9d4f4}
+.float-card .card-meta{animation:sk-arrive .4s cubic-bezier(.18,.85,.27,1.15) both;animation-delay:var(--arrival-delay,0ms)}
+@keyframes sk-arrive{from{opacity:.15;transform:translateY(11px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:620px){.float-card{touch-action:pan-y}.float-card .card-meta{padding-bottom:38px!important}.float-card.is-tool .card-meta{padding-bottom:38px!important}.float-card .card-route{padding:5px 7px;bottom:8px;right:8px;font-size:9px!important}.nudge-btn{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.float-card .card-meta{animation:none}.float-card .card-art{transition:none}}
 </style></head><body>
 <header class="top"><div class="top-inner">
 <a class="brand" href="/" aria-label="SiteKnight home"><img src="/knighty-approved.webp?v=8" alt="" width="49" height="49"><span class="brand-text">Site<b>Knight</b><small>YOUR MARKETING TOOLKIT</small></span></a>
@@ -239,10 +261,10 @@ body{background:#f6f6f5}
 </div>
 <div class="board-head">
 <div><h2 id="board-title">The SiteKnight tools</h2><p id="board-caption">Pick a tool and get right to work.</p></div>
-<div class="board-actions"><button class="board-btn" id="board-back" type="button" hidden>Show all tools</button></div>
+<div class="board-actions"><button class="board-btn nudge-btn" id="nudge" type="button">Give them a nudge</button><button class="board-btn" id="board-back" type="button" hidden>Show all tools</button></div>
 </div>
 <div class="playground" id="playground"><div class="card-layer" id="cards"></div><div class="empty" id="empty" hidden>No tools found. Try a different search.</div></div>
-<div class="stage-bottom"><span><strong>YOUR NEXT MOVE</strong> &nbsp; Click to open. Drag to play.</span><span id="visible-count">10 tools</span></div>
+<div class="stage-bottom"><span><strong>YOUR NEXT MOVE</strong> &nbsp; Click to open. Drag to play. Nothing moves until you interact.</span><span id="visible-count">10 tools</span></div>
 </section>
 <dialog class="coming-dialog" id="coming-dialog" aria-labelledby="coming-title"><button type="button" class="close-dialog" id="close-dialog" aria-label="Close">×</button><span class="coming-kicker">IN DEVELOPMENT</span><h2 id="coming-title">Coming soon</h2><p id="coming-desc"></p><p class="coming-explain">This tool is not live yet. The other tools are ready to use now.</p><a href="/website-checker" class="coming-cta">Try Website Checker ↗</a></dialog>
 <footer class="footer"><span>© 2026 SiteKnight. Tools without the clutter.</span><a href="/website-checker">Start a website check</a></footer>
@@ -301,7 +323,7 @@ function buildCard(entry,i){
  const over=document.createElement("span");over.className="card-overline";over.textContent=isCategory?item.count:(categories[item.category]+" / "+(item.live?"READY TO USE":"COMING SOON"));
  const name=document.createElement("strong");name.className="card-title";name.textContent=item.name;
  const sub=document.createElement("span");sub.className="card-subtitle";sub.textContent=item.desc;
- const route=document.createElement("span");route.className="card-route";route.textContent=isCategory?"EXPLORE ›":(item.live?"OPEN TOOL ↗":"DETAILS ↗");
+ const route=document.createElement("span");route.className="card-route";route.textContent=isCategory?"EXPLORE ›":(item.live?"OPEN TOOL ↗":"WHAT IS THIS? ↗");
  meta.append(over,name,sub,route);element.append(art,meta);
  element.setAttribute("aria-label",isCategory?"Explore "+item.name+" tools":item.name+(item.live?"":", in development"));
  if(isCategory)element.addEventListener("click",e=>{if(element.dataset.suppress==="1"){e.preventDefault();element.dataset.suppress="0";return;}choose(item.key)});
@@ -311,12 +333,14 @@ function buildCard(entry,i){
 }
 function showPending(name){const t=tools.find(x=>x.name===name);const dialog=doc("coming-dialog");doc("coming-title").textContent=name+" is coming soon";doc("coming-desc").textContent=t?.desc||"";if(!dialog.open){dialog.showModal();doc("close-dialog").focus();}}
 function positionCards(entries){
- stop();layer.replaceChildren();bodies=[];const n=entries.length;empty.hidden=n>0; if(!n)return;
+ stop();layer.replaceChildren();bodies=[];
+ const n=entries.length;empty.hidden=n>0;
+ if(!n){board.style.height="220px";return;}
  const W=board.clientWidth,compact=W<620,tablet=W<930;
  const cols=compact?Math.min(2,n):tablet?Math.min(3,n):n<=5?n:5;
  const rows=Math.ceil(n/cols),gapX=compact?12:25,gapY=compact?19:30,margin=compact?5:18;
  const cardW=Math.floor(Math.min(245,(W-margin*2-gapX*(cols-1))/cols));
- const cardH=compact?226:260;
+ const cardH=compact?236:276;
  const totalW=cols*cardW+(cols-1)*gapX;
  const originX=Math.round((W-totalW)/2),originY=compact?16:22;
  const H=Math.max(compact?270:315,originY*2+rows*cardH+(rows-1)*gapY);
@@ -324,19 +348,64 @@ function positionCards(entries){
  entries.forEach((entry,i)=>{
   const row=Math.floor(i/cols),col=i%cols;
   const inRow=Math.min(cols,n-row*cols),rowShift=((cols-inRow)*(cardW+gapX))/2;
-  const wobble=compact?3:7;
-  const x=clamp(originX+rowShift+col*(cardW+gapX)+Math.sin((i+1)*2.4+seed)*wobble,0,W-cardW);
-  const y=clamp(originY+row*(cardH+gapY)+Math.cos((i+1)*1.7+seed)*wobble,0,H-cardH);
-  const node=buildCard(entry,i);node.style.width=cardW+"px";node.style.height=cardH+"px";
-  node.style.zIndex=String(2+i%3);layer.append(node);
-  const b={node,x,y,homeX:x,homeY:y,w:cardW,h:cardH,vx:0,vy:0,angle:0,drag:null,moved:false};
-  node.addEventListener("pointerdown",e=>{if(e.button!==undefined&&e.button!==0)return;b.drag={id:e.pointerId,x:e.clientX,y:e.clientY,startX:b.x,startY:b.y,time:performance.now()};b.moved=false;node.classList.add("dragging");node.style.zIndex="15";node.setPointerCapture?.(e.pointerId);});
-  node.addEventListener("pointermove",e=>{if(!b.drag||e.pointerId!==b.drag.id)return;const dx=e.clientX-b.drag.x,dy=e.clientY-b.drag.y;if(Math.hypot(dx,dy)>7)b.moved=true;if(!b.moved)return;const px=b.x,py=b.y;b.x=clamp(b.drag.startX+dx,0,W-b.w);b.y=clamp(b.drag.startY+dy,0,H-b.h);b.vx=clamp((b.x-px)*.28,-3,3);b.vy=clamp((b.y-py)*.28,-3,3);b.angle=clamp(dx*.012,-1.5,1.5);paint();e.preventDefault();});
-  function release(e){if(!b.drag||e.pointerId!==b.drag.id)return;b.drag=null;node.classList.remove("dragging");node.style.zIndex=String(2+i%3);if(b.moved){node.dataset.suppress="1";b.vx=clamp(b.vx,-2.5,2.5);b.vy=clamp(b.vy,-2.5,2.5);start();}try{if(node.hasPointerCapture?.(e.pointerId))node.releasePointerCapture(e.pointerId)}catch{}}
-  node.addEventListener("pointerup",release);node.addEventListener("pointercancel",release);
+  const x=clamp(originX+rowShift+col*(cardW+gapX),0,W-cardW);
+  const y=clamp(originY+row*(cardH+gapY),0,H-cardH);
+  const node=buildCard(entry,i);
+  node.style.width=cardW+"px";node.style.height=cardH+"px";
+  node.style.zIndex=String(2+i%3);
+  node.style.setProperty("--arrival-delay",Math.min(i*38,280)+"ms");
+  layer.append(node);
+  const b={node,x,y,homeX:x,homeY:y,w:cardW,h:cardH,vx:0,vy:0,angle:0,drag:null,moved:false,blockClick:false};
+  // A tap or click is ALWAYS a click. Drag only starts when the pointer actually moves.
+  // Touch devices scroll and activate normally; desktop gets optional springy dragging.
+  node.addEventListener("pointerdown",e=>{
+   if(e.button!==undefined&&e.button!==0)return;
+   if(e.pointerType==="touch")return;
+   b.drag={id:e.pointerId,x:e.clientX,y:e.clientY,startX:b.x,startY:b.y};
+   b.moved=false;
+   node.classList.add("pressed");
+  });
+  node.addEventListener("pointermove",e=>{
+   const d=b.drag;
+   if(!d||e.pointerId!==d.id)return;
+   const dx=e.clientX-d.x,dy=e.clientY-d.y;
+   if(!b.moved&&Math.hypot(dx,dy)<=9)return;
+   if(!b.moved){b.moved=true;node.classList.remove("pressed");node.classList.add("dragging");node.style.zIndex="15";try{node.setPointerCapture(e.pointerId)}catch{}}
+   const px=b.x,py=b.y;
+   b.x=clamp(d.startX+dx,0,W-b.w);
+   b.y=clamp(d.startY+dy,0,H-b.h);
+   b.vx=clamp((b.x-px)*.25,-2.4,2.4);
+   b.vy=clamp((b.y-py)*.25,-2.4,2.4);
+   b.angle=clamp(dx*.018,-2.5,2.5);
+   paint();e.preventDefault();
+  });
+  function release(e){
+   if(!b.drag||e.pointerId!==b.drag.id)return;
+   const hadDragged=b.moved;b.drag=null;
+   node.classList.remove("pressed","dragging");
+   node.style.zIndex=String(2+i%3);
+   if(hadDragged){
+    b.blockClick=true;
+    b.vx=clamp(b.vx,-1.9,1.9);b.vy=clamp(b.vy,-1.9,1.9);
+    start();
+    // The browser synthesizes click after pointerup, before this timer.
+    // Never leave a flag that accidentally eats the user's next real click.
+    setTimeout(()=>{b.blockClick=false;},0);
+   }else{b.vy=-.85;start();}
+   try{if(node.hasPointerCapture?.(e.pointerId))node.releasePointerCapture(e.pointerId)}catch{}
+  }
+  node.addEventListener("pointerup",release);
+  node.addEventListener("pointercancel",e=>{if(!b.drag||e.pointerId!==b.drag.id)return;b.drag=null;b.blockClick=false;node.classList.remove("pressed","dragging");node.style.zIndex=String(2+i%3);start()});
+  node.addEventListener("click",e=>{
+   if(b.blockClick){e.preventDefault();e.stopImmediatePropagation();b.blockClick=false;}
+  },true);
+  node.addEventListener("pointerenter",e=>{
+   if(e.pointerType==="touch"||reduced()||b.drag)return;
+   b.vy=-1.1;b.angle=(i%2===0?-.9:.9);start();
+  });
   bodies.push(b);
  });
- paint();start();
+ paint();
 }
 function paint(){for(const b of bodies)b.node.style.transform="translate3d("+b.x.toFixed(1)+"px,"+b.y.toFixed(1)+"px,0) rotate("+b.angle.toFixed(2)+"deg)";}
 function frame(time){
@@ -370,6 +439,11 @@ function render(){
 }
 filters.forEach(b=>b.addEventListener("click",()=>choose(b.dataset.category==="all"?null:b.dataset.category)));
 back.addEventListener("click",()=>choose(null));
+doc("nudge").addEventListener("click",()=>{
+ if(reduced())return;
+ bodies.forEach((b,i)=>{if(b.drag)return;b.vx=(i%2===0?1:-1)*(1.8+(i%3)*.4);b.vy=-3.3-(i%4)*.4;b.angle=(i%2===0?-1:1)*2.8;});
+ start();
+});
 search.addEventListener("input",()=>{query=search.value.trim();if(query)category=null;render();});
 search.addEventListener("keydown",e=>{if(e.key==="Escape"){search.value="";query="";render();}else if(e.key==="Enter"){e.preventDefault();const first=getEntries()[0];if(first?.type==="tool"&&first.data.live)location.href=first.data.href;else if(first?.type==="category")choose(first.data.key);}});
 clear.addEventListener("click",()=>{search.value="";query="";render();search.focus();});
