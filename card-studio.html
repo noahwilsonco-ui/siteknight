@@ -130,6 +130,14 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 @media(max-width:820px){.mode-tabs{margin:0 0 14px}.mode-tabs button{max-width:none}.preset-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:480px){.mode-tabs{gap:7px}.mode-tabs button{padding:10px;gap:8px}.mode-tabs .mode-num{width:27px;height:31px;font-size:10px}.mode-tabs b{white-space:normal;font-size:11px;line-height:1.2}.mode-tabs small{font-size:9px}.preset-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.preset-grid button{padding:5px}.preset-grid button[aria-pressed=true]{padding:4px}.preset-grid button strong{font-size:10px}.preset-art{height:53px}.option-row.content-options{grid-template-columns:repeat(2,minmax(0,1fr))}.preview-shortcuts{display:grid;grid-template-columns:1fr 1fr}.preview-shortcuts button{font-size:10px;padding:8px}}
 @media(prefers-reduced-motion:reduce){.preset-grid button,.mode-tabs button{transition:none;transform:none!important}}
+
+.quick-presets{border:1px solid #e4dce8;background:#fff;box-shadow:0 3px 15px #38243d0b;border-radius:15px;padding:15px 18px;margin:0 0 18px}
+.quick-presets .preset-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+.quick-presets .preset-label{font-size:11px;margin:0 0 8px;color:#6c5378;letter-spacing:.1px;font-weight:800}
+.quick-presets .preset-art{height:57px}
+.quick-presets .preset-grid button{display:grid;grid-template-columns:1fr;gap:0}
+@media(max-width:820px){.quick-presets .preset-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.quick-presets .preset-art{height:51px}.quick-presets{padding:13px}}
+@media(max-width:480px){.quick-presets{padding:11px}.quick-presets .preset-grid{gap:6px}.quick-presets .preset-art{height:45px}}
 </style></head><body>
 <header><div class="top"><a class="brand" href="/" aria-label="SiteKnight home"><img src="/knighty-approved.webp?v=8" alt=""><span>Site<b>Knight</b></span></a><div class="navlinks"><a href="/">All tools</a></div></div></header>
 <main>
@@ -138,6 +146,16 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 <button type="button" data-view="design" aria-pressed="true"><span class="mode-num">01</span><span><b>Design company card</b><small>Brand, layout and templates</small></span></button>
 <button type="button" data-view="team" aria-pressed="false"><span class="mode-num">02</span><span><b>Manage employees</b><small>People, bulk upload and exports</small></span></button>
 </div>
+<section class="quick-presets" data-workflow-panel="design" aria-label="Choose a card style"><div class="field-label preset-label">Start with a professionally styled card</div>
+<div class="preset-grid" id="presets">
+<button type="button" data-preset="corporate" aria-pressed="false" style="--p-one:#f6f7fb;--p-two:#e3ecfb;--p-text:#182944"><span class="preset-art"><i></i><b></b><em></em></span><strong>Corporate</strong></button>
+<button type="button" data-preset="executive" aria-pressed="false" style="--p-one:#091528;--p-two:#182b4d;--p-text:#ffffff"><span class="preset-art"><i></i><b></b><em></em></span><strong>Executive</strong></button>
+<button type="button" data-preset="modern" aria-pressed="false" style="--p-one:#743ee2;--p-two:#1b123f;--p-text:#ffffff"><span class="preset-art"><i></i><b></b><em></em></span><strong>Modern</strong></button>
+<button type="button" data-preset="minimal" aria-pressed="false" style="--p-one:#f8f5ed;--p-two:#f8f5ed;--p-text:#222527"><span class="preset-art"><i></i><b></b><em></em></span><strong>Minimal</strong></button>
+<button type="button" data-preset="editorial" aria-pressed="false" style="--p-one:#cfecdf;--p-two:#237e67;--p-text:#103b34"><span class="preset-art"><i></i><b></b><em></em></span><strong>Editorial</strong></button>
+<button type="button" data-preset="signature" aria-pressed="false" style="--p-one:#321f22;--p-two:#a95349;--p-text:#fff1db"><span class="preset-art"><i></i><b></b><em></em></span><strong>Signature</strong></button>
+</div>
+</section>
 <div class="workspace">
 <div class="control-col">
 <section class="panel" data-workflow-panel="design" aria-labelledby="brand-h">
@@ -158,16 +176,7 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 </section>
 <section class="panel" data-workflow-panel="design" aria-labelledby="design-h">
 <div class="panel-head"><h2 id="design-h">Card design</h2><span class="mini-label">MAKE IT YOURS</span></div>
-<div class="field-label preset-label">Start with a professionally styled card</div>
-<div class="preset-grid" id="presets">
-<button type="button" data-preset="corporate" aria-pressed="false" style="--p-one:#f6f7fb;--p-two:#e3ecfb;--p-text:#182944"><span class="preset-art"><i></i><b></b><em></em></span><strong>Corporate</strong></button>
-<button type="button" data-preset="executive" aria-pressed="false" style="--p-one:#091528;--p-two:#182b4d;--p-text:#ffffff"><span class="preset-art"><i></i><b></b><em></em></span><strong>Executive</strong></button>
-<button type="button" data-preset="modern" aria-pressed="false" style="--p-one:#743ee2;--p-two:#1b123f;--p-text:#ffffff"><span class="preset-art"><i></i><b></b><em></em></span><strong>Modern</strong></button>
-<button type="button" data-preset="minimal" aria-pressed="false" style="--p-one:#f8f5ed;--p-two:#f8f5ed;--p-text:#222527"><span class="preset-art"><i></i><b></b><em></em></span><strong>Minimal</strong></button>
-<button type="button" data-preset="editorial" aria-pressed="false" style="--p-one:#cfecdf;--p-two:#237e67;--p-text:#103b34"><span class="preset-art"><i></i><b></b><em></em></span><strong>Editorial</strong></button>
-<button type="button" data-preset="signature" aria-pressed="false" style="--p-one:#321f22;--p-two:#a95349;--p-text:#fff1db"><span class="preset-art"><i></i><b></b><em></em></span><strong>Signature</strong></button>
-</div>
-<div class="hr"></div>
+
 <div class="field-label">Background</div>
 <div class="segment" id="background-mode" role="group" aria-label="Card background"><button type="button" data-mode="solid" aria-pressed="false">Solid</button><button type="button" data-mode="gradient" aria-pressed="true">Gradient</button></div>
 <div class="colors">
@@ -484,7 +493,7 @@ function parseLogo(file){return new Promise((resolve,reject)=>{
  const nameSize=Number(d.nameSize)||72,jobSize=Number(d.jobSize)||30,detailSize=Number(d.detailSize)||23;
  fitText(name,nameSize,fontWeight,nameX,nameY,nameWidth,ink);
  fitText(job,jobSize,400,nameX,nameY+52,nameWidth,light);
- if(d.tagline&&company.tagline)fitText(company.tagline,22,500,nameX,nameY+88,nameWidth,hexRGBA(ink,.75));
+ if(d.tagline&&company.tagline&&!(mode==="split"&&logoAnchor==="left"))fitText(company.tagline,22,500,nameX,nameY+88,nameWidth,hexRGBA(ink,.75));
  // Company and contact details flow into a stable content area clear of the QR.
  let detailsX=mode==="split"?402:mode==="editorial"?140:mode==="framed"?90:75;
  let detailsY=mode==="split"?410:mode==="editorial"?475:mode==="minimal"?464:480;
