@@ -146,15 +146,17 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 <button type="button" data-view="design" aria-pressed="true"><span class="mode-num">01</span><span><b>Design company card</b><small>Brand, layout and templates</small></span></button>
 <button type="button" data-view="team" aria-pressed="false"><span class="mode-num">02</span><span><b>Manage employees</b><small>People, bulk upload and exports</small></span></button>
 </div>
-<section class="quick-presets" data-workflow-panel="design" aria-label="Choose a card style"><div class="field-label preset-label">Start with a professionally styled card</div>
-<div class="preset-grid" id="presets">
-<button type="button" data-preset="corporate" aria-pressed="false" style="--p-one:#f6f7fb;--p-two:#e3ecfb;--p-text:#182944"><span class="preset-art"><i></i><b></b><em></em></span><strong>Corporate</strong></button>
-<button type="button" data-preset="executive" aria-pressed="false" style="--p-one:#091528;--p-two:#182b4d;--p-text:#ffffff"><span class="preset-art"><i></i><b></b><em></em></span><strong>Executive</strong></button>
-<button type="button" data-preset="modern" aria-pressed="false" style="--p-one:#743ee2;--p-two:#1b123f;--p-text:#ffffff"><span class="preset-art"><i></i><b></b><em></em></span><strong>Modern</strong></button>
-<button type="button" data-preset="minimal" aria-pressed="false" style="--p-one:#f8f5ed;--p-two:#f8f5ed;--p-text:#222527"><span class="preset-art"><i></i><b></b><em></em></span><strong>Minimal</strong></button>
-<button type="button" data-preset="editorial" aria-pressed="false" style="--p-one:#cfecdf;--p-two:#237e67;--p-text:#103b34"><span class="preset-art"><i></i><b></b><em></em></span><strong>Editorial</strong></button>
-<button type="button" data-preset="signature" aria-pressed="false" style="--p-one:#321f22;--p-two:#a95349;--p-text:#fff1db"><span class="preset-art"><i></i><b></b><em></em></span><strong>Signature</strong></button>
+<section class="quick-presets" data-workflow-panel="design" aria-label="Explore professional card designs">
+<div class="preset-top"><div><span class="mini-label">THE CARD COLLECTION</span><h2>Choose a direction. Make it yours.</h2><p>Actual card previews, not generic swatches. Pick a design, then customize every detail.</p></div><span class="preset-count" id="preset-count">17 styles</span></div>
+<div class="preset-filters" id="preset-filters" aria-label="Filter card styles">
+<button type="button" data-preset-filter="featured" aria-pressed="true">Featured</button>
+<button type="button" data-preset-filter="corporate" aria-pressed="false">Corporate</button>
+<button type="button" data-preset-filter="minimal" aria-pressed="false">Minimal</button>
+<button type="button" data-preset-filter="bold" aria-pressed="false">Bold & creative</button>
+<button type="button" data-preset-filter="premium" aria-pressed="false">Premium</button>
+<button type="button" data-preset-filter="all" aria-pressed="false">View all</button>
 </div>
+<div class="preset-grid" id="presets"></div>
 </section>
 <div class="workspace">
 <div class="control-col">
@@ -282,13 +284,32 @@ const $=id=>document.getElementById(id);
 const STORAGE="siteknight-card-studio-v2";
 const DEFAULT_DESIGN={mode:"gradient",one:"#2349b6",two:"#17101f",three:"#552f84",useThree:false,text:"#ffffff",accent:"#a974ee",angle:120,layout:"classic",font:"grotesk",qr:true,address:false,preset:"custom",logoPosition:"left",logoTreatment:"original",logoSize:100,nameSize:72,jobSize:30,detailSize:23,contentSpacing:34,qrPosition:"bottom-right",qrSize:190,qrInk:"#201627",qrLabel:true,company:true,email:true,phone:true,mobile:false,website:true,linkedin:false,tagline:false,divider:true};
 const STYLE_PRESETS={
-corporate:{mode:"solid",one:"#f6f7fb",two:"#f6f7fb",text:"#182944",accent:"#2e66aa",layout:"framed",font:"arial",logoPosition:"left",logoTreatment:"original",logoSize:115,nameSize:66,jobSize:25,detailSize:22,qrInk:"#182944",qrSize:175,qrLabel:true,divider:true},
-executive:{mode:"gradient",one:"#101e33",two:"#040b18",text:"#ffffff",accent:"#c4a56b",angle:135,layout:"split",font:"grotesk",logoPosition:"left",logoTreatment:"original",logoSize:135,nameSize:70,jobSize:29,detailSize:22,qrInk:"#171a26",qrSize:175,qrLabel:true,divider:true},
-modern:{mode:"gradient",one:"#7745e6",two:"#1c123d",text:"#ffffff",accent:"#b0f0d6",angle:125,layout:"classic",font:"grotesk",logoPosition:"left",logoTreatment:"light",logoSize:135,nameSize:79,jobSize:30,detailSize:23,qrInk:"#241038",qrSize:190,qrLabel:true,divider:true},
-minimal:{mode:"solid",one:"#f8f5ed",two:"#f8f5ed",text:"#222527",accent:"#7e786b",layout:"minimal",font:"arial",logoPosition:"right",logoTreatment:"original",logoSize:110,nameSize:70,jobSize:27,detailSize:21,qrInk:"#222527",qrSize:165,qrLabel:false,divider:false},
-editorial:{mode:"gradient",one:"#d5f2e5",two:"#a7d8c4",text:"#103b34",accent:"#1e8067",angle:155,layout:"editorial",font:"serif",logoPosition:"left",logoTreatment:"dark",logoSize:115,nameSize:76,jobSize:27,detailSize:22,qrInk:"#163c34",qrSize:165,qrLabel:true,divider:true},
-signature:{mode:"gradient",one:"#382125",two:"#a95349",text:"#fff1db",accent:"#f4c47c",angle:120,layout:"framed",font:"serif",logoPosition:"left",logoTreatment:"light",logoSize:135,nameSize:70,jobSize:30,detailSize:23,qrInk:"#302027",qrSize:180,qrLabel:true,divider:true}
+ corporate:{mode:"solid",one:"#f6f7fb",two:"#f6f7fb",text:"#182944",accent:"#2e66aa",layout:"framed",font:"arial",logoPosition:"left",logoTreatment:"original",logoSize:115,nameSize:66,jobSize:25,detailSize:22,qrInk:"#182944",qrSize:175,qrLabel:true,divider:true,pattern:"none"},
+ boardroom:{mode:"gradient",one:"#e8f0fb",two:"#c8daee",text:"#183752",accent:"#315e8d",angle:155,layout:"rail",font:"grotesk",logoPosition:"left",logoSize:120,nameSize:71,qrSize:170,qrInk:"#1a344d",qrLabel:false,pattern:"lines",patternStrength:11},
+ blueprint:{mode:"solid",one:"#0d2844",two:"#0d2844",text:"#edf5ff",accent:"#69b6df",layout:"banner",font:"arial",logoPosition:"left",logoTreatment:"light",logoSize:130,nameSize:68,qrInk:"#19354e",pattern:"grid",patternStrength:18},
+ press:{mode:"solid",one:"#fafaf8",two:"#fafaf8",text:"#22252a",accent:"#c33235",layout:"stripe",font:"arial",logoPosition:"right",logoSize:120,nameSize:80,jobSize:28,qrInk:"#252525",pattern:"none"},
+ minimal:{mode:"solid",one:"#f8f5ed",two:"#f8f5ed",text:"#222527",accent:"#7e786b",layout:"minimal",font:"arial",logoPosition:"right",logoSize:110,nameSize:70,jobSize:27,detailSize:21,qrInk:"#222527",qrSize:165,qrLabel:false,divider:false},
+ mono:{mode:"solid",one:"#18191b",two:"#18191b",text:"#fafafa",accent:"#84858b",layout:"centered",font:"grotesk",logoPosition:"center",logoTreatment:"light",logoSize:110,nameSize:76,jobSize:26,qrSize:150,qrInk:"#151515",qrLabel:false,pattern:"none",divider:false},
+ linen:{mode:"solid",one:"#eee6d9",two:"#eee6d9",text:"#51463f",accent:"#a98f75",layout:"framed",font:"serif",logoPosition:"left",logoSize:115,nameSize:72,qrInk:"#554538",pattern:"grain",patternStrength:10},
+ gallery:{mode:"solid",one:"#ffffff",two:"#ffffff",text:"#202124",accent:"#ba7139",layout:"editorial",font:"serif",logoPosition:"right",logoSize:100,nameSize:84,jobSize:25,qrInk:"#252525",divider:false},
+ editorial:{mode:"gradient",one:"#d5f2e5",two:"#a7d8c4",text:"#103b34",accent:"#1e8067",angle:155,layout:"editorial",font:"serif",logoPosition:"left",logoTreatment:"dark",logoSize:115,nameSize:76,jobSize:27,detailSize:22,qrInk:"#163c34",qrSize:165,qrLabel:true,divider:true},
+ modern:{mode:"gradient",one:"#7745e6",two:"#1c123d",text:"#ffffff",accent:"#b0f0d6",angle:125,layout:"classic",font:"grotesk",logoPosition:"left",logoTreatment:"light",logoSize:135,nameSize:79,jobSize:30,detailSize:23,qrInk:"#241038",qrSize:190,qrLabel:true,divider:true,pattern:"glow",patternStrength:26},
+ pop:{mode:"solid",one:"#ffdf53",two:"#ffdf53",text:"#1e2052",accent:"#ef476f",layout:"diagonal",font:"grotesk",logoPosition:"left",logoTreatment:"dark",logoSize:123,nameSize:88,qrInk:"#1e2052",qrLabel:false},
+ horizon:{mode:"gradient",one:"#dbe7f6",two:"#7aa4cb",text:"#1e3358",accent:"#fb7244",angle:45,layout:"banner",font:"grotesk",logoPosition:"right",logoSize:135,nameSize:83,qrInk:"#183c59",qrSize:175,pattern:"arcs",patternStrength:16},
+ electric:{mode:"gradient",one:"#1b113e",two:"#4923b7",text:"#f7f4ff",accent:"#ff99a8",angle:40,layout:"diagonal",font:"grotesk",logoPosition:"left",logoTreatment:"light",logoSize:150,nameSize:85,qrInk:"#30185c",qrLabel:true,pattern:"dots",patternStrength:19},
+ studio:{mode:"solid",one:"#f4d8cd",two:"#f4d8cd",text:"#34271f",accent:"#db7657",layout:"stripe",font:"serif",logoPosition:"right",logoSize:135,nameSize:82,qrInk:"#36251c",qrLabel:false,pattern:"grain",patternStrength:14},
+ executive:{mode:"gradient",one:"#101e33",two:"#040b18",text:"#ffffff",accent:"#c4a56b",angle:135,layout:"split",font:"grotesk",logoPosition:"left",logoTreatment:"original",logoSize:135,nameSize:70,jobSize:29,detailSize:22,qrInk:"#171a26",qrSize:175,qrLabel:true,divider:true},
+ signature:{mode:"gradient",one:"#382125",two:"#a95349",text:"#fff1db",accent:"#f4c47c",angle:120,layout:"framed",font:"serif",logoPosition:"left",logoTreatment:"light",logoSize:135,nameSize:70,jobSize:30,detailSize:23,qrInk:"#302027",qrSize:180,qrLabel:true,divider:true,pattern:"grain",patternStrength:15},
+ emerald:{mode:"gradient",one:"#052e2b",two:"#0b6351",text:"#effbf3",accent:"#b5d49b",angle:165,layout:"rail",font:"serif",logoPosition:"left",logoTreatment:"light",logoSize:128,nameSize:75,qrInk:"#124436",qrLabel:true,pattern:"lines",patternStrength:12},
+ onyx:{mode:"solid",one:"#0d0f12",two:"#0d0f12",text:"#e9dfcb",accent:"#b8a37e",layout:"centered",font:"serif",logoPosition:"center",logoTreatment:"light",logoSize:135,nameSize:78,qrSize:150,qrInk:"#111111",qrLabel:false,divider:false,pattern:"grain",patternStrength:7}
 };
+const PRESET_META=[
+ ["corporate","Corporate","corporate"],["boardroom","Boardroom","corporate"],["blueprint","Blueprint","corporate"],["press","Press","corporate"],
+ ["minimal","Minimal","minimal"],["mono","Mono","minimal"],["linen","Linen","minimal"],["gallery","Gallery","minimal"],["editorial","Editorial","minimal"],
+ ["modern","Modern","bold"],["pop","Pop","bold"],["horizon","Horizon","bold"],["electric","Electric","bold"],["studio","Studio","bold"],
+ ["executive","Executive","premium"],["signature","Signature","premium"],["emerald","Emerald","premium"],["onyx","Onyx","premium"]];
+const FEATURED_PRESETS=["corporate","executive","minimal","modern","press","emerald","studio","onyx"];
+let presetFilter="featured",thumbTimer=null;
 const companyDefaults={company:"",website:"",address:"",tagline:"",logo:""};
 const personDefaults={name:"",job:"",phone:"",mobile:"",email:"",linkedin:""};
 let design={...DEFAULT_DESIGN},company={...companyDefaults},person={...personDefaults},people=[],templates=[],activeId="",logoImage=null,logoLoading=false,saving=false;
@@ -579,7 +600,38 @@ function parseLogo(file){return new Promise((resolve,reject)=>{
   });
   $("download-team").disabled=!people.length;
  }
- function updateTemplates(){
+ 
+function renderPresetGallery(){
+ const root=$("presets");root.replaceChildren();
+ document.querySelectorAll("#preset-filters [data-preset-filter]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.presetFilter===presetFilter)));
+ const displayed=PRESET_META.filter(([key,,cat])=>presetFilter==="all"||(presetFilter==="featured"?FEATURED_PRESETS.includes(key):cat===presetFilter));
+ $("preset-count").textContent=displayed.length+" of "+PRESET_META.length+" styles";
+ displayed.forEach(([key,label,cat])=>{
+  const b=document.createElement("button");b.type="button";b.dataset.preset=key;b.dataset.label=label;
+  b.setAttribute("aria-pressed",String(design.preset===key));
+  b.setAttribute("aria-label","Apply "+label+" card design");
+  const frame=document.createElement("span");frame.className="preset-frame";
+  const canvas=document.createElement("canvas");canvas.width=320;canvas.height=187;canvas.setAttribute("aria-hidden","true");canvas.className="preset-canvas";
+  frame.append(canvas);
+  const info=document.createElement("span");info.className="preset-caption";
+  const strong=document.createElement("strong");strong.textContent=label;
+  const small=document.createElement("small");small.textContent={corporate:"Corporate",minimal:"Minimal",bold:"Creative",premium:"Premium"}[cat];
+  info.append(strong,small);b.append(frame,info);root.append(b);
+  try{
+   const sample={name:person.name||"Alex Morgan",job:person.job||"Creative Director",email:person.email||"alex@example.com",phone:person.phone||"519 555 0123"};
+   const temp=document.createElement("canvas");
+   const style={...DEFAULT_DESIGN,...STYLE_PRESETS[key]};
+   cardPaint(temp,sample,true,style);
+   canvas.getContext("2d").drawImage(temp,0,0,320,187);
+  }catch(e){
+   const x=canvas.getContext("2d");x.fillStyle=STYLE_PRESETS[key]?.one||"#222";x.fillRect(0,0,320,187);
+  }
+ });
+}
+function schedulePresetPreviews(){
+ clearTimeout(thumbTimer);thumbTimer=setTimeout(()=>{if(document.body.dataset.workflow==="design")renderPresetGallery()},350);
+}
+function updateTemplates(){
   const select=$("saved-templates"),selected=select.value;select.replaceChildren();
   const first=new Option("Select a saved template","");select.add(first);
   templates.forEach(t=>select.add(new Option(t.name,t.id)));
@@ -691,10 +743,15 @@ function parseLogo(file){return new Promise((resolve,reject)=>{
   const el=$(id);on(id,el.type==="checkbox"||el.tagName==="SELECT"?"change":"input",manualDesign);
  });
  document.querySelectorAll("#background-mode button").forEach(b=>b.addEventListener("click",()=>{design.mode=b.dataset.mode;manualDesign()}));
-document.querySelectorAll("#presets [data-preset]").forEach(b=>b.addEventListener("click",()=>{
- const name=b.dataset.preset;const p=STYLE_PRESETS[name];if(!p)return;
- design={...DEFAULT_DESIGN,...p,preset:name};applyFields();store();render();status("Applied "+b.textContent.trim()+" style. Every element can still be customized.");
+$("presets").addEventListener("click",e=>{
+ const b=e.target.closest("[data-preset]");if(!b)return;
+ const name=b.dataset.preset,p=STYLE_PRESETS[name];if(!p)return;
+ design={...DEFAULT_DESIGN,...p,preset:name};applyFields();store();render();status("Applied "+b.dataset.label+" style. Customize it below.");
+});
+document.querySelectorAll("#preset-filters [data-preset-filter]").forEach(b=>b.addEventListener("click",()=>{
+ presetFilter=b.dataset.presetFilter;renderPresetGallery();
 }));
+
 document.querySelectorAll("#studio-mode [data-view]").forEach(b=>b.addEventListener("click",()=>setWorkflow(b.dataset.view)));
 document.querySelectorAll("[data-go-view]").forEach(b=>b.addEventListener("click",()=>{
  const view=b.dataset.goView;setWorkflow(view);
@@ -723,7 +780,7 @@ document.querySelectorAll("[data-go-view]").forEach(b=>b.addEventListener("click
  on("download-qr","click",async()=>{try{const p=getPerson();if(!p.name)throw Error("Enter a name first.");const q=makeQR(p);if(!q)throw Error("Enable QR code in Card design.");const c=document.createElement("canvas");c.width=c.height=960;qrPaint(c.getContext("2d"),q,0,0,960);fileDownload(await imageBlob(c),safeName(p.name)+"-contact-qr.png");status("Contact QR downloaded.")}catch(e){status(e.message,true)}});
  on("download-vcf","click",()=>{try{const p=getPerson();fileDownload(new Blob([vcard(p)],{type:"text/vcard;charset=utf-8"}),safeName(p.name)+".vcf");status("Contact VCF downloaded.")}catch(e){status(e.message,true)}});
  on("download-team","click",exportTeam);
- restore();applyFields();updateTemplates();updateRoster();loadLogo(company.logo);setWorkflow("design");
+ restore();applyFields();updateTemplates();updateRoster();loadLogo(company.logo);setWorkflow("design");renderPresetGallery();
  if(document.fonts?.ready)document.fonts.ready.then(render);
  render();
 })();
