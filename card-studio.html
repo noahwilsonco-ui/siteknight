@@ -76,7 +76,7 @@ input[type=range]{width:100%;accent-color:#8a48b1}
 .preview-head h2{margin:0;font-size:21px}
 .preview-card-shell{padding:13px;background:#ede9ef;border-radius:17px;border:1px solid #e0d7e7}
 #live-card{display:block;width:100%;height:auto;aspect-ratio:12/7;border-radius:12px;box-shadow:0 13px 30px #17111d39;background:#231b32}
-.preview-sub{font-size:11px;margin:12px 0 0;color:#827787}
+.preview-sub{font-size:11px;margin:12px 0 0;color:#827787}.preview-shortcuts{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 6px}.preview-shortcuts a{display:inline-flex;align-items:center;border-radius:8px;background:#f5eaf9;border:1px solid #e1c9ed;padding:8px 11px;color:#743997;font-size:11px;font-weight:800}.preview-shortcuts a:hover{background:#e8d3f2}#design-h,#person-h{scroll-margin-top:20px}
 .status{font-size:11px;font-weight:700;line-height:1.5;padding:11px 13px;background:#f0e8f4;border:1px solid #e4d2eb;color:#68427a;border-radius:8px;margin-top:14px}
 .status[data-error=true]{background:#fff4f2;border-color:#eebcba;color:#a43737}
 .export-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
@@ -157,7 +157,7 @@ dialog h2{font-size:23px;margin:0 0 10px}
 <section class="panel" aria-labelledby="preview-h">
 <div class="preview-head"><h2 id="preview-h">Live card preview</h2><span class="mini-label">MATCHES PNG EXPORT</span></div>
 <div class="preview-card-shell"><canvas id="live-card" width="1200" height="700" role="img" aria-label="Live business card preview"></canvas></div>
-<p class="preview-sub">What you see here is exactly what downloads. Your contact QR is embedded in the card.</p>
+<p class="preview-sub">What you see here is exactly what downloads. Your contact QR is embedded in the card.</p><div class="preview-shortcuts"><a href="#design-h">Customize colours &amp; layout</a><a href="#person-h">Edit employee details</a></div>
 <div class="status" id="status" role="status" aria-live="polite">Enter an employee name to create a card.</div>
 <div class="export-list">
 <button class="btn" id="download-card" type="button" disabled>Download card PNG</button>
