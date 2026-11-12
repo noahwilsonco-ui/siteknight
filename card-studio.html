@@ -484,142 +484,206 @@ function normalizedURL(v){const raw=clip(v,250);return raw?(/^https?:\/\//i.test
  function luminance(hex){const h=hex.replace("#","");const c=[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)/255).map(x=>x<=.04045?x/12.92:Math.pow((x+.055)/1.055,2.4));return c[0]*.2126+c[1]*.7152+c[2]*.0722}
  function hexRGBA(hex,a){const h=hex.replace("#","");return "rgba("+parseInt(h.slice(0,2),16)+","+parseInt(h.slice(2,4),16)+","+parseInt(h.slice(4,6),16)+","+a+")"}
  function fontFamily(){return design.font==="serif"?"Georgia,serif":design.font==="arial"?"Arial,sans-serif":'"Space Grotesk",Arial,sans-serif'}
- function cardPaint(canvas,p,forExport){
- const w=1200,h=700;canvas.width=w;canvas.height=h;
- const ctx=canvas.getContext("2d");
- if(!ctx)throw Error("Card image is unavailable in this browser.");
- const d=design,accent=d.accent||"#8b49b6",ink=d.text||"#ffffff";
- const mode=d.layout||"classic",font=(d.font==="serif"?"Georgia,serif":d.font==="arial"?"Arial,Helvetica,sans-serif":'"Space Grotesk",Arial,sans-serif');
- const light=hexRGBA(ink,.81),sub=hexRGBA(ink,.9);
- const qSize=Math.min(240,Math.max(125,Number(d.qrSize)||190));
- const useQR=!!(d.qr&&p.name),qr=useQR?makeQR(p):null;
- const qrSide=d.qrPosition==="bottom-left"?"left":"right";
- const qX=qrSide==="left"?65:w-65-qSize;
- const qY=d.qrPosition==="top-right"?69:h-68-qSize-(d.qrLabel?25:0);
- const qrEnd=qY+qSize+(d.qrLabel?25:0);
- const qrZoneX=qX-15;
- // Background and graphic accents
- if(d.mode==="gradient"){
-  const angle=((Number(d.angle)||0)-90)*Math.PI/180,dx=Math.cos(angle)*w/2,dy=Math.sin(angle)*h/2;
-  const g=ctx.createLinearGradient(w/2-dx,h/2-dy,w/2+dx,h/2+dy);
-  g.addColorStop(0,d.one);if(d.useThree)g.addColorStop(.5,d.three||d.one);g.addColorStop(1,d.two);
-  ctx.fillStyle=g;
- }else ctx.fillStyle=d.one;
- ctx.fillRect(0,0,w,h);
- ctx.save();
- if(mode==="split"){
-  ctx.fillStyle=hexRGBA(accent,.12);ctx.fillRect(0,0,345,h);
-  ctx.fillStyle=accent;ctx.fillRect(339,0,6,h);
- }else if(mode==="minimal"){
-  ctx.fillStyle=accent;ctx.fillRect(66,633,110,6);
- }else if(mode==="editorial"){
-  ctx.fillStyle=hexRGBA(accent,.12);ctx.fillRect(0,0,112,h);
-  ctx.fillStyle=hexRGBA(accent,.10);ctx.beginPath();ctx.arc(1110,0,285,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle=accent;ctx.fillRect(109,0,4,h);
- }else if(mode==="framed"){
-  ctx.strokeStyle=hexRGBA(accent,.7);ctx.lineWidth=3;ctx.strokeRect(31,31,w-62,h-62);
-  ctx.fillStyle=accent;ctx.fillRect(30,30,150,8);
- }else{
-  ctx.fillStyle=accent;ctx.fillRect(0,0,11,h);
-  ctx.fillStyle=hexRGBA(accent,.1);ctx.beginPath();ctx.arc(1175,-145,310,0,Math.PI*2);ctx.fill();
- }
- ctx.restore();
- const fitText=(value,preferred,weight,left,y,maxWidth,color,align)=>{
-  if(!value||maxWidth<=15)return;
-  const text=String(value);
-  let size=Math.max(15,Number(preferred)||22);
-  ctx.save();ctx.textBaseline="alphabetic";ctx.textAlign=align||"left";ctx.fillStyle=color||ink;
-  const family=font;
-  for(let tries=0;tries<45;tries++){
-   ctx.font=weight+" "+size+"px "+family;
-   if(ctx.measureText(text).width<=maxWidth||size<=15)break;
-   size=Math.max(15,size-1.7);
-  }
-  ctx.fillText(text,left,y,maxWidth);ctx.restore();
+ function cardSVG(p,d=design,options={}){
+ const W=1200,H=700,thumb=!!options.thumbnail;
+ const xml=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;");
+ const color=(key,fallback)=>/^#[a-f\d]{6}$/i.test(d[key]||"")?d[key]:fallback;
+ const one=color("one","#2349b6"),two=color("two","#17101f"),three=color("three","#562f86"),ink=color("text","#ffffff"),accent=color("accent","#b985d4"),qrInk=color("qrInk","#21192a");
+ const style=d.layout||"classic";
+ const font=({serif:"Georgia,Times New Roman,serif",arial:"Arial,Helvetica,sans-serif",trebuchet:"Trebuchet MS,Arial,sans-serif",verdana:"Verdana,Geneva,sans-serif",dm:"Arial,Helvetica,sans-serif",grotesk:"Arial,Helvetica,sans-serif"})[d.font]||"Arial,Helvetica,sans-serif";
+ const clean=v=>String(v??"").trim();
+ const pct=(v,def=0)=>Number.isFinite(Number(v))?Number(v):def;
+ const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+ const name=clean(p.name)||"Your Name",job=clean(p.job)||"Your title",companyName=clean(company.company)||"Company Name";
+ const qrEnabled=!!d.qr,qrSize=clamp(pct(d.qrSize,190),125,240),qrCaption=!!d.qrLabel,qrEdge=qrSize+18;
+ const logoScale=clamp(pct(d.logoSize,100)/100,.55,1.9);
+ const logoWidth=Math.min(390,256*logoScale),logoHeight=Math.min(150,95*logoScale);
+ const centered=style==="centered",split=style==="split",rail=style==="rail",banner=style==="banner",editorial=style==="editorial",framed=style==="framed",stripe=style==="stripe";
+ const side=split?397:rail?295:editorial?146:framed?96:stripe?93:80;
+ const nameY=split?258:banner?330:centered?335:style==="minimal"?310:editorial?316:style==="diagonal"?326:285;
+ const detailsY=split?421:banner?477:centered?463:editorial?480:style==="minimal"?480:479;
+ const maxText=qrEnabled&&d.qrPosition!=="top-right"?(W-side-qrEdge-102):W-side-76;
+ const baseNameSize=clamp(pct(d.nameSize,72),42,95);
+ const subtitleSize=clamp(pct(d.jobSize,30),19,44),detailsSize=clamp(pct(d.detailSize,23),17,32);
+ const textSVG=(str,x,y,size,weight,fill=ink,max=900,align="start",extra="")=>{
+   if(!str)return"";
+   const raw=clean(str);
+   const budget=Math.max(120,max),estimated=raw.length*size*(d.font==="serif"?.54:.52),scale=estimated>budget?Math.max(.54,budget/estimated):1;
+   const result=Math.round(size*scale*10)/10;
+   return '<text x="'+x+'" y="'+y+'" fill="'+fill+'" font-family="'+xml(font)+'" font-size="'+result+'" font-weight="'+weight+'" text-anchor="'+align+'" '+extra+'>'+xml(raw)+'</text>';
  };
- const fontWeight=d.font==="serif"?700:700;
- // Logo: anchored independently, scalable and optionally recoloured for brand contrast.
- const logoScale=Math.min(1.9,Math.max(.55,(Number(d.logoSize)||100)/100));
- const logoW=Math.min(410,258*logoScale),logoH=Math.min(153,102*logoScale);
- const logoAnchor=d.logoPosition||"left";
- let logoX=logoAnchor==="center"?(w-logoW)/2:logoAnchor==="right"?w-72-logoW:mode==="split"?54:75;
- const logoY=mode==="framed"?65:58;
- if(qr&&d.qrPosition==="top-right"&&logoAnchor==="right")logoX=Math.max(370,qX-logoW-40);
- if(mode==="split"&&logoAnchor==="left")logoX=57;
- if(logoImage&&logoImage.complete&&logoImage.naturalWidth){
-  const scale=Math.min(logoW/logoImage.naturalWidth,logoH/logoImage.naturalHeight);
-  const dw=logoImage.naturalWidth*scale,dh=logoImage.naturalHeight*scale;
-  const x=logoAnchor==="center"?(w-dw)/2:logoAnchor==="right"&&!(qr&&d.qrPosition==="top-right")?w-75-dw:logoX;
-  ctx.save();
-  if(d.logoTreatment==="light")ctx.filter="brightness(0) invert(1)";
-  else if(d.logoTreatment==="dark")ctx.filter="brightness(0)";
-  ctx.drawImage(logoImage,x,logoY,dw,dh);ctx.restore();
+ const opacity=(v,o=.81)=>'<g opacity="'+o+'">'+v+'</g>';
+ const offsets={
+   logo:[clamp(pct(d.logoX),-160,160),clamp(pct(d.logoY),-130,130)],
+   name:[clamp(pct(d.nameX),-160,160),clamp(pct(d.nameY),-130,130)],
+   details:[clamp(pct(d.detailsX),-160,160),clamp(pct(d.detailsY),-130,130)],
+   qr:[clamp(pct(d.qrX),-130,130),clamp(pct(d.qrY),-130,130)]
+ };
+ const move=(key,markup)=>'<g data-handle="'+key+'" data-original-x="'+offsets[key][0]+'" data-original-y="'+offsets[key][1]+'" class="'+(thumb?"":"sk-move")+'" transform="translate('+offsets[key][0]+' '+offsets[key][1]+')">'+markup+'</g>';
+ const defs=[
+ '<clipPath id="sk-clip"><rect width="1200" height="700" rx="17"/></clipPath>',
+ '<linearGradient id="sk-grad" x1="0%" y1="0%" x2="100%" y2="100%" gradientTransform="rotate('+pct(d.angle,120)+' .5 .5)"><stop offset="0%" stop-color="'+one+'"/>'+(d.useThree?'<stop offset="50%" stop-color="'+three+'"/>':"")+'<stop offset="100%" stop-color="'+two+'"/></linearGradient>',
+ '<radialGradient id="sk-glow"><stop offset="0%" stop-color="'+accent+'" stop-opacity=".48"/><stop offset="100%" stop-color="'+accent+'" stop-opacity="0"/></radialGradient>',
+ '<pattern id="sk-grid" width="34" height="34" patternUnits="userSpaceOnUse"><path d="M34 0H0V34" fill="none" stroke="'+ink+'" stroke-opacity=".34" stroke-width="1"/></pattern>',
+ '<pattern id="sk-lines" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0V22" stroke="'+ink+'" stroke-opacity=".48" stroke-width="2"/></pattern>',
+ '<pattern id="sk-dots" width="29" height="29" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="2" fill="'+ink+'" fill-opacity=".5"/></pattern>',
+ '<pattern id="sk-grain" width="93" height="85" patternUnits="userSpaceOnUse"><g fill="'+ink+'" fill-opacity=".44"><circle cx="6" cy="9" r="1.4"/><circle cx="48" cy="12" r="1.2"/><circle cx="77" cy="40" r="1.4"/><circle cx="27" cy="63" r="1.1"/><circle cx="61" cy="73" r="1.5"/><circle cx="13" cy="37" r=".8"/><circle cx="85" cy="79" r="1.1"/></g></pattern>',
+ '<filter id="sk-logo-white" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/></filter>',
+ '<filter id="sk-logo-dark" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0"/></filter>'
+ ];
+ const children=[];
+ children.push('<rect width="1200" height="700" fill="'+(d.mode==="gradient"?"url(#sk-grad)":one)+'"/>');
+ if(company.background&&!thumb)children.push('<image x="0" y="0" width="1200" height="700" preserveAspectRatio="xMidYMid slice" opacity="'+clamp(pct(d.backgroundOpacity,45)/100,0,1)+'" href="'+xml(company.background)+'"/>');
+ const patterns={grid:"sk-grid",dots:"sk-dots",lines:"sk-lines",grain:"sk-grain"};
+ if(patterns[d.pattern]&&pct(d.patternStrength,16)>0)children.push('<rect width="1200" height="700" fill="url(#'+patterns[d.pattern]+')" opacity="'+clamp(pct(d.patternStrength,16)/100,0,.6)+'"/>');
+ if(d.pattern==="glow")children.push('<ellipse cx="980" cy="130" rx="520" ry="410" fill="url(#sk-glow)" opacity="'+clamp(pct(d.patternStrength,16)/50,0,1)+'"/>');
+ if(d.pattern==="arcs")children.push('<g fill="none" stroke="'+accent+'" stroke-width="3" opacity="'+clamp(pct(d.patternStrength,16)/100,0,.5)+'"><circle cx="1190" cy="-50" r="360"/><circle cx="1190" cy="-50" r="290"/><circle cx="1190" cy="-50" r="220"/></g>');
+ // Layout architecture: distinct structural compositions, not merely colour variations.
+ switch(style){
+ case "split":
+  children.push('<rect width="349" height="700" fill="'+accent+'" fill-opacity=".13"/><rect x="345" width="5" height="700" fill="'+accent+'"/>');
+  break;
+ case "rail":
+  children.push('<rect width="220" height="700" fill="'+accent+'" fill-opacity=".15"/><rect x="215" width="5" height="700" fill="'+accent+'"/><path d="M20 645H194" stroke="'+accent+'" stroke-width="3" opacity=".75"/>');
+  break;
+ case "banner":
+  children.push('<rect width="1200" height="177" fill="'+accent+'" fill-opacity=".15"/><rect y="172" width="1200" height="5" fill="'+accent+'"/>');
+  break;
+ case "stripe":
+  children.push('<rect width="24" height="700" fill="'+accent+'"/><rect x="24" width="24" height="700" fill="'+accent+'" fill-opacity=".21"/>');
+  break;
+ case "diagonal":
+  children.push('<path d="M1200 0L695 0L1200 580Z" fill="'+accent+'" fill-opacity=".2"/><path d="M1200 0L945 0L1200 250Z" fill="'+accent+'" fill-opacity=".33"/>');
+  break;
+ case "centered":
+  children.push('<path d="M425 142H775" stroke="'+accent+'" stroke-width="2" opacity=".65"/>');
+  break;
+ case "editorial":
+  children.push('<rect width="112" height="700" fill="'+accent+'" fill-opacity=".14"/><rect x="111" width="4" height="700" fill="'+accent+'"/><circle cx="1115" cy="-42" r="230" fill="'+accent+'" fill-opacity=".09"/>');
+  break;
+ case "framed":
+  children.push('<rect x="29" y="29" width="1142" height="642" rx="4" fill="none" stroke="'+accent+'" stroke-width="3" stroke-opacity=".78"/><rect x="29" y="29" width="152" height="8" fill="'+accent+'"/>');
+  break;
+ case "minimal":
+  children.push('<rect x="75" y="625" width="115" height="5" fill="'+accent+'"/>');
+  break;
+ default:
+  children.push('<rect width="11" height="700" fill="'+accent+'"/><circle cx="1190" cy="-130" r="255" fill="'+accent+'" fill-opacity=".08"/>');
+ }
+ // Brand anchor.
+ let logoX=centered?(600-logoWidth/2):split?51:rail?38:banner?72:editorial?148:framed?92:80;
+ if(d.logoPosition==="center")logoX=(W-logoWidth)/2;
+ else if(d.logoPosition==="right")logoX= W-78-logoWidth;
+ let logoY=banner?39:framed?68:centered?66:66;
+ const filter=d.logoTreatment==="light"?' filter="url(#sk-logo-white)"':d.logoTreatment==="dark"?' filter="url(#sk-logo-dark)"':"";
+ let logoMarkup;
+ if(company.logo&&!thumb){
+  logoMarkup='<image href="'+xml(company.logo)+'" x="'+logoX+'" y="'+logoY+'" width="'+logoWidth+'" height="'+logoHeight+'" preserveAspectRatio="xMinYMid meet"'+filter+'/>';
  }else{
-  const abbreviated=(company.company||"SK").split(/\s+/).map(x=>x[0]||"").slice(0,2).join("").toUpperCase();
-  fitText(abbreviated||"SK",Math.min(51,47*logoScale),700,logoX,logoY+55,logoW,ink);
+  const initials=companyName==="Company Name"?"SK":companyName.split(/\s+/).map(x=>x[0]).slice(0,2).join("").toUpperCase();
+  logoMarkup=textSVG(initials,logoX+3,logoY+53,Math.min(53,46*logoScale),700,ink,logoWidth);
  }
- const name=clip(p.name,100)||"Your Name",job=clip(p.job,100)||"Your job title";
- const companyLabel=company.company||"Your Company";
- const showCompany=!!d.company;
+ logoMarkup+='<rect x="'+logoX+'" y="'+logoY+'" width="'+logoWidth+'" height="'+logoHeight+'" fill="transparent" pointer-events="all"/>';
+ children.push(move("logo",logoMarkup));
+ // Name + title form one independent movable block.
+ const nameX=centered?600:side,align=centered?"middle":"start";
+ const nameWidth=centered?1030:(qrEnabled&&d.qrPosition==="top-right"?Math.max(290,915-side):W-side-80);
+ const nameSize=clamp(pct(d.nameSize,72),42,95);
+ const jobSize=clamp(pct(d.jobSize,30),19,44);
+ let nameMarkup=textSVG(name,nameX,nameY,nameSize,700,ink,nameWidth,align);
+ nameMarkup+=textSVG(job,nameX,nameY+54,jobSize,400,ink,nameWidth,align,'opacity=".84"');
+ if(d.tagline&&company.tagline && !(split&&d.logoPosition==="left"))nameMarkup+=textSVG(company.tagline,nameX,nameY+88,22,400,ink,nameWidth,align,'opacity=".7"');
+ nameMarkup+='<rect x="'+(centered?150:side-10)+'" y="'+(nameY-100)+'" width="'+(centered?900:Math.max(310,nameWidth))+'" height="167" fill="transparent" pointer-events="all"/>';
+ children.push(move("name",nameMarkup));
+ if(d.divider&&style!=="minimal"&&style!=="centered"){
+  const dy=style==="split"?364:style==="editorial"?423:style==="banner"?409:style==="framed"?408:420;
+  children.push('<rect x="'+side+'" y="'+dy+'" width="120" height="4" fill="'+accent+'"/>');
+ }
+ // Secondary organisation information and contact stack.
+ const defaultDetailsX=centered?600:side;
+ let detailsX=defaultDetailsX,detailsAlign=centered?"middle":"start";
+ if(qrEnabled&&d.qrPosition==="bottom-left"&&!centered)detailsX=Math.max(side,335);
+ const detailsWidth=centered?900:(qrEnabled&&d.qrPosition!=="top-right"?Math.max(285,W-detailsX-qrSize-150):W-detailsX-90);
  const lines=[];
- const push=(condition,value)=>{if(condition&&value)lines.push(String(value))};
- push(d.email,p.email);
- push(d.phone,p.phone);
- push(d.mobile,p.mobile);
- push(d.website,(company.website||"").replace(/^https?:\/\//i,"").replace(/\/$/,""));
- push(d.linkedin,(p.linkedin||"").replace(/^https?:\/\//i,"").replace(/\/$/,""));
- push(d.address,company.address);
- let nameX=mode==="split"?402:mode==="framed"?90:mode==="editorial"?140:75;
- let nameY=mode==="minimal"?302:mode==="split"?253:mode==="editorial"?309:287;
- let nameWidth=w-nameX-83;
- if(qr&&d.qrPosition==="top-right")nameWidth=Math.min(nameWidth,qrZoneX-nameX-35);
- const nameSize=Number(d.nameSize)||72,jobSize=Number(d.jobSize)||30,detailSize=Number(d.detailSize)||23;
- fitText(name,nameSize,fontWeight,nameX,nameY,nameWidth,ink);
- fitText(job,jobSize,400,nameX,nameY+52,nameWidth,light);
- if(d.tagline&&company.tagline&&!(mode==="split"&&logoAnchor==="left"))fitText(company.tagline,22,500,nameX,nameY+88,nameWidth,hexRGBA(ink,.75));
- // Company and contact details flow into a stable content area clear of the QR.
- let detailsX=mode==="split"?402:mode==="editorial"?140:mode==="framed"?90:75;
- let detailsY=mode==="split"?410:mode==="editorial"?475:mode==="minimal"?464:480;
- if(qr&&qrSide==="left"&&d.qrPosition!=="top-right"&&detailsY<qrEnd){
-  detailsX=Math.max(detailsX,qX+qSize+39);
+ if(d.email&&p.email)lines.push(clean(p.email));
+ if(d.phone&&p.phone)lines.push(clean(p.phone));
+ if(d.mobile&&p.mobile)lines.push(clean(p.mobile));
+ if(d.website&&company.website)lines.push(clean(company.website).replace(/^https?:\/\//i,"").replace(/\/$/,""));
+ if(d.linkedin&&p.linkedin)lines.push(clean(p.linkedin).replace(/^https?:\/\//i,"").replace(/\/$/,""));
+ if(d.address&&company.address)lines.push(clean(company.address));
+ const maxLines=lines.length,detailSize=clamp(pct(d.detailSize,23),17,32);
+ const step=clamp(pct(d.contentSpacing,34),25,47);
+ let info= '';
+ if(d.company && !(split&&d.logoPosition==="left"))info+=textSVG(companyName,detailsX,detailsY,centered?24:30,700,ink,detailsWidth,detailsAlign);
+ if(split && d.company && d.logoPosition==="left"){
+  info+=textSVG(companyName,55,351,27,700,ink,255);
+  if(d.tagline&&company.tagline)info+=textSVG(company.tagline,55,388,18,400,ink,255,"start",'opacity=".7"');
  }
- let detailsMax=w-detailsX-85;
- if(qr&&qrSide==="right"&&d.qrPosition!=="top-right")detailsMax=Math.max(125,qrZoneX-detailsX-25);
- if(qr&&d.qrPosition==="top-right")detailsMax=Math.min(detailsMax,w-detailsX-82);
- if(mode==="split"&&logoAnchor==="left"&&showCompany){
-  // In the split layout the organisation anchors the left brand panel.
-  fitText(companyLabel,27,700,60,347,255,ink);
-  if(d.tagline&&company.tagline)fitText(company.tagline,18,400,60,389,252,light);
- }else if(showCompany){
-  fitText(companyLabel,31,700,detailsX,detailsY,detailsMax,ink);
- }
- if(d.divider){
-  const lineY=mode==="split"?351:mode==="minimal"?405:mode==="editorial"?415:418;
-  ctx.fillStyle=accent;ctx.fillRect(nameX,lineY,112,4);
- }
- const companyAsFooter=mode==="split"&&logoAnchor==="left";
- const startY=mode==="split"?419:(showCompany?detailsY+47:detailsY);
- const maxY=666;
- const spacing=Math.min(Number(d.contentSpacing)||34,lines.length>1?Math.floor((maxY-startY)/(lines.length-1)):42);
- const infoWidth=detailsMax;
- const columnColor=hexRGBA(ink,.91);
- lines.forEach((line,i)=>{
-  const yy=startY+i*spacing;
-  if(yy>maxY+4)return;
-  fitText(line,detailSize,400,detailsX,yy,infoWidth,columnColor);
+ const lineStart=detailsY+(d.company&&!(split&&d.logoPosition==="left")?44:0);
+ lines.forEach((value,i)=>{
+  const y=lineStart+i*step;
+  if(y>670)return;
+  info+=textSVG(value,detailsX,y,detailSize,400,ink,detailsWidth,detailsAlign,'opacity=".88"');
  });
- if(qr){
-  const panelH=qSize+(d.qrLabel?27:0),panelX=qX-6,panelY=qY-6;
-  ctx.save();
-  ctx.shadowColor="rgba(0,0,0,.19)";ctx.shadowBlur=12;ctx.shadowOffsetY=3;
-  ctx.fillStyle="#ffffff";ctx.beginPath();
-  if(ctx.roundRect)ctx.roundRect(panelX,panelY,qSize+12,panelH+12,8);else ctx.rect(panelX,panelY,qSize+12,panelH+12);
-  ctx.fill();ctx.restore();
-  qrPaint(ctx,qr,qX,qY,qSize);
-  if(d.qrLabel){ctx.save();ctx.font="700 13px Arial,sans-serif";ctx.fillStyle="#27232c";ctx.textAlign="center";ctx.fillText("SCAN TO SAVE",qX+qSize/2,qY+qSize+18,qSize-8);ctx.restore();}
+ info+='<rect x="'+(centered?150:detailsX-10)+'" y="'+(detailsY-39)+'" width="'+(centered?900:Math.max(310,detailsWidth))+'" height="'+Math.min(245,65+Math.max(1,maxLines)*step)+'" fill="transparent" pointer-events="all"/>';
+ children.push(move("details",info));
+ if(qrEnabled){
+  const qrX=clamp(d.qrPosition==="bottom-left"?66:W-66-qrSize,28,W-qrSize-28);
+  const qrY=clamp(d.qrPosition==="top-right"?69:H-70-qrSize-(qrCaption?29:0),32,H-qrSize-(qrCaption?29:0)-28);
+  const padding=d.qrFrame==="square"?5:d.qrFrame==="minimal"?0:d.qrFrame==="outline"?9:12;
+  let qgroup="";
+  if(d.qrFrame!=="minimal"){
+   qgroup+='<rect x="'+(qrX-padding)+'" y="'+(qrY-padding)+'" width="'+(qrSize+padding*2)+'" height="'+(qrSize+padding*2+(qrCaption?25:0))+'" rx="'+(d.qrFrame==="badge"?10:2)+'" fill="#fff"'+(d.qrFrame==="outline"?' stroke="'+accent+'" stroke-width="3"':"")+'/>';
+  }else{
+   qgroup+='<rect x="'+qrX+'" y="'+qrY+'" width="'+qrSize+'" height="'+(qrSize+(qrCaption?27:0))+'" fill="#fff"/>';
+  }
+  const q=(!thumb&&p.name)?makeQR(p,d):null;
+  let qrPaths="";
+  if(q){
+   const n=q.getModuleCount(),cell=qrSize/(n+8);
+   const paths=[];
+   for(let row=0;row<n;row++)for(let col=0;col<n;col++)if(q.isDark(row,col)){
+    const xx=(qrX+(col+4)*cell).toFixed(2),yy=(qrY+(row+4)*cell).toFixed(2),sz=(cell+.11).toFixed(2);
+    paths.push("M"+xx+" "+yy+"h"+sz+"v"+sz+"h-"+sz+"Z");
+   }
+   qrPaths='<path d="'+paths.join("")+'" fill="'+qrInk+'"/>';
+  }else{
+   const n=17,cell=qrSize/n;
+   const dparts=[];for(let row=0;row<n;row++)for(let col=0;col<n;col++){
+    const corner=(row<5&&col<5)||(row<5&&col>11)||(row>11&&col<5);
+    const active=corner?((row===0||row===4||col===0||col===4)||(row===2&&col===2)):((row*23+col*17+row*col)%9<4);
+    if(active)dparts.push("M"+(qrX+col*cell).toFixed(1)+" "+(qrY+row*cell).toFixed(1)+"h"+(cell+.1).toFixed(1)+"v"+(cell+.1).toFixed(1)+"h-"+(cell+.1).toFixed(1)+"Z");
+   }
+   qrPaths='<path d="'+dparts.join("")+'" fill="'+qrInk+'"/>';
+  }
+  qgroup+=qrPaths;
+  if(qrCaption)qgroup+=textSVG("SCAN TO SAVE",qrX+qrSize/2,qrY+qrSize+20,13,700,"#29242b",qrSize-5,"middle");
+  qgroup+='<rect x="'+(qrX-padding)+'" y="'+(qrY-padding)+'" width="'+(qrSize+padding*2)+'" height="'+(qrSize+padding*2+(qrCaption?25:0))+'" fill="transparent" pointer-events="all"/>';
+  children.push(move("qr",qgroup));
  }
- return canvas;
+ // Preserve vector graphics: all text, accent geometry and QR modules remain editable SVG shapes.
+ const svg='<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-label="Business card for '+xml(name)+'"><defs>'+defs.join("")+'</defs><g clip-path="url(#sk-clip)">'+children.join("")+'</g></svg>';
+ return svg;
 }
+async function pngFromSVG(p,d=design,scale=2){
+ const xml=cardSVG(p,d);
+ const blob=new Blob([xml],{type:"image/svg+xml;charset=utf-8"});
+ const uri=URL.createObjectURL(blob);
+ try{
+  const img=new Image();
+  await new Promise((resolve,reject)=>{
+   img.onload=resolve;img.onerror=()=>reject(Error("Vector card could not be converted to PNG."));
+   img.src=uri;
+  });
+  const canvas=document.createElement("canvas");
+  canvas.width=1200*scale;canvas.height=700*scale;
+  const ctx=canvas.getContext("2d");if(!ctx)throw Error("PNG output is not available in this browser.");
+  ctx.drawImage(img,0,0,canvas.width,canvas.height);
+  return await imageBlob(canvas);
+ }finally{URL.revokeObjectURL(uri)}
+}
+function svgBlob(p,d=design){return new Blob([cardSVG(p,d)],{type:"image/svg+xml;charset=utf-8"})}
+
  function render(){
  try{
   design=getDesign();company=getCompany();person=getPerson();
