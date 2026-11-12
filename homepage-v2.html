@@ -155,6 +155,34 @@ border-radius:22px}
 @media(max-width:960px){.hero{grid-template-columns:1fr;gap:22px}.search-wrap{max-width:100%}.cat-info{display:none}.top-inner,.shell{padding-left:22px;padding-right:22px}.nav{gap:15px}.brand-text{font-size:23px}}
 @media(max-width:620px){.top{height:69px}.top-inner,.shell{padding-left:15px;padding-right:15px}.brand img{height:45px;width:45px}.brand-text{font-size:22px}.brand-text small{font-size:7px}.nav>a:not(.nav-action){display:none}.nav .nav-action{font-size:10px;padding:10px}.hero{padding-top:25px;padding-bottom:22px}.hero h1{font-size:38px;letter-spacing:-1.8px}.hero p{font-size:12px}.categories{gap:6px;padding-bottom:13px}.category-filter{padding:9px 10px;font-size:10px;border-radius:8px}.board-head h2{font-size:22px}.board-head p{font-size:11px}.board-actions{gap:5px}.board-btn{font-size:10px;padding:8px}.card-meta{padding:10px 11px}.float-card.is-category .card-title{font-size:20px}.float-card.is-tool .card-title{font-size:15px}.card-subtitle{font-size:10px!important}.card-overline{font-size:8px!important}.card-route{font-size:9px}.qr-grid{width:70px;height:70px}.hero .search-box{height:51px}.footer{flex-direction:column;gap:7px}.playground{border-radius:14px}.stage-bottom{font-size:9px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.float-card,.category-filter{transition:none!important}}
+
+/* Open canvas: the tools ARE the homepage, not a widget trapped in a box. */
+body{background:#f8f7f5}
+.shell{max-width:1520px}
+.hero{padding:26px 0 20px;gap:25px}
+.hero h1{font-size:clamp(34px,4.0vw,53px)}
+.hero p{font-size:13px}
+.categories{border-bottom:0;padding-bottom:8px}
+.board-head{padding-top:12px}
+.playground{background:transparent!important;border:0!important;border-radius:0!important;overflow:visible!important;margin-top:0!important}
+.playground:before{display:none!important}
+.float-card{box-shadow:0 10px 24px #241a2a17,0 3px 8px #241a2a0d;border:1px solid #eae6ec}
+.float-card:focus-visible{outline:3px solid #a96bd4}
+.card-art{border-radius:17px 17px 0 0}
+.card-title{font-weight:700}
+.card-route{font-size:10px!important;font-weight:900;letter-spacing:.1px}
+.float-card.is-pending{background:#f4f2f3}
+.float-card.is-pending .card-title{color:#574d5c}
+.coming-dialog{position:fixed;max-width:min(460px,calc(100vw - 35px));border:1px solid #e8deee;border-radius:19px;padding:32px 31px 29px;background:#fff;color:#241b2b;box-shadow:0 20px 85px #0d071d50}
+.coming-dialog::backdrop{background:#1710199a;backdrop-filter:blur(3px)}
+.coming-kicker{color:#8754a9;font-size:10px;font-weight:900;letter-spacing:1.5px}
+.coming-dialog h2{font:700 27px/1.12 'Space Grotesk',sans-serif;letter-spacing:-1px;margin:14px 30px 12px 0}
+.coming-dialog p{color:#6e6370;line-height:1.65;font-size:14px}
+.coming-dialog .coming-explain{font-size:12px;color:#8b818d}
+.close-dialog{position:absolute;right:15px;top:13px;width:34px;height:34px;background:#f5f0f6;border:0;border-radius:50%;font-size:24px;line-height:32px;color:#635468}
+.coming-cta{display:inline-block;margin-top:12px;border-radius:9px;background:#25202d;color:white;padding:12px 17px;font-weight:800;font-size:12px}
+.coming-cta:hover{background:#763a99}
+@media(max-width:620px){.hero{padding:19px 0 19px}.hero h1{font-size:35px}.board-head{padding-top:10px}.playground{overflow:visible!important}.card-art{border-radius:17px 17px 0 0}}
 </style></head><body>
 <header class="top"><div class="top-inner">
 <a class="brand" href="/" aria-label="SiteKnight home"><img src="/knighty-approved.webp?v=8" alt="" width="49" height="49"><span class="brand-text">Site<b>Knight</b><small>YOUR MARKETING TOOLKIT</small></span></a>
@@ -162,7 +190,7 @@ border-radius:22px}
 </div></header>
 <main class="shell">
 <section class="hero">
-<div><div class="eyebrow">THE SITEKNIGHT TOOLBOX</div><h1>Find your tool. <em>Make it happen.</em></h1><p>Pick a category, move things around or search for exactly what you need.</p></div>
+<div><div class="eyebrow">THE SITEKNIGHT TOOLBOX</div><h1>All your tools. <em>Right here.</em></h1><p>No digging through menus. Pick what you need and get straight to it.</p></div>
 <div class="search-wrap"><label for="tool-search">What are you working on?</label><div class="search-box"><span class="glass" aria-hidden="true"></span><input type="search" id="tool-search" placeholder="Try 'QR code', 'social' or 'website audit'" autocomplete="off" aria-controls="cards"><button class="clear-search" type="button" id="clear-search" hidden>Clear</button></div></div>
 </section>
 <section class="explorer" id="explorer" aria-label="Interactive tool explorer">
@@ -175,12 +203,13 @@ border-radius:22px}
 <span class="cat-info">8 available / 2 in development</span>
 </div>
 <div class="board-head">
-<div><h2 id="board-title">Explore your toolbox</h2><p id="board-caption">Start with a category. Everything inside is one click away.</p></div>
-<div class="board-actions"><button class="board-btn" id="board-back" type="button" hidden>All categories</button><button class="board-btn" id="shuffle" type="button">Mix it up</button></div>
+<div><h2 id="board-title">Choose a tool</h2><p id="board-caption">Click to open. Drag to move things around.</p></div>
+<div class="board-actions"><button class="board-btn" id="board-back" type="button" hidden>Show all tools</button></div>
 </div>
 <div class="playground" id="playground"><div class="card-layer" id="cards"></div><div class="empty" id="empty" hidden>No tools found. Try a different search.</div></div>
-<div class="stage-bottom"><span><strong>MOVE IT AROUND</strong> &nbsp; Drag, flick or click a card</span><span id="visible-count">4 categories</span></div>
+<div class="stage-bottom"><span><strong>CLICK TO OPEN</strong> &nbsp; Drag and flick to move cards</span><span id="visible-count">10 tools</span></div>
 </section>
+<dialog class="coming-dialog" id="coming-dialog" aria-labelledby="coming-title"><button type="button" class="close-dialog" id="close-dialog" aria-label="Close">×</button><span class="coming-kicker">IN DEVELOPMENT</span><h2 id="coming-title">Coming soon</h2><p id="coming-desc"></p><p class="coming-explain">This tool is not live yet. The other tools are ready to use now.</p><a href="/website-checker" class="coming-cta">Try Website Checker ↗</a></dialog>
 <footer class="footer"><span>© 2026 SiteKnight. Tools without the clutter.</span><a href="/website-checker">Start a website check</a></footer>
 </main>
 <script>
@@ -206,6 +235,7 @@ let category=null,query="",bodies=[],raf=0,lastTime=0,frameNo=0,seen=true,seed=0
 const reduced=()=>window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const categories={website:"Website",social:"Social & Content",marketing:"Marketing",utilities:"Utilities"};
+doc("close-dialog").addEventListener("click",()=>doc("coming-dialog").close());doc("coming-dialog").addEventListener("click",e=>{if(e.target===e.currentTarget)e.currentTarget.close()});
 function qr(){let out='<span class="qr-grid">';for(let i=0;i<81;i++){const x=i%9,y=Math.floor(i/9);const corner=(x<3&&y<3)||(x>5&&y<3)||(x<3&&y>5);const on=corner?(x%2===0||y%2===0):(((x*13+y*17+x*y*3)%11)<5);out+='<i class="'+(on?'on':'')+'"></i>';}return out+"</span>";}
 function artwork(key){
 const browser='<span class="browser-illus"><span class="browser-bar"><i></i><i></i><i></i></span><span class="browser-body"><span class="browser-line"></span><span class="browser-line small"></span><span class="browser-alert">404 link found</span><span class="browser-ok">✓ Fixed</span></span></span>';
@@ -225,7 +255,7 @@ return ({website:browser,social:photo,marketing:chart,utilities:util,"website-ch
 function stop(){if(raf)cancelAnimationFrame(raf);raf=0;lastTime=0}
 function start(){if(raf||reduced()||!seen||document.hidden||!bodies.length)return;raf=requestAnimationFrame(frame)}
 function choose(cat){category=cat;query="";search.value="";render();history.replaceState(null,"",cat?"#"+cat:location.pathname);}
-function getEntries(){if(query){const parts=query.toLowerCase().split(/\s+/).filter(Boolean);return tools.filter(t=>{const content=(t.name+" "+t.desc+" "+t.features+" "+t.search+" "+categories[t.category]).toLowerCase();return parts.every(x=>content.includes(x));}).map(t=>({type:"tool",data:t}));}if(category)return tools.filter(t=>t.category===category).map(t=>({type:"tool",data:t}));return categoryData.map(c=>({type:"category",data:c}));}
+function getEntries(){const parts=query.toLowerCase().split(/\s+/).filter(Boolean);return tools.filter(t=>(!category||t.category===category)&&parts.every(x=>(t.name+" "+t.desc+" "+t.features+" "+t.search+" "+categories[t.category]).toLowerCase().includes(x))).map(t=>({type:"tool",data:t}));}
 function buildCard(entry,i){
  const item=entry.data,isCategory=entry.type==="category",type=isCategory?item.key:item.category,accent=isCategory?item.accent:categoryData.find(c=>c.key===type).accent;
  const element=document.createElement(isCategory||!item.live?"button":"a");element.className="float-card "+(isCategory?"is-category":"is-tool")+(item.live===false?" is-pending":"");if(element.tagName==="BUTTON")element.type="button";else element.href=item.href;
@@ -233,10 +263,10 @@ function buildCard(entry,i){
  const artType=(isCategory?type:item.slug),artClass=isCategory?"art-"+type:({"pixel-tag-creator":"art-pixel","image-compressor":"art-image","file-converter":"art-file","digital-business-card":"art-card","marketing-oversight":"art-oversight"})[item.slug]||"art-"+type;
  const art=document.createElement("span");art.className="card-art "+artClass;art.innerHTML=artwork(artType);
  const meta=document.createElement("span");meta.className="card-meta";
- const over=document.createElement("span");over.className="card-overline";over.textContent=isCategory?item.count:(item.live?"READY TO USE":"IN DEVELOPMENT");
+ const over=document.createElement("span");over.className="card-overline";over.textContent=isCategory?item.count:(categories[item.category]+" / "+(item.live?"READY TO USE":"COMING SOON"));
  const name=document.createElement("strong");name.className="card-title";name.textContent=item.name;
  const sub=document.createElement("span");sub.className="card-subtitle";sub.textContent=item.desc;
- const route=document.createElement("span");route.className="card-route";route.textContent=isCategory?"EXPLORE ›":(item.live?"OPEN ›":"SOON");
+ const route=document.createElement("span");route.className="card-route";route.textContent=isCategory?"EXPLORE ›":(item.live?"OPEN TOOL ↗":"DETAILS ↗");
  meta.append(over,name,sub,route);element.append(art,meta);
  element.setAttribute("aria-label",isCategory?"Explore "+item.name+" tools":item.name+(item.live?"":", in development"));
  if(isCategory)element.addEventListener("click",e=>{if(element.dataset.suppress==="1"){e.preventDefault();element.dataset.suppress="0";return;}choose(item.key)});
@@ -244,22 +274,22 @@ function buildCard(entry,i){
  else element.addEventListener("click",e=>{if(element.dataset.suppress==="1"){e.preventDefault();element.dataset.suppress="0";}});
  return element;
 }
-function showPending(name){caption.textContent=name+" is in development. Choose another tool for now."}
+function showPending(name){const t=tools.find(x=>x.name===name);const dialog=doc("coming-dialog");doc("coming-title").textContent=name+" is coming soon";doc("coming-desc").textContent=t?.desc||"";if(!dialog.open){dialog.showModal();doc("close-dialog").focus();}}
 function positionCards(entries){
  stop();layer.replaceChildren();bodies=[];const n=entries.length;empty.hidden=n>0; if(!n)return;
  const W=board.clientWidth,compact=W<620,tablet=W<930;
- const cols=compact?Math.min(2,n):tablet?Math.min(3,n):n<=4?n:n<=7?3:n<=9?4:5;
- const rows=Math.ceil(n/cols),gapX=compact?13:25,gapY=compact?20:35,margin=compact?13:35;
- const cardW=Math.floor(Math.min(!category&&!query?280:245,(W-margin*2-gapX*(cols-1))/cols));
- const cardH=compact?(entries[0].type==="category"?237:226):(entries[0].type==="category"?299:260);
+ const cols=compact?Math.min(2,n):tablet?Math.min(3,n):n<=5?n:5;
+ const rows=Math.ceil(n/cols),gapX=compact?12:25,gapY=compact?19:30,margin=compact?5:18;
+ const cardW=Math.floor(Math.min(245,(W-margin*2-gapX*(cols-1))/cols));
+ const cardH=compact?226:260;
  const totalW=cols*cardW+(cols-1)*gapX;
- const originX=Math.round((W-totalW)/2),originY=compact?34:45;
- const H=Math.max(compact?330:420,originY*2+rows*cardH+(rows-1)*gapY);
+ const originX=Math.round((W-totalW)/2),originY=compact?16:22;
+ const H=Math.max(compact?270:315,originY*2+rows*cardH+(rows-1)*gapY);
  board.style.height=H+"px";
  entries.forEach((entry,i)=>{
   const row=Math.floor(i/cols),col=i%cols;
   const inRow=Math.min(cols,n-row*cols),rowShift=((cols-inRow)*(cardW+gapX))/2;
-  const wobble=compact?4:11;
+  const wobble=compact?3:7;
   const x=clamp(originX+rowShift+col*(cardW+gapX)+Math.sin((i+1)*2.4+seed)*wobble,0,W-cardW);
   const y=clamp(originY+row*(cardH+gapY)+Math.cos((i+1)*1.7+seed)*wobble,0,H-cardH);
   const node=buildCard(entry,i);node.style.width=cardW+"px";node.style.height=cardH+"px";
@@ -286,9 +316,9 @@ function frame(time){
 function render(){
  const entries=getEntries();filters.forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.category==="all"&&!category&&!query)||(b.dataset.category===category&&!query))));clear.hidden=!search.value;
  back.hidden=!category&&!query;
- title.textContent=query?"Search results":category?categories[category]+" tools":"Explore your toolbox";
- caption.textContent=query?"Showing matches for “"+query+"”":category?"Only "+categories[category].toLowerCase()+" tools. Pick one to open.":"Start with a category. Everything inside is one click away.";
- count.textContent=query?entries.length+" matching tools":category?entries.length+" "+(entries.length===1?"tool":"tools"): "4 categories / 10 tools";
+ title.textContent=query?"Search results":category?categories[category]+" tools":"Choose a tool";
+ caption.textContent=query?"Showing matches for “"+query+"”":category?"Showing only "+categories[category].toLowerCase()+" tools. Click to open.":"All 10 options are here. Click to launch any available tool.";
+ count.textContent=entries.length+" "+(entries.length===1?"tool":"tools")+(query?" matching":" available to explore");
  positionCards(entries);resizeKey=board.clientWidth+"x"+entries.length;
 }
 filters.forEach(b=>b.addEventListener("click",()=>choose(b.dataset.category==="all"?null:b.dataset.category)));
@@ -296,7 +326,7 @@ back.addEventListener("click",()=>choose(null));
 search.addEventListener("input",()=>{query=search.value.trim();render();});
 search.addEventListener("keydown",e=>{if(e.key==="Escape"){search.value="";query="";render();}else if(e.key==="Enter"){e.preventDefault();const first=getEntries()[0];if(first?.type==="tool"&&first.data.live)location.href=first.data.href;else if(first?.type==="category")choose(first.data.key);}});
 clear.addEventListener("click",()=>{search.value="";query="";render();search.focus();});
-doc("shuffle").addEventListener("click",()=>{seed+=2.1;for(const b of bodies){b.vx+=(Math.sin(seed+b.x)*5);b.vy+=(Math.cos(seed+b.y)*5);b.homeX=clamp(b.homeX+Math.sin(seed+b.y)*12,0,board.clientWidth-b.w);b.homeY=clamp(b.homeY+Math.cos(seed+b.x)*12,0,board.clientHeight-b.h);}start();});
+
 document.addEventListener("keydown",e=>{if(e.key==="/"&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&document.activeElement?.tagName!=="INPUT"){e.preventDefault();search.focus();}});
 document.addEventListener("visibilitychange",()=>{if(document.hidden)stop();else start();});
 if("IntersectionObserver" in window)new IntersectionObserver(e=>{seen=!!e[0]?.isIntersecting;if(seen)start();else stop();},{threshold:.02}).observe(board);
