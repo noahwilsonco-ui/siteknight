@@ -148,6 +148,28 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 .export-list{grid-template-columns:repeat(2,minmax(0,1fr))}
 .export-list .btn:last-child{grid-column:1/-1}
 @media(max-width:480px){.export-list{grid-template-columns:1fr}.export-list .btn:last-child{grid-column:auto}}
+
+/* Real card preview gallery: each thumbnail stays inside its own design tile */
+.quick-presets{overflow:hidden;padding:21px 23px 22px}
+.preset-top{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:14px}
+.preset-top h2{font:700 21px/1.2 "Space Grotesk",Arial,sans-serif;margin:7px 0 6px;letter-spacing:-.6px}
+.preset-top p{margin:0;color:#837985;font-size:12px;line-height:1.5}
+.preset-count{border:1px solid #dfd6e3;background:#f7f3f9;color:#765384;padding:7px 9px;white-space:nowrap;border-radius:8px;font-size:10px;font-weight:800}
+.preset-filters{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:0 0 15px}
+.preset-filters button{background:#fff;border:1px solid #e3dce6;color:#645769;border-radius:8px;padding:9px 12px;font:800 11px "DM Sans",Arial,sans-serif}
+.preset-filters button:hover{border-color:#a374c1;background:#fbf7fd}
+.preset-filters button[aria-pressed=true]{background:#2a2130;color:#fff;border-color:#2a2130}
+.quick-presets .preset-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:11px;min-width:0}
+.quick-presets .preset-grid button{display:flex;flex-direction:column;min-width:0;width:100%;gap:0;padding:6px;overflow:hidden;box-sizing:border-box}
+.quick-presets .preset-grid button[aria-pressed=true]{padding:5px}
+.preset-frame{display:block;position:relative;width:100%;aspect-ratio:320/187;border-radius:7px;border:1px solid #17101916;background:#e9e5eb;overflow:hidden}
+.preset-frame canvas{display:block;width:100%!important;height:100%!important;object-fit:cover}
+.preset-caption{width:100%;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px;padding:8px 3px 3px;align-items:baseline}
+.quick-presets .preset-grid button strong{padding:0;color:#2d2532;font-size:11px;line-height:1.3;font-weight:800}
+.preset-caption small{font-size:9px;color:#a094a4;white-space:nowrap}
+@media(max-width:1140px){.quick-presets .preset-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:760px){.quick-presets{padding:14px}.quick-presets .preset-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.preset-top h2{font-size:18px}}
+@media(max-width:525px){.quick-presets{padding:11px}.quick-presets .preset-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.preset-top{flex-direction:column;gap:7px}.preset-top h2{font-size:18px}.preset-top p{font-size:11px}.preset-count{align-self:flex-start}.preset-filters button{font-size:10px;padding:7px 8px}}
 </style></head><body>
 <header><div class="top"><a class="brand" href="/" aria-label="SiteKnight home"><img src="/knighty-approved.webp?v=8" alt=""><span>Site<b>Knight</b></span></a><div class="navlinks"><a href="/">All tools</a></div></div></header>
 <main>
@@ -157,7 +179,7 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 <button type="button" data-view="team" aria-pressed="false"><span class="mode-num">02</span><span><b>Manage employees</b><small>People, bulk upload and exports</small></span></button>
 </div>
 <section class="quick-presets" data-workflow-panel="design" aria-label="Explore professional card designs">
-<div class="preset-top"><div><span class="mini-label">THE CARD COLLECTION</span><h2>Choose a direction. Make it yours.</h2><p>Actual card previews, not generic swatches. Pick a design, then customize every detail.</p></div><span class="preset-count" id="preset-count">17 styles</span></div>
+<div class="preset-top"><div><span class="mini-label">THE CARD COLLECTION</span><h2>Choose a direction. Make it yours.</h2><p>Actual card previews, not generic swatches. Pick a design, then customize every detail.</p></div><span class="preset-count" id="preset-count">18 styles</span></div>
 <div class="preset-filters" id="preset-filters" aria-label="Filter card styles">
 <button type="button" data-preset-filter="featured" aria-pressed="true">Featured</button>
 <button type="button" data-preset-filter="corporate" aria-pressed="false">Corporate</button>
@@ -339,7 +361,7 @@ const PRESET_META=[
  ["minimal","Minimal","minimal"],["mono","Mono","minimal"],["linen","Linen","minimal"],["gallery","Gallery","minimal"],["editorial","Editorial","minimal"],
  ["modern","Modern","bold"],["pop","Pop","bold"],["horizon","Horizon","bold"],["electric","Electric","bold"],["studio","Studio","bold"],
  ["executive","Executive","premium"],["signature","Signature","premium"],["emerald","Emerald","premium"],["onyx","Onyx","premium"]];
-const FEATURED_PRESETS=["corporate","executive","minimal","modern","press","emerald","studio","onyx"];
+const FEATURED_PRESETS=["corporate","executive","minimal","modern","studio","onyx"];
 let presetFilter="featured",thumbTimer=null;
 const companyDefaults={company:"",website:"",address:"",tagline:"",logo:"",background:""};
 const personDefaults={name:"",job:"",phone:"",mobile:"",email:"",linkedin:""};
