@@ -96,15 +96,20 @@ dialog h2{font-size:23px;margin:0 0 10px}
 <header><div class="top"><a class="brand" href="/" aria-label="SiteKnight home"><img src="/knighty-approved.webp?v=8" alt=""><span>Site<b>Knight</b></span></a><div class="navlinks"><a href="/">All tools</a></div></div></header>
 <main>
 <div class="intro"><div><span class="eyebrow">SITEKNIGHT / BUSINESS TOOLS</span><h1>Digital Business Card <span>Studio</span></h1><p>Design it once. Use it for your entire team.</p></div><span class="local-tag">Private · Saved in your browser</span></div>
+<div class="mode-tabs" id="studio-mode" role="group" aria-label="Card Studio workflow">
+<button type="button" data-view="design" aria-pressed="true"><span class="mode-num">01</span><span><b>Design company card</b><small>Brand, layout and templates</small></span></button>
+<button type="button" data-view="team" aria-pressed="false"><span class="mode-num">02</span><span><b>Manage employees</b><small>People, bulk upload and exports</small></span></button>
+</div>
 <div class="workspace">
 <div class="control-col">
-<section class="panel" aria-labelledby="brand-h">
+<section class="panel" data-workflow-panel="design" aria-labelledby="brand-h">
 <div class="panel-head"><h2 id="brand-h">Company template</h2><span class="mini-label">SHARED BRAND</span></div>
 <div class="field-grid">
 <div class="field full"><label for="company">Company name</label><input id="company" placeholder="Your company" maxlength="100" autocomplete="organization"></div>
 <div class="field"><label for="website">Company website</label><input id="website" placeholder="example.com" maxlength="250"></div>
 <div class="field"><label for="logo">Company logo</label><input type="file" id="logo" accept="image/png,image/jpeg,image/webp"></div>
 <div class="field full"><label for="address">Office address</label><input id="address" placeholder="Street, city, province" maxlength="210"></div>
+<div class="field full"><label for="tagline">Company tagline <span class="optional-label">optional</span></label><input id="tagline" placeholder="Built for what's next" maxlength="100"></div>
 </div>
 <div class="hr"></div>
 <h3>Save your company template</h3>
@@ -113,25 +118,75 @@ dialog h2{font-size:23px;margin:0 0 10px}
 <div class="btn-row"><button type="button" class="btn light" id="export-template">Export template JSON</button><label class="btn light" for="import-template" style="cursor:pointer">Import template JSON</label><input id="import-template" type="file" accept=".json,application/json" hidden></div>
 <p class="note">Templates save your colours, logo, layout and company info, not an employee's personal details. Export the JSON to share the design across computers.</p>
 </section>
-<section class="panel" aria-labelledby="design-h">
-<div class="panel-head"><h2 id="design-h">Card design</h2><span class="mini-label">FULL COLOUR CONTROL</span></div>
+<section class="panel" data-workflow-panel="design" aria-labelledby="design-h">
+<div class="panel-head"><h2 id="design-h">Card design</h2><span class="mini-label">MAKE IT YOURS</span></div>
+<div class="field-label preset-label">Start with a professionally styled card</div>
+<div class="preset-grid" id="presets">
+<button type="button" data-preset="corporate" aria-pressed="false" style="--p-one:#f6f7fb;--p-two:#e3ecfb;--p-text:#182944"><span class="preset-art"><i></i><b></b><em></em></span><strong>Corporate</strong></button>
+<button type="button" data-preset="executive" aria-pressed="false" style="--p-one:#091528;--p-two:#182b4d;--p-text:#ffffff"><span class="preset-art"><i></i><b></b><em></em></span><strong>Executive</strong></button>
+<button type="button" data-preset="modern" aria-pressed="false" style="--p-one:#743ee2;--p-two:#1b123f;--p-text:#ffffff"><span class="preset-art"><i></i><b></b><em></em></span><strong>Modern</strong></button>
+<button type="button" data-preset="minimal" aria-pressed="false" style="--p-one:#f8f5ed;--p-two:#f8f5ed;--p-text:#222527"><span class="preset-art"><i></i><b></b><em></em></span><strong>Minimal</strong></button>
+<button type="button" data-preset="editorial" aria-pressed="false" style="--p-one:#cfecdf;--p-two:#237e67;--p-text:#103b34"><span class="preset-art"><i></i><b></b><em></em></span><strong>Editorial</strong></button>
+<button type="button" data-preset="signature" aria-pressed="false" style="--p-one:#321f22;--p-two:#a95349;--p-text:#fff1db"><span class="preset-art"><i></i><b></b><em></em></span><strong>Signature</strong></button>
+</div>
+<div class="hr"></div>
 <div class="field-label">Background</div>
 <div class="segment" id="background-mode" role="group" aria-label="Card background"><button type="button" data-mode="solid" aria-pressed="false">Solid</button><button type="button" data-mode="gradient" aria-pressed="true">Gradient</button></div>
 <div class="colors">
 <div class="color-block"><label for="color-one">Background 1</label><input id="color-one" type="color" value="#2349b6"><div class="chip"><span id="one-hex">#2349B6</span></div></div>
 <div class="color-block" id="second-color"><label for="color-two">Background 2</label><input id="color-two" type="color" value="#17101f"><div class="chip"><span id="two-hex">#17101F</span></div></div>
+<div class="color-block" id="third-color" hidden><label for="color-three">Background 3</label><input id="color-three" type="color" value="#552f84"><div class="chip"><span id="three-hex">#552F84</span></div></div>
 <div class="color-block"><label for="text-color">Text</label><input id="text-color" type="color" value="#ffffff"><div class="chip"><span id="text-hex">#FFFFFF</span></div></div>
 <div class="color-block"><label for="accent-color">Accent</label><input id="accent-color" type="color" value="#a974ee"><div class="chip"><span id="accent-hex">#A974EE</span></div></div>
 </div>
+<div class="option-row" id="third-toggle"><label class="check"><input id="use-three" type="checkbox"> Use three gradient colours</label></div>
 <div class="field" id="angle-wrap" style="margin-top:14px"><label for="angle">Gradient direction <span id="angle-number">120°</span></label><input type="range" id="angle" min="0" max="360" step="5" value="120"></div>
 <div class="design-extras">
-<div class="field"><label for="layout">Card layout</label><select id="layout"><option value="classic">Classic</option><option value="split">Split panel</option><option value="minimal">Minimal</option></select></div>
+<div class="field"><label for="layout">Card layout</label><select id="layout"><option value="classic">Classic</option><option value="split">Split panel</option><option value="minimal">Minimal</option><option value="editorial">Editorial</option><option value="framed">Framed</option></select></div>
 <div class="field"><label for="font">Type style</label><select id="font"><option value="grotesk">Modern</option><option value="arial">Clean</option><option value="serif">Classic serif</option></select></div>
 </div>
-<div class="option-row"><label class="check"><input id="show-qr" type="checkbox" checked> Show QR code</label><label class="check"><input id="show-address" type="checkbox"> Show address</label></div>
+<div class="hr"></div>
+<h3>Logo controls</h3>
+<div class="field-grid">
+<div class="field"><label for="logo-position">Logo placement</label><select id="logo-position"><option value="left">Top left</option><option value="center">Top centre</option><option value="right">Top right</option></select></div>
+<div class="field"><label for="logo-treatment">Logo appearance</label><select id="logo-treatment"><option value="original">Original</option><option value="light">White logo</option><option value="dark">Dark logo</option></select></div>
+<div class="field full"><label for="logo-size">Logo size <span id="logo-size-val">100%</span></label><input id="logo-size" type="range" min="55" max="190" step="5" value="100"></div>
+</div>
+<div class="hr"></div>
+<h3>Typography & spacing</h3>
+<div class="field-grid">
+<div class="field"><label for="name-size">Name size <span id="name-size-val">72</span></label><input id="name-size" type="range" min="42" max="95" value="72"></div>
+<div class="field"><label for="job-size">Job title size <span id="job-size-val">30</span></label><input id="job-size" type="range" min="19" max="44" value="30"></div>
+<div class="field"><label for="detail-size">Contact size <span id="detail-size-val">23</span></label><input id="detail-size" type="range" min="17" max="32" value="23"></div>
+<div class="field"><label for="content-spacing">Contact spacing <span id="content-spacing-val">34</span></label><input id="content-spacing" type="range" min="25" max="47" value="34"></div>
+</div>
+<div class="hr"></div>
+<h3>QR code design</h3>
+<div class="field-grid">
+<div class="field"><label for="qr-position">Placement</label><select id="qr-position"><option value="bottom-right">Bottom right</option><option value="top-right">Top right</option><option value="bottom-left">Bottom left</option></select></div>
+<div class="field"><label for="qr-ink">QR pattern colour</label><input id="qr-ink" type="color" value="#201627"></div>
+<div class="field full"><label for="qr-size">QR size <span id="qr-size-val">190</span></label><input id="qr-size" type="range" min="125" max="240" step="5" value="190"></div>
+</div>
+<div class="option-row">
+<label class="check"><input id="show-qr" type="checkbox" checked> Show QR code</label>
+<label class="check"><input id="qr-label" type="checkbox" checked> "Scan to save" caption</label>
+</div>
+<div class="hr"></div>
+<h3>What appears on the card</h3>
+<div class="option-row content-options">
+<label class="check"><input id="show-company" type="checkbox" checked> Company</label>
+<label class="check"><input id="show-email" type="checkbox" checked> Email</label>
+<label class="check"><input id="show-phone" type="checkbox" checked> Phone</label>
+<label class="check"><input id="show-mobile" type="checkbox"> Mobile</label>
+<label class="check"><input id="show-website" type="checkbox" checked> Website</label>
+<label class="check"><input id="show-address" type="checkbox"> Address</label>
+<label class="check"><input id="show-linkedin" type="checkbox"> LinkedIn</label>
+<label class="check"><input id="show-tagline" type="checkbox"> Tagline</label>
+<label class="check"><input id="show-divider" type="checkbox" checked> Accent divider</label>
+</div>
 <div class="btn-row"><button type="button" class="btn secondary" id="reset-style">Reset design</button></div>
 </section>
-<section class="panel" aria-labelledby="person-h">
+<section class="panel" data-workflow-panel="team" aria-labelledby="person-h">
 <div class="panel-head"><h2 id="person-h">Employee details</h2><span class="mini-label" id="editing-label">NEW CARD</span></div>
 <div class="field-grid">
 <div class="field full"><label for="name">Full name *</label><input id="name" maxlength="100" placeholder="Alex Morgan" autocomplete="name"></div>
@@ -144,7 +199,7 @@ dialog h2{font-size:23px;margin:0 0 10px}
 <div class="btn-row"><button type="button" class="btn" id="save-person">Save employee</button><button type="button" class="btn secondary" id="new-person">New employee</button><button type="button" class="btn danger" id="remove-person" hidden>Remove</button></div>
 <p class="note">Changing employees keeps the company logo, colours and layout intact.</p>
 </section>
-<section class="panel" aria-labelledby="team-h">
+<section class="panel" data-workflow-panel="team" aria-labelledby="team-h">
 <div class="panel-head"><h2 id="team-h">Your team <span id="team-count" style="color:#8b4ab0">0</span></h2><span class="mini-label">EMPLOYEE ROSTER</span></div>
 <div class="roster" id="roster" aria-label="Saved employees"><div class="roster-empty">No employees saved yet.</div></div>
 <div class="hr"></div>
@@ -157,7 +212,7 @@ dialog h2{font-size:23px;margin:0 0 10px}
 <section class="panel" aria-labelledby="preview-h">
 <div class="preview-head"><h2 id="preview-h">Live card preview</h2><span class="mini-label">MATCHES PNG EXPORT</span></div>
 <div class="preview-card-shell"><canvas id="live-card" width="1200" height="700" role="img" aria-label="Live business card preview"></canvas></div>
-<p class="preview-sub">What you see here is exactly what downloads. Your contact QR is embedded in the card.</p><div class="preview-shortcuts"><a href="#design-h">Customize colours &amp; layout</a><a href="#person-h">Edit employee details</a></div>
+<p class="preview-sub">What you see here is exactly what downloads. Your contact QR is embedded in the card.</p><div class="preview-shortcuts"><button type="button" data-go-view="design">Customize colours &amp; layout</button><button type="button" data-go-view="team">Manage employee cards</button></div>
 <div class="status" id="status" role="status" aria-live="polite">Enter an employee name to create a card.</div>
 <div class="export-list">
 <button class="btn" id="download-card" type="button" disabled>Download card PNG</button>
