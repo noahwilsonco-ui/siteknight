@@ -233,8 +233,16 @@ dialog h2{font-size:23px;margin:0 0 10px}
 "use strict";
 const $=id=>document.getElementById(id);
 const STORAGE="siteknight-card-studio-v2";
-const DEFAULT_DESIGN={mode:"gradient",one:"#2349b6",two:"#17101f",text:"#ffffff",accent:"#a974ee",angle:120,layout:"classic",font:"grotesk",qr:true,address:false};
-const companyDefaults={company:"",website:"",address:"",logo:""};
+const DEFAULT_DESIGN={mode:"gradient",one:"#2349b6",two:"#17101f",three:"#552f84",useThree:false,text:"#ffffff",accent:"#a974ee",angle:120,layout:"classic",font:"grotesk",qr:true,address:false,preset:"custom",logoPosition:"left",logoTreatment:"original",logoSize:100,nameSize:72,jobSize:30,detailSize:23,contentSpacing:34,qrPosition:"bottom-right",qrSize:190,qrInk:"#201627",qrLabel:true,company:true,email:true,phone:true,mobile:false,website:true,linkedin:false,tagline:false,divider:true};
+const STYLE_PRESETS={
+corporate:{mode:"solid",one:"#f6f7fb",two:"#f6f7fb",text:"#182944",accent:"#2e66aa",layout:"framed",font:"arial",logoPosition:"left",logoTreatment:"original",logoSize:115,nameSize:66,jobSize:25,detailSize:22,qrInk:"#182944",qrSize:175,qrLabel:true,divider:true},
+executive:{mode:"gradient",one:"#101e33",two:"#040b18",text:"#ffffff",accent:"#c4a56b",angle:135,layout:"split",font:"grotesk",logoPosition:"left",logoTreatment:"original",logoSize:135,nameSize:70,jobSize:29,detailSize:22,qrInk:"#171a26",qrSize:175,qrLabel:true,divider:true},
+modern:{mode:"gradient",one:"#7745e6",two:"#1c123d",text:"#ffffff",accent:"#b0f0d6",angle:125,layout:"classic",font:"grotesk",logoPosition:"left",logoTreatment:"light",logoSize:135,nameSize:79,jobSize:30,detailSize:23,qrInk:"#241038",qrSize:190,qrLabel:true,divider:true},
+minimal:{mode:"solid",one:"#f8f5ed",two:"#f8f5ed",text:"#222527",accent:"#7e786b",layout:"minimal",font:"arial",logoPosition:"right",logoTreatment:"original",logoSize:110,nameSize:70,jobSize:27,detailSize:21,qrInk:"#222527",qrSize:165,qrLabel:false,divider:false},
+editorial:{mode:"gradient",one:"#d5f2e5",two:"#a7d8c4",text:"#103b34",accent:"#1e8067",angle:155,layout:"editorial",font:"serif",logoPosition:"left",logoTreatment:"dark",logoSize:115,nameSize:76,jobSize:27,detailSize:22,qrInk:"#163c34",qrSize:165,qrLabel:true,divider:true},
+signature:{mode:"gradient",one:"#382125",two:"#a95349",text:"#fff1db",accent:"#f4c47c",angle:120,layout:"framed",font:"serif",logoPosition:"left",logoTreatment:"light",logoSize:135,nameSize:70,jobSize:30,detailSize:23,qrInk:"#302027",qrSize:180,qrLabel:true,divider:true}
+};
+const companyDefaults={company:"",website:"",address:"",tagline:"",logo:""};
 const personDefaults={name:"",job:"",phone:"",mobile:"",email:"",linkedin:""};
 let design={...DEFAULT_DESIGN},company={...companyDefaults},person={...personDefaults},people=[],templates=[],activeId="",logoImage=null,logoLoading=false,saving=false;
 const reduced=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -246,19 +254,32 @@ const fileDownload=(blob,name)=>{const a=document.createElement("a");const u=URL
 const jsonDownload=(obj,name)=>fileDownload(new Blob([JSON.stringify(obj,null,2)],{type:"application/json"}),name);
 const on=(id,event,handler)=>$(id).addEventListener(event,handler);
 function getPerson(){const out={};for(const k of Object.keys(personDefaults))out[k]=clip($(k).value,k==="linkedin"?250:150);return out}
-function getCompany(){return {company:clip($("company").value,100),website:clip($("website").value,250),address:clip($("address").value,210),logo:company.logo||""}}
-function getDesign(){return {mode:design.mode,one:$("color-one").value,two:$("color-two").value,text:$("text-color").value,accent:$("accent-color").value,angle:Number($("angle").value)||0,layout:$("layout").value,font:$("font").value,qr:$("show-qr").checked,address:$("show-address").checked}}
+function getCompany(){return {company:clip($("company").value,100),website:clip($("website").value,250),address:clip($("address").value,210),tagline:clip($("tagline").value,100),logo:company.logo||""}}
+function getDesign(){return {mode:design.mode,one:$("color-one").value,two:$("color-two").value,three:$("color-three").value,useThree:$("use-three").checked,text:$("text-color").value,accent:$("accent-color").value,angle:Number($("angle").value)||0,layout:$("layout").value,font:$("font").value,preset:design.preset,
+logoPosition:$("logo-position").value,logoTreatment:$("logo-treatment").value,logoSize:Number($("logo-size").value)||100,
+nameSize:Number($("name-size").value)||72,jobSize:Number($("job-size").value)||30,detailSize:Number($("detail-size").value)||23,contentSpacing:Number($("content-spacing").value)||34,
+qr:$("show-qr").checked,qrPosition:$("qr-position").value,qrSize:Number($("qr-size").value)||190,qrInk:$("qr-ink").value,qrLabel:$("qr-label").checked,
+company:$("show-company").checked,email:$("show-email").checked,phone:$("show-phone").checked,mobile:$("show-mobile").checked,website:$("show-website").checked,address:$("show-address").checked,linkedin:$("show-linkedin").checked,tagline:$("show-tagline").checked,divider:$("show-divider").checked};}
 function applyFields(){
  for(const k of Object.keys(companyDefaults))if(k!=="logo")$(k).value=company[k]||"";
  for(const k of Object.keys(personDefaults))$(k).value=person[k]||"";
- $("color-one").value=design.one;$("color-two").value=design.two;$("text-color").value=design.text;$("accent-color").value=design.accent;$("angle").value=design.angle;$("layout").value=design.layout;$("font").value=design.font;$("show-qr").checked=design.qr;$("show-address").checked=design.address;
+ $("color-one").value=design.one;$("color-two").value=design.two;$("color-three").value=design.three;$("use-three").checked=design.useThree;
+ $("text-color").value=design.text;$("accent-color").value=design.accent;$("angle").value=design.angle;$("layout").value=design.layout;$("font").value=design.font;
+ $("logo-position").value=design.logoPosition;$("logo-treatment").value=design.logoTreatment;$("logo-size").value=design.logoSize;
+ $("name-size").value=design.nameSize;$("job-size").value=design.jobSize;$("detail-size").value=design.detailSize;$("content-spacing").value=design.contentSpacing;
+ $("show-qr").checked=design.qr;$("qr-label").checked=design.qrLabel;$("qr-position").value=design.qrPosition;$("qr-size").value=design.qrSize;$("qr-ink").value=design.qrInk;
+ ["company","email","phone","mobile","website","address","linkedin","tagline","divider"].forEach(k=>$("show-"+k).checked=!!design[k]);
  updateControls();
 }
 function updateControls(){
  document.querySelectorAll("#background-mode button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===design.mode)));
- $("second-color").hidden=design.mode==="solid";$("angle-wrap").hidden=design.mode==="solid";
+ $("second-color").hidden=design.mode==="solid";$("angle-wrap").hidden=design.mode==="solid";$("third-toggle").hidden=design.mode==="solid";$("third-color").hidden=design.mode==="solid"||!design.useThree;
  $("angle-number").textContent=design.angle+"°";
- ["one","two","text","accent"].forEach(k=>{$(k+"-hex").textContent=design[k].toUpperCase()});
+ ["one","two","three","text","accent"].forEach(k=>{$(k+"-hex").textContent=String(design[k]).toUpperCase()});
+ for(const [key,suffix] of [["logoSize","logo-size"],["nameSize","name-size"],["jobSize","job-size"],["detailSize","detail-size"],["contentSpacing","content-spacing"],["qrSize","qr-size"]]){
+  $(suffix+"-val").textContent=design[key]+(key==="logoSize"?"%":"");
+ }
+ document.querySelectorAll("[data-preset]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.preset===design.preset)));
  $("remove-person").hidden=!activeId;
  $("editing-label").textContent=activeId?"EDIT EMPLOYEE":"NEW CARD";
 }
@@ -277,6 +298,8 @@ function restore(){
 }
 function normalizePerson(p){const out={id:clip(p.id,70)||makeId()};Object.keys(personDefaults).forEach(k=>out[k]=clip(p[k],k==="linkedin"?250:150));return out}
 function syncCompany(){company=getCompany();design=getDesign();store();updateControls();render()}
+function manualDesign(){design.preset="custom";syncCompany()}
+function setWorkflow(view){const mode=view==="team"?"team":"design";document.body.dataset.workflow=mode;document.querySelectorAll("#studio-mode [data-view]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.view===mode)));}
 function syncPerson(){person=getPerson();render()}
 function loadLogo(src){
  logoImage=null;const source=String(src||"");
@@ -548,12 +571,24 @@ function parseLogo(file){return new Promise((resolve,reject)=>{
   finally{saving=false;$("download-team").disabled=!people.length}
  }
  // Company inputs, colour choices and team selection all update the same live canvas.
- ["company","website","address"].forEach(id=>on(id,"input",syncCompany));
+ ["company","website","address","tagline"].forEach(id=>on(id,"input",syncCompany));
  ["name","job","email","phone","mobile","linkedin"].forEach(id=>on(id,"input",syncPerson));
- ["color-one","color-two","text-color","accent-color","angle","layout","font","show-qr","show-address"].forEach(id=>{
-  on(id,id.startsWith("show-")?"change":"input",syncCompany);
+ ["color-one","color-two","color-three","use-three","text-color","accent-color","angle","layout","font",
+ "logo-position","logo-treatment","logo-size","name-size","job-size","detail-size","content-spacing",
+ "qr-position","qr-size","qr-ink","qr-label","show-qr","show-company","show-email","show-phone",
+ "show-mobile","show-website","show-address","show-linkedin","show-tagline","show-divider"].forEach(id=>{
+  const el=$(id);on(id,el.type==="checkbox"||el.tagName==="SELECT"?"change":"input",manualDesign);
  });
- document.querySelectorAll("#background-mode button").forEach(b=>b.addEventListener("click",()=>{design.mode=b.dataset.mode;syncCompany()}));
+ document.querySelectorAll("#background-mode button").forEach(b=>b.addEventListener("click",()=>{design.mode=b.dataset.mode;manualDesign()}));
+document.querySelectorAll("#presets [data-preset]").forEach(b=>b.addEventListener("click",()=>{
+ const name=b.dataset.preset;const p=STYLE_PRESETS[name];if(!p)return;
+ design={...DEFAULT_DESIGN,...p,preset:name};applyFields();store();render();status("Applied "+b.textContent.trim()+" style. Every element can still be customized.");
+}));
+document.querySelectorAll("#studio-mode [data-view]").forEach(b=>b.addEventListener("click",()=>setWorkflow(b.dataset.view)));
+document.querySelectorAll("[data-go-view]").forEach(b=>b.addEventListener("click",()=>{
+ const view=b.dataset.goView;setWorkflow(view);
+ const target=$(view==="team"?"person-h":"design-h");if(target)target.scrollIntoView({behavior:reduced()?"auto":"smooth",block:"start"});
+}));
  on("logo","change",async()=>{
   const f=$("logo").files?.[0];if(!f)return;
   try{const data=await parseLogo(f);company.logo=data;await loadLogo(data);store();render();status("Company logo added to the template.")}
@@ -577,7 +612,7 @@ function parseLogo(file){return new Promise((resolve,reject)=>{
  on("download-qr","click",async()=>{try{const p=getPerson();if(!p.name)throw Error("Enter a name first.");const q=makeQR(p);if(!q)throw Error("Enable QR code in Card design.");const c=document.createElement("canvas");c.width=c.height=960;qrPaint(c.getContext("2d"),q,0,0,960);fileDownload(await imageBlob(c),safeName(p.name)+"-contact-qr.png");status("Contact QR downloaded.")}catch(e){status(e.message,true)}});
  on("download-vcf","click",()=>{try{const p=getPerson();fileDownload(new Blob([vcard(p)],{type:"text/vcard;charset=utf-8"}),safeName(p.name)+".vcf");status("Contact VCF downloaded.")}catch(e){status(e.message,true)}});
  on("download-team","click",exportTeam);
- restore();applyFields();updateTemplates();updateRoster();loadLogo(company.logo);
+ restore();applyFields();updateTemplates();updateRoster();loadLogo(company.logo);setWorkflow("design");
  if(document.fonts?.ready)document.fonts.ready.then(render);
  render();
 })();
