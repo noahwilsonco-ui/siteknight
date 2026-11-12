@@ -138,6 +138,16 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 .quick-presets .preset-grid button{display:grid;grid-template-columns:1fr;gap:0}
 @media(max-width:820px){.quick-presets .preset-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.quick-presets .preset-art{height:51px}.quick-presets{padding:13px}}
 @media(max-width:480px){.quick-presets{padding:11px}.quick-presets .preset-grid{gap:6px}.quick-presets .preset-art{height:45px}}
+
+#live-card{width:100%;aspect-ratio:12/7;height:auto;border-radius:12px;overflow:hidden;display:block;box-shadow:0 12px 28px #17111d38}
+#live-card svg{display:block;width:100%;height:100%}
+#live-card .sk-move{cursor:grab;touch-action:none;transition:filter .15s ease}
+#live-card .sk-move:hover{filter:drop-shadow(0 0 8px #e6c1ff96)}
+#live-card .sk-move.is-dragging{cursor:grabbing}
+.drag-helper{font-size:10px;color:#8d7c97;margin:10px 0 0;line-height:1.5}
+.export-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+.export-list .btn:last-child{grid-column:1/-1}
+@media(max-width:480px){.export-list{grid-template-columns:1fr}.export-list .btn:last-child{grid-column:auto}}
 </style></head><body>
 <header><div class="top"><a class="brand" href="/" aria-label="SiteKnight home"><img src="/knighty-approved.webp?v=8" alt=""><span>Site<b>Knight</b></span></a><div class="navlinks"><a href="/">All tools</a></div></div></header>
 <main>
@@ -250,7 +260,7 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 <div class="field"><label for="logo-y">Logo vertical <span id="logo-y-val">0</span></label><input id="logo-y" type="range" min="-130" max="130" step="5" value="0"></div>
 <div class="field"><label for="name-x">Name horizontal <span id="name-x-val">0</span></label><input id="name-x" type="range" min="-160" max="160" step="5" value="0"></div>
 <div class="field"><label for="name-y">Name vertical <span id="name-y-val">0</span></label><input id="name-y" type="range" min="-130" max="130" step="5" value="0"></div>
-<div class="field"><label for="qr-x">QR horizontal <span id="qr-x-val">0</span></label><input id="qr-x" type="range" min="-130" max="130" step="5" value="0"></div>
+<div class="field"><label for="details-x">Contacts horizontal <span id="details-x-val">0</span></label><input id="details-x" type="range" min="-160" max="160" step="5" value="0"></div><div class="field"><label for="details-y">Contacts vertical <span id="details-y-val">0</span></label><input id="details-y" type="range" min="-130" max="130" step="5" value="0"></div><div class="field"><label for="qr-x">QR horizontal <span id="qr-x-val">0</span></label><input id="qr-x" type="range" min="-130" max="130" step="5" value="0"></div>
 <div class="field"><label for="qr-y">QR vertical <span id="qr-y-val">0</span></label><input id="qr-y" type="range" min="-130" max="130" step="5" value="0"></div>
 </div><button type="button" class="btn light" id="reset-position">Reset positions</button></details>
 <div class="btn-row"><button type="button" class="btn secondary" id="reset-style">Reset design</button></div>
@@ -279,17 +289,17 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 </div>
 <aside class="preview-col">
 <section class="panel" aria-labelledby="preview-h">
-<div class="preview-head"><h2 id="preview-h">Live card preview</h2><span class="mini-label">MATCHES PNG EXPORT</span></div>
-<div class="preview-card-shell"><canvas id="live-card" width="1200" height="700" role="img" aria-label="Live business card preview"></canvas></div>
+<div class="preview-head"><h2 id="preview-h">Live card designer</h2><span class="mini-label">VECTOR DESIGN ENGINE</span></div>
+<div class="preview-card-shell"><div id="live-card" class="live-svg" role="img" aria-label="Live editable business card preview"></div></div><p class="drag-helper">Drag the logo, name, contact details or QR code directly on the card to position them.</p>
 <p class="preview-sub">What you see here is exactly what downloads. Your contact QR is embedded in the card.</p><div class="preview-shortcuts"><button type="button" data-go-view="design">Customize colours &amp; layout</button><button type="button" data-go-view="team">Manage employee cards</button></div>
 <div class="status" id="status" role="status" aria-live="polite">Enter an employee name to create a card.</div>
 <div class="export-list">
-<button class="btn" id="download-card" type="button" disabled>Download card PNG</button>
+<button class="btn" id="download-card" type="button" disabled>Download PNG (2×)</button>
 <button class="btn secondary" id="download-qr" type="button" disabled>Download contact QR</button>
-<button class="btn light" id="download-vcf" type="button" disabled>Save contact VCF</button>
+<button class="btn light" id="download-vcf" type="button" disabled>Save contact VCF</button><button class="btn secondary" id="download-svg" type="button" disabled>Download editable SVG</button>
 <button class="btn light" id="download-team" type="button" disabled>Download team ZIP</button>
 </div>
-<div class="tip">The team ZIP includes a branded card PNG and contact VCF for every saved employee. Design changes apply to the entire batch.</div>
+<div class="tip">The team ZIP includes high-resolution PNG, editable vector SVG and a contact VCF for each saved employee. Your master template applies to everyone.</div>
 </section>
 </aside>
 </div>
@@ -302,7 +312,7 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 "use strict";
 const $=id=>document.getElementById(id);
 const STORAGE="siteknight-card-studio-v2";
-const DEFAULT_DESIGN={mode:"gradient",one:"#2349b6",two:"#17101f",three:"#552f84",useThree:false,text:"#ffffff",accent:"#a974ee",angle:120,layout:"classic",font:"grotesk",qr:true,address:false,preset:"custom",pattern:"none",patternStrength:16,backgroundOpacity:45,qrFrame:"badge",logoX:0,logoY:0,nameX:0,nameY:0,qrX:0,qrY:0,logoPosition:"left",logoTreatment:"original",logoSize:100,nameSize:72,jobSize:30,detailSize:23,contentSpacing:34,qrPosition:"bottom-right",qrSize:190,qrInk:"#201627",qrLabel:true,company:true,email:true,phone:true,mobile:false,website:true,linkedin:false,tagline:false,divider:true};
+const DEFAULT_DESIGN={mode:"gradient",one:"#2349b6",two:"#17101f",three:"#552f84",useThree:false,text:"#ffffff",accent:"#a974ee",angle:120,layout:"classic",font:"grotesk",qr:true,address:false,preset:"custom",pattern:"none",patternStrength:16,backgroundOpacity:45,qrFrame:"badge",logoX:0,logoY:0,nameX:0,nameY:0,qrX:0,qrY:0,detailsX:0,detailsY:0,logoPosition:"left",logoTreatment:"original",logoSize:100,nameSize:72,jobSize:30,detailSize:23,contentSpacing:34,qrPosition:"bottom-right",qrSize:190,qrInk:"#201627",qrLabel:true,company:true,email:true,phone:true,mobile:false,website:true,linkedin:false,tagline:false,divider:true};
 const STYLE_PRESETS={
  corporate:{mode:"solid",one:"#f6f7fb",two:"#f6f7fb",text:"#182944",accent:"#2e66aa",layout:"framed",font:"arial",logoPosition:"left",logoTreatment:"original",logoSize:115,nameSize:66,jobSize:25,detailSize:22,qrInk:"#182944",qrSize:175,qrLabel:true,divider:true,pattern:"none"},
  boardroom:{mode:"gradient",one:"#e8f0fb",two:"#c8daee",text:"#183752",accent:"#315e8d",angle:155,layout:"rail",font:"grotesk",logoPosition:"left",logoSize:120,nameSize:71,qrSize:170,qrInk:"#1a344d",qrLabel:false,pattern:"lines",patternStrength:11},
@@ -343,7 +353,7 @@ const jsonDownload=(obj,name)=>fileDownload(new Blob([JSON.stringify(obj,null,2)
 const on=(id,event,handler)=>$(id).addEventListener(event,handler);
 function getPerson(){const out={};for(const k of Object.keys(personDefaults))out[k]=clip($(k).value,k==="linkedin"?250:150);return out}
 function getCompany(){return {company:clip($("company").value,100),website:clip($("website").value,250),address:clip($("address").value,210),tagline:clip($("tagline").value,100),logo:company.logo||"",background:company.background||""}}
-function getDesign(){return {mode:design.mode,pattern:$("pattern").value,patternStrength:Number($("pattern-strength").value),backgroundOpacity:Number($("background-opacity").value),qrFrame:$("qr-frame").value,logoX:Number($("logo-x").value),logoY:Number($("logo-y").value),nameX:Number($("name-x").value),nameY:Number($("name-y").value),qrX:Number($("qr-x").value),qrY:Number($("qr-y").value),one:$("color-one").value,two:$("color-two").value,three:$("color-three").value,useThree:$("use-three").checked,text:$("text-color").value,accent:$("accent-color").value,angle:Number($("angle").value)||0,layout:$("layout").value,font:$("font").value,preset:design.preset,
+function getDesign(){return {mode:design.mode,pattern:$("pattern").value,patternStrength:Number($("pattern-strength").value),backgroundOpacity:Number($("background-opacity").value),qrFrame:$("qr-frame").value,logoX:Number($("logo-x").value),logoY:Number($("logo-y").value),nameX:Number($("name-x").value),nameY:Number($("name-y").value),qrX:Number($("qr-x").value),qrY:Number($("qr-y").value),detailsX:Number($("details-x").value),detailsY:Number($("details-y").value),one:$("color-one").value,two:$("color-two").value,three:$("color-three").value,useThree:$("use-three").checked,text:$("text-color").value,accent:$("accent-color").value,angle:Number($("angle").value)||0,layout:$("layout").value,font:$("font").value,preset:design.preset,
 logoPosition:$("logo-position").value,logoTreatment:$("logo-treatment").value,logoSize:Number($("logo-size").value)||100,
 nameSize:Number($("name-size").value)||72,jobSize:Number($("job-size").value)||30,detailSize:Number($("detail-size").value)||23,contentSpacing:Number($("content-spacing").value)||34,
 qr:$("show-qr").checked,qrPosition:$("qr-position").value,qrSize:Number($("qr-size").value)||190,qrInk:$("qr-ink").value,qrLabel:$("qr-label").checked,
@@ -355,7 +365,7 @@ function applyFields(){
  $("text-color").value=design.text;$("accent-color").value=design.accent;$("angle").value=design.angle;$("layout").value=design.layout;$("font").value=design.font;
  $("logo-position").value=design.logoPosition;$("logo-treatment").value=design.logoTreatment;$("logo-size").value=design.logoSize;
  $("pattern").value=design.pattern;$("pattern-strength").value=design.patternStrength;$("background-opacity").value=design.backgroundOpacity;$("qr-frame").value=design.qrFrame;
- [["logo-x",design.logoX],["logo-y",design.logoY],["name-x",design.nameX],["name-y",design.nameY],["qr-x",design.qrX],["qr-y",design.qrY]].forEach(([id,v])=>$(id).value=v);
+ [["logo-x",design.logoX],["logo-y",design.logoY],["name-x",design.nameX],["name-y",design.nameY],["qr-x",design.qrX],["qr-y",design.qrY],["details-x",design.detailsX],["details-y",design.detailsY]].forEach(([id,v])=>$(id).value=v);
  $("name-size").value=design.nameSize;$("job-size").value=design.jobSize;$("detail-size").value=design.detailSize;$("content-spacing").value=design.contentSpacing;
  $("show-qr").checked=design.qr;$("qr-label").checked=design.qrLabel;$("qr-position").value=design.qrPosition;$("qr-size").value=design.qrSize;$("qr-ink").value=design.qrInk;
  ["company","email","phone","mobile","website","address","linkedin","tagline","divider"].forEach(k=>$("show-"+k).checked=!!design[k]);
@@ -365,7 +375,7 @@ function updateControls(){
  document.querySelectorAll("#background-mode button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===design.mode)));
  $("second-color").hidden=design.mode==="solid";$("angle-wrap").hidden=design.mode==="solid";$("third-toggle").hidden=design.mode==="solid";$("third-color").hidden=design.mode==="solid"||!design.useThree;
  $("pattern-strength-val").textContent=design.patternStrength+"%";$("background-opacity-val").textContent=design.backgroundOpacity+"%";
- ["logo-x","logo-y","name-x","name-y","qr-x","qr-y"].forEach(id=>$(id+"-val").textContent=$(id).value);
+ ["logo-x","logo-y","name-x","name-y","qr-x","qr-y","details-x","details-y"].forEach(id=>$(id+"-val").textContent=$(id).value);
  $("angle-number").textContent=design.angle+"°";
  ["one","two","three","text","accent"].forEach(k=>{$(k+"-hex").textContent=String(design[k]).toUpperCase()});
  for(const [key,suffix] of [["logoSize","logo-size"],["nameSize","name-size"],["jobSize","job-size"],["detailSize","detail-size"],["contentSpacing","content-spacing"],["qrSize","qr-size"]]){
@@ -613,16 +623,16 @@ function normalizedURL(v){const raw=clip(v,250);return raw?(/^https?:\/\//i.test
  function render(){
  try{
   design=getDesign();company=getCompany();person=getPerson();
-  cardPaint($("live-card"),person,false);
+  $("live-card").innerHTML=cardSVG(person,design);
   const valid=!!person.name;
-  ["download-card","download-vcf","download-qr"].forEach(id=>$(id).disabled=!valid);
+  ["download-card","download-svg","download-vcf","download-qr"].forEach(id=>$(id).disabled=!valid);
   $("download-qr").disabled=!valid||!design.qr;
   $("download-team").disabled=people.length===0||saving;
   if(!valid)status("Enter a name to create a contact and export a card.");
   else if(luminance(design.text)>0.48&&luminance(design.one)>0.48&&design.mode==="solid")status("Low text contrast: choose darker text for this background.",true);
   else if(luminance(design.text)<0.22&&luminance(design.one)<0.22&&design.mode==="solid")status("Low text contrast: choose lighter text for this background.",true);
   else status("Preview is live. Save this employee to add them to your team.");
- }catch(e){status("Preview error: "+e.message,true);["download-card","download-vcf","download-qr"].forEach(id=>$(id).disabled=true)}
+ }catch(e){status("Preview error: "+e.message,true);["download-card","download-svg","download-vcf","download-qr"].forEach(id=>$(id).disabled=true)}
  }
  function savePerson(){
   const p=normalizePerson(getPerson());if(!p.name){status("Enter the employee's full name.",true);$("name").focus();return}
@@ -671,10 +681,13 @@ function renderPresetGallery(){
   info.append(strong,small);b.append(frame,info);root.append(b);
   try{
    const sample={name:person.name||"Alex Morgan",job:person.job||"Creative Director",email:person.email||"alex@example.com",phone:person.phone||"519 555 0123"};
-   const temp=document.createElement("canvas");
    const style={...DEFAULT_DESIGN,...STYLE_PRESETS[key]};
-   cardPaint(temp,sample,true,style);
-   canvas.getContext("2d").drawImage(temp,0,0,320,187);
+   const thumb=cardSVG(sample,style,{thumbnail:true});
+   const blob=new Blob([thumb],{type:"image/svg+xml;charset=utf-8"});
+   const url=URL.createObjectURL(blob),img=new Image();
+   img.onload=()=>{canvas.getContext("2d").drawImage(img,0,0,320,187);URL.revokeObjectURL(url)};
+   img.onerror=()=>URL.revokeObjectURL(url);
+   img.src=url;
   }catch(e){
    const x=canvas.getContext("2d");x.fillStyle=STYLE_PRESETS[key]?.one||"#222";x.fillRect(0,0,320,187);
   }
@@ -790,7 +803,7 @@ function updateTemplates(){
  ["name","job","email","phone","mobile","linkedin"].forEach(id=>on(id,"input",syncPerson));
  ["color-one","color-two","color-three","use-three","text-color","accent-color","angle","layout","font",
  "logo-position","logo-treatment","logo-size","name-size","job-size","detail-size","content-spacing",
- "qr-position","qr-size","qr-ink","qr-frame","qr-label","pattern","pattern-strength","background-opacity","logo-x","logo-y","name-x","name-y","qr-x","qr-y","show-qr","show-company","show-email","show-phone",
+ "qr-position","qr-size","qr-ink","qr-frame","qr-label","pattern","pattern-strength","background-opacity","logo-x","logo-y","name-x","name-y","qr-x","qr-y","details-x","details-y","show-qr","show-company","show-email","show-phone",
  "show-mobile","show-website","show-address","show-linkedin","show-tagline","show-divider"].forEach(id=>{
   const el=$(id);on(id,el.type==="checkbox"||el.tagName==="SELECT"?"change":"input",manualDesign);
  });
@@ -823,7 +836,7 @@ on("background-image","change",async()=>{
 });
 on("remove-background","click",()=>{company.background="";bgImage=null;store();render();status("Background image removed.");schedulePresetPreviews()});
  on("reset-style","click",()=>{design={...DEFAULT_DESIGN};applyFields();store();render();status("Card style reset. Your company and employees were kept.")});
- on("reset-position","click",()=>{["logoX","logoY","nameX","nameY","qrX","qrY"].forEach(k=>design[k]=0);applyFields();store();render();status("Element positions reset.")});
+ on("reset-position","click",()=>{["logoX","logoY","nameX","nameY","qrX","qrY","detailsX","detailsY"].forEach(k=>design[k]=0);applyFields();store();render();status("Element positions reset.")});
  on("save-person","click",savePerson);on("new-person","click",freshPerson);on("remove-person","click",removePerson);
  on("save-template","click",saveTemplate);
  on("saved-templates","change",()=>{const t=templates.find(x=>x.id===$("saved-templates").value);if(t){applyTemplate(t);status("Loaded template: "+t.name)}});
