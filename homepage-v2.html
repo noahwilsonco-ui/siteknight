@@ -257,7 +257,7 @@ body{background:#f6f6f5}
 <button class="category-filter" type="button" data-category="social" aria-pressed="false" style="--col:#ef899f"><span class="dot"></span>Social &amp; Content</button>
 <button class="category-filter" type="button" data-category="marketing" aria-pressed="false" style="--col:#43ad89"><span class="dot"></span>Marketing</button>
 <button class="category-filter" type="button" data-category="utilities" aria-pressed="false" style="--col:#d49b56"><span class="dot"></span>Utilities</button>
-<span class="cat-info">8 available / 2 in development</span>
+<span class="cat-info">7 available / 2 in development</span>
 </div>
 <div class="board-head">
 <div><h2 id="board-title">The SiteKnight tools</h2><p id="board-caption">Pick a tool and get right to work.</p></div>
@@ -275,8 +275,7 @@ const tools=[
 {slug:"social-media-planner",name:"Social Media Planner",category:"social",desc:"Build your brand kit and plan content.",features:"Posts, captions and content calendars",href:"",live:false,search:"post ghost social media scheduling brand kit content calendar"},
 {slug:"utm-builder",name:"UTM Builder",category:"marketing",desc:"Build campaign links you can track.",features:"Campaign URLs and analytics",href:"/tools/utm-builder",live:true,search:"tracking url parameters campaign attribution google analytics"},
 {slug:"pixel-tag-creator",name:"Pixel Tag Creator",category:"marketing",desc:"Generate your website tracking tags.",features:"Meta Pixel, GA4 and Google Ads",href:"/tools/pixel-tag-creator",live:true,search:"pixel google tag code tracking facebook snippet"},
-{slug:"qr-code-generator",name:"QR Code Generator",category:"utilities",desc:"Make branded QR codes in seconds.",features:"Custom colours, logo and download",href:"/tools/qr-code-generator",live:true,search:"qr generate custom logo png svg"},
-{slug:"bulk-qr-code-generator",name:"Bulk QR Code Generator",category:"utilities",desc:"Create an entire batch of QR codes.",features:"Export many codes in a ZIP",href:"/tools/bulk-qr-code-generator",live:true,search:"qr batch bulk multiple zip csv"},
+{slug:"qr-code-generator",name:"QR Code Generator",category:"utilities",desc:"Make one QR code or a whole batch.",features:"Single QR, bulk ZIP, colours and logos",href:"/tools/qr-code-generator",live:true,search:"single bulk batch qr generate custom logo png svg csv zip"},
 {slug:"image-compressor",name:"Image Compressor",category:"utilities",desc:"Make image files smaller, privately.",features:"Resize JPG, PNG and WebP",href:"/tools/image-compressor",live:true,search:"photo compress shrink optimize resize jpeg webp"},
 {slug:"file-converter",name:"File Converter",category:"utilities",desc:"Change file formats without the hassle.",features:"Images, CSV and JSON",href:"/tools/file-converter",live:true,search:"file convert jpg png webp csv json"},
 {slug:"digital-business-card",name:"Digital Business Card",category:"utilities",desc:"Create a contact card worth sharing.",features:"Contact QR and vCard",href:"/tools/digital-business-card",live:true,search:"card contact business digital vcard"},
@@ -285,7 +284,7 @@ const categoryData=[
 {key:"website",name:"Websites",desc:"Find and fix issues on your site.",count:"01 TOOL",accent:"#397ac4",cls:"website"},
 {key:"social",name:"Social & Content",desc:"Create better content, faster.",count:"01 TOOL",accent:"#dc658b",cls:"social"},
 {key:"marketing",name:"Marketing",desc:"Track campaigns and spending.",count:"03 TOOLS",accent:"#268d72",cls:"marketing"},
-{key:"utilities",name:"Everyday Tools",desc:"Useful shortcuts for real work.",count:"05 TOOLS",accent:"#c58a42",cls:"utilities"}];
+{key:"utilities",name:"Everyday Tools",desc:"Useful shortcuts for real work.",count:"04 TOOLS",accent:"#c58a42",cls:"utilities"}];
 const doc=id=>document.getElementById(id);
 const board=doc("playground"),layer=doc("cards"),search=doc("tool-search"),clear=doc("clear-search"),title=doc("board-title"),caption=doc("board-caption"),back=doc("board-back"),count=doc("visible-count"),empty=doc("empty"),filters=[...document.querySelectorAll(".category-filter")];
 let category=null,query="",bodies=[],raf=0,lastTime=0,frameNo=0,seen=true,seed=0,resizeKey="";
