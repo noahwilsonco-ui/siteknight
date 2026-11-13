@@ -594,7 +594,90 @@ function normalizedURL(v){const raw=clip(v,250);return raw?(/^https?:\/\//i.test
  function luminance(hex){const h=hex.replace("#","");const c=[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)/255).map(x=>x<=.04045?x/12.92:Math.pow((x+.055)/1.055,2.4));return c[0]*.2126+c[1]*.7152+c[2]*.0722}
  function hexRGBA(hex,a){const h=hex.replace("#","");return "rgba("+parseInt(h.slice(0,2),16)+","+parseInt(h.slice(2,4),16)+","+parseInt(h.slice(4,6),16)+","+a+")"}
  function fontFamily(){return design.font==="serif"?"Georgia,serif":design.font==="arial"?"Arial,sans-serif":'"Space Grotesk",Arial,sans-serif'}
- function cardSVG(p,d=design,options={}){
+ function backSVG(p,d=design,options={}){
+ const xml=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;");
+ const hex=(v,f)=>/^#[a-f\d]{6}$/i.test(v||"")?v:f;
+ const clamp=(v,min,max)=>Math.max(min,Math.min(max,Number(v)||0));
+ const style=d.backStyle||"brand",match=d.backBackground==="match",solid=d.backBackground==="solid"||(match&&d.mode==="solid");
+ const first=hex(match?d.one:d.backOne,"#17101f"),second=hex(match?d.two:d.backTwo,"#381e4c");
+ const ink=hex(d.backTextColor,"#ffffff"),accent=hex(d.backAccent,"#b184d8");
+ const font=d.font==="serif"?"Georgia,Times New Roman,serif":d.font==="verdana"?"Verdana,Arial,sans-serif":"Arial,Helvetica,sans-serif";
+ const companyName=(company.company||"Your Company").trim(),website=(company.website||"").replace(/^https?:\/\//i,"").replace(/\/$/,"");
+ const title=(d.backTitle||companyName).trim(),subtitle=(d.backSubtitle||company.tagline||"").trim(),footer=(d.backFooter||website).trim();
+ const logoScale=clamp(d.backLogoSize||120,55,190)/100,qrSize=clamp(d.backQRSize||170,120,260);
+ const ofs={logo:[clamp(d.backLogoX,-210,210),clamp(d.backLogoY,-210,210)],text:[clamp(d.backTextX,-210,210),clamp(d.backTextY,-210,210)],qr:[clamp(d.backQRX,-210,210),clamp(d.backQRY,-210,210)]};
+ const textNode=(str,x,y,size,weight=500,anchor="start",color=ink,max=860)=>{
+  if(!str)return"";
+  const value=String(str),estimate=value.length*size*.53;
+  const scaled=estimate>max?Math.max(19,Math.floor(size*max/estimate)):size;
+  return '<text x="'+x+'" y="'+y+'" fill="'+color+'" text-anchor="'+anchor+'" font-family="'+xml(font)+'" font-weight="'+weight+'" font-size="'+scaled+'">'+xml(value)+'</text>';
+ };
+ const group=(id,markup)=>'<g data-handle="back-'+id+'" class="'+(options.thumbnail?"":"sk-move")+'" transform="translate('+ofs[id][0]+' '+ofs[id][1]+')">'+markup+'</g>';
+ const defs='<defs><clipPath id="back-clip"><rect width="1200" height="700" rx="18"/></clipPath>'+
+ '<linearGradient id="back-grad" x1="0" y1="0" x2="1" y2="1" gradientTransform="rotate('+(match?d.angle||120:d.backAngle||120)+')"><stop offset="0%" stop-color="'+first+'"/><stop offset="100%" stop-color="'+second+'"/></linearGradient>'+
+ '<radialGradient id="back-light"><stop stop-color="'+accent+'" stop-opacity=".24"/><stop offset="100%" stop-color="'+accent+'" stop-opacity="0"/></radialGradient>'+
+ '</defs>';
+ const objects=['<rect width="1200" height="700" fill="'+(solid?first:"url(#back-grad)")+'"/>'];
+ if(match&&company.background&&!options.thumbnail)objects.push('<image href="'+xml(company.background)+'" x="0" y="0" width="1200" height="700" preserveAspectRatio="xMidYMid slice" opacity="'+clamp(d.backgroundOpacity||45,0,100)/100+'"/>');
+ // Five deliberately different back-side compositions.
+ let lx=475,ly=126, tx=600,ty=388,align="middle", max=960,qrX=965,qrY=458;
+ if(style==="brand"){
+  objects.push('<ellipse cx="600" cy="330" rx="590" ry="440" fill="url(#back-light)"/>');
+  objects.push('<path d="M140 566H1060" stroke="'+accent+'" stroke-opacity=".58" stroke-width="3"/>');
+  lx=480;ly=115;tx=600;ty=389;align="middle";qrX=992;qrY=479;
+ }else if(style==="statement"){
+  objects.push('<rect x="0" y="0" width="21" height="700" fill="'+accent+'"/>');
+  objects.push('<circle cx="1220" cy="0" r="350" fill="'+accent+'" fill-opacity=".16"/>');
+  lx=90;ly=73;tx=95;ty=358;align="start";qrX=967;qrY=456;max=840;
+ }else if(style==="split"){
+  objects.push('<rect x="0" width="420" height="700" fill="'+accent+'" fill-opacity=".15"/><rect x="419" width="5" height="700" fill="'+accent+'"/>');
+  lx=86;ly=213;tx=510;ty=328;align="start";qrX=964;qrY=458;max=580;
+ }else if(style==="contact"){
+  objects.push('<rect x="762" y="0" width="438" height="700" fill="'+accent+'" fill-opacity=".14"/><rect x="761" y="0" width="5" height="700" fill="'+accent+'"/>');
+  lx=100;ly=85;tx=100;ty=343;align="start";qrX=870;qrY=245;max=610;
+ }else if(style==="minimal"){
+  objects.push('<rect x="93" y="625" width="1014" height="2" fill="'+accent+'" fill-opacity=".58"/>');
+  lx=485;ly=165;tx=600;ty=399;align="middle";qrX=987;qrY=479;
+ }
+ if(d.backShowLogo){
+  const lw=250*logoScale,lh=114*logoScale;
+  const posX=lx,posY=ly;
+  let logo;
+  if(company.logo&&!options.thumbnail)logo='<image href="'+xml(company.logo)+'" x="'+posX+'" y="'+posY+'" width="'+lw+'" height="'+lh+'" preserveAspectRatio="xMidYMid meet"/>';
+  else{
+   const brandShort=companyName.split(/\s+/).map(v=>v[0]).slice(0,2).join("").toUpperCase()||"SK";
+   logo=textNode(brandShort,posX+(style==="split"?0:lw/2),posY+65,Math.round(49*logoScale),700,style==="split"?"start":"middle",ink,lw);
+  }
+  objects.push(group("logo",logo+'<rect x="'+posX+'" y="'+posY+'" width="'+lw+'" height="'+lh+'" fill="transparent" pointer-events="all"/>'));
+ }
+ const titleSize=style==="statement"?83:style==="contact"?62:style==="split"?68:style==="minimal"?63:72;
+ let textMarkup=textNode(title,tx,ty,titleSize,700,align,ink,max);
+ if(subtitle)textMarkup+=textNode(subtitle,tx,ty+65,30,400,align,ink,max);
+ if(d.backShowWebsite&&footer)textMarkup+=textNode(footer,tx,style==="minimal"?595:style==="brand"?559:ty+160,23,500,align,ink,max);
+ textMarkup+='<rect x="'+(align==="middle"?Math.max(100,tx-420):tx-17)+'" y="'+(ty-90)+'" width="'+(align==="middle"?840:Math.min(840,max))+'" height="'+(subtitle?250:207)+'" fill="transparent" pointer-events="all"/>';
+ objects.push(group("text",textMarkup));
+ if(d.backShowQR){
+  let qMarkup='<rect x="'+(qrX-11)+'" y="'+(qrY-11)+'" width="'+(qrSize+22)+'" height="'+(qrSize+22)+'" rx="10" fill="#fff"/>';
+  if(p.name&&!options.thumbnail){
+   const q=makeQR(p,{...d,qr:true}),n=q.getModuleCount(),unit=qrSize/(n+8),parts=[];
+   for(let row=0;row<n;row++)for(let col=0;col<n;col++)if(q.isDark(row,col)){
+    const x=(qrX+(col+4)*unit).toFixed(2),y=(qrY+(row+4)*unit).toFixed(2),z=(unit+.12).toFixed(2);
+    parts.push('M'+x+' '+y+'h'+z+'v'+z+'h-'+z+'Z');
+   }
+   qMarkup+='<path fill="#251e2b" d="'+parts.join('')+'"/>';
+  }else{
+   const unit=qrSize/17,parts=[];for(let row=0;row<17;row++)for(let col=0;col<17;col++)if((row*13+col*17+row*col)%7<3){
+    parts.push('M'+(qrX+col*unit).toFixed(1)+' '+(qrY+row*unit).toFixed(1)+'h'+(unit+.15).toFixed(1)+'v'+(unit+.15).toFixed(1)+'h-'+(unit+.15).toFixed(1)+'Z');
+   }
+   qMarkup+='<path fill="#251e2b" d="'+parts.join('')+'"/>';
+  }
+  qMarkup+='<rect x="'+(qrX-11)+'" y="'+(qrY-11)+'" width="'+(qrSize+22)+'" height="'+(qrSize+22)+'" fill="transparent" pointer-events="all"/>';
+  objects.push(group("qr",qMarkup));
+ }
+ return '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-label="Back of '+xml(companyName)+' business card">'+defs+'<g clip-path="url(#back-clip)">'+objects.join("")+'</g></svg>';
+}
+function cardSVG(p,d=design,options={}){
+ if(options.side==="back")return backSVG(p,d,options);
  const W=1200,H=700,thumb=!!options.thumbnail;
  const xml=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;");
  const color=(key,fallback)=>/^#[a-f\d]{6}$/i.test(d[key]||"")?d[key]:fallback;
@@ -775,8 +858,8 @@ function normalizedURL(v){const raw=clip(v,250);return raw?(/^https?:\/\//i.test
  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-label="Business card for '+xml(name)+'"><defs>'+defs.join("")+'</defs><g clip-path="url(#sk-clip)">'+children.join("")+'</g></svg>';
  return svg;
 }
-async function pngFromSVG(p,d=design,scale=2){
- const xml=cardSVG(p,d);
+async function pngFromSVG(p,d=design,scale=2,side="front"){
+ const xml=cardSVG(p,d,{side});
  const blob=new Blob([xml],{type:"image/svg+xml;charset=utf-8"});
  const uri=URL.createObjectURL(blob);
  try{
@@ -792,7 +875,7 @@ async function pngFromSVG(p,d=design,scale=2){
   return await imageBlob(canvas);
  }finally{URL.revokeObjectURL(uri)}
 }
-function svgBlob(p,d=design){return new Blob([cardSVG(p,d)],{type:"image/svg+xml;charset=utf-8"})}
+function svgBlob(p,d=design,side="front"){return new Blob([cardSVG(p,d,{side})],{type:"image/svg+xml;charset=utf-8"})}
 
  function render(){
  try{
