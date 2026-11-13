@@ -1,0 +1,249 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080511"><meta name="description" content="Create QR codes online for free. Custom colours, crisp SVG and PNG downloads. No login. QR codes never expire."><link rel="canonical" href="https://siteknight.tools/tools/qr-code-generator"><link rel="icon" type="image/webp" href="/knighty-approved.webp?v=8"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><title>Free QR Code Generator | SiteKnight</title><style>
+:root{color-scheme:dark;--bg:#080511;--paper:#161027;--panel:#1c1230;--line:#56346f;--text:#f6eaff;--muted:#baa9ca;--violet:#c081ff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:radial-gradient(ellipse 55% 40% at 85% -5%,#7d23e955,transparent 85%),radial-gradient(ellipse 42% 60% at 5% 65%,#4721a548,transparent 82%),#080511;color:var(--text);min-height:100vh;margin:0;line-height:1.6;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background-image:radial-gradient(1px 1px at 18px 27px,#dbb4ff9a 97%,transparent),radial-gradient(1px 1px at 125px 95px,#e3dcff8f 97%,transparent);background-size:223px 229px,311px 280px;opacity:.47}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit}
+button{cursor:pointer}
+nav.top{position:sticky;top:0;z-index:10;background:#0b0616ed;border-bottom:1px solid #a05ce36b;backdrop-filter:blur(16px)}
+nav.top .navwrap{max-width:1180px;min-height:102px;padding:16px 27px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{display:flex;align-items:center;gap:12px;font-family:'Space Grotesk',sans-serif;font-size:29px;font-weight:700;letter-spacing:-1.1px}
+.logo img{height:64px;width:64px;object-fit:contain;filter:drop-shadow(0 0 14px #9942ff88)}
+.logo b{color:#ca8eff}
+.back{font-size:13px;font-weight:750;background:#201034;border:1px solid #8d53bb;border-radius:11px;padding:12px 16px}
+.back:hover{background:#401e65}
+main{max-width:1180px;margin:auto;padding:52px 27px 85px}
+.kicker{color:#d6a6ff;text-transform:uppercase;font-size:11px;letter-spacing:2.5px;font-weight:800}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif;letter-spacing:-1px}
+h1{font-size:clamp(39px,5vw,62px);line-height:1.08;margin:16px 0 15px}
+h1 span{color:#c485ff}
+.intro{color:#cbbdd8;font-size:15px;line-height:1.8;max-width:770px;margin:0 0 32px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.83fr);gap:23px;align-items:start}
+.panel{background:linear-gradient(145deg,#211331e8,#130c23f0);border:1px solid #704593;box-shadow:0 12px 40px #0005,0 0 20px #8236d124;border-radius:20px;padding:27px}
+.panel h2{font-size:22px;margin:0 0 8px}
+.panel p{color:var(--muted);font-size:12px;line-height:1.7;margin:0 0 20px}
+.field{display:block;margin:20px 0}
+.field>span{display:block;font-size:12px;font-weight:750;margin-bottom:9px;color:#e9ddf6}
+.field input,.field select,.field textarea{width:100%;border:1px solid #674687;border-radius:11px;background:#110a20;color:#fff;outline:0;padding:13px 14px;min-height:49px;font-size:14px}
+.field textarea{min-height:124px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#d5a1ff;box-shadow:0 0 0 3px #a04ae82f}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.btn{border:1px solid #c78aff;color:#fff;background:linear-gradient(100deg,#a044ee,#6b23bf);box-shadow:0 0 19px #8c33dd70;border-radius:11px;font-size:13px;font-weight:800;padding:14px 19px;min-height:48px}
+.btn.secondary{border-color:#80609f;background:#231434;box-shadow:none}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:hover:not(:disabled){filter:brightness(1.16)}
+.preview{min-height:300px;display:grid;place-items:center;border:1px dashed #74569b;border-radius:16px;background:radial-gradient(ellipse at center,#34135370,#100a1c 80%);padding:20px}
+.preview canvas,.preview img{max-width:100%;height:auto;display:block}
+.stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px;color:#c5b8d7;font-size:12px}
+.stats strong{color:#fff}
+.help{margin-top:36px;border-top:1px solid #4f2c6a;padding-top:24px}
+.help h2{font-size:22px}
+.help details{padding:16px 0;border-bottom:1px solid #45295d}
+.help summary{font-weight:750;cursor:pointer}
+.help p{color:#beafd1;font-size:13px;line-height:1.8}
+footer{border-top:1px solid #3f2555;color:#9d8aad;font-size:11px;padding-top:22px;margin-top:56px}
+.note{font-size:12px;color:#baaad0;line-height:1.7}
+.error{color:#ff9dc1;font-size:13px;min-height:22px;margin-top:12px}
+[hidden]{display:none!important}
+@media(max-width:750px){nav.top .navwrap{min-height:83px;padding:12px 17px}.logo{font-size:23px;gap:5px}.logo img{height:52px;width:52px}.back{font-size:11px;padding:10px}main{padding:34px 17px 58px}.layout{grid-template-columns:1fr;gap:15px}.panel{padding:20px}.controls{grid-template-columns:1fr}.preview{min-height:240px}.actions .btn{flex:1}.intro{font-size:13px}}
+@media(max-width:390px){.logo{font-size:19px}.logo img{height:45px;width:45px}.back{font-size:10px;padding:10px 8px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+.qr-mode-nav{display:flex;gap:9px;padding:7px;background:#fff;border:1px solid #e0d6e6;border-radius:15px;max-width:610px;margin:0 0 23px}
+.qr-mode-nav button{flex:1;padding:13px;border-radius:10px;border:0;background:none;color:#544560;font:800 13px 'Plus Jakarta Sans',Arial,sans-serif}
+.qr-mode-nav button[aria-selected=true]{background:#292037;color:#fff}
+.qr-mode-nav button:hover:not([aria-selected=true]){background:#f2e9f7}
+#single-qr-panel[hidden],#bulk-qr-panel[hidden]{display:none!important}
+#bulk-qr-panel{color:#242029}
+.bulk-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,.82fr);gap:22px;align-items:start}
+.bulk-box{background:#fff;border:1px solid #e4dce7;border-radius:16px;padding:24px;min-width:0;box-shadow:0 6px 24px #3624430d}
+.bulk-box h2{color:#242029!important;font-size:22px;margin:0 0 10px}.bulk-box p,.bulk-box label{color:#6f6278!important}
+.bulk-box p{font-size:12px}
+.bulk-box label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}
+.bulk-box textarea,.bulk-box select{width:100%;background:white!important;color:#241c2c!important;border:1px solid #d8cddd!important;border-radius:9px;padding:12px}
+.bulk-box textarea{min-height:195px;resize:vertical}
+.bulk-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:14px}
+.bulk-fields>div{min-width:0}.bulk-fields input[type=color]{height:43px;padding:4px;width:100%;background:white;border:1px solid #d7cbdc;border-radius:8px}
+.bulk-fields input[type=file]{font-size:11px;width:100%;color:#5b4c62}
+.bulk-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.bulk-actions button{padding:12px 15px;background:#8344a7;color:white;border:1px solid #8543aa;border-radius:9px;font-weight:800;font-size:12px}
+.bulk-actions button:last-child{background:#fff;color:#693884}
+#bulk-qr-panel #status{font-size:12px;color:#844ba1;min-height:20px;margin-top:12px}
+#bulk-qr-panel #count{font-size:12px;color:#7a7180}
+#bulk-qr-panel #preview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;max-height:540px;overflow:auto}
+#bulk-qr-panel #preview figure{margin:0;padding:8px;min-width:0;background:#f8f5f9;border:1px solid #e8e0eb;border-radius:10px}
+#bulk-qr-panel #preview canvas{display:block;width:100%;height:auto}
+#bulk-qr-panel #preview figcaption{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px;color:#736c78;margin-top:6px}
+@media(max-width:830px){.bulk-layout{grid-template-columns:1fr}}
+@media(max-width:520px){.qr-mode-nav button{font-size:11px;padding:11px 8px}.bulk-box{padding:16px}.bulk-fields{grid-template-columns:1fr 1fr}#bulk-qr-panel #preview{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<style id="qr-purple-studio">
+:root{--bg:#070313;--panel:#210b3a;--violet:#b74dff;--text:#f9f0ff;--muted:#d1b4e6}
+html,body{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse 60% 40% at 12% 12%,#7112b9aa,transparent 78%),radial-gradient(ellipse 55% 30% at 96% 38%,#9141ff66,transparent 78%),radial-gradient(ellipse 45% 22% at 35% 93%,#4015a870,transparent 70%),#070313;min-height:100vh}
+body:before{opacity:.68}
+nav.top{background:#13051edc;border-bottom:2px solid #a940f599;box-shadow:0 6px 35px #8c28e94c}
+nav.top .navwrap{max-width:1380px;min-height:105px}
+.back{background:linear-gradient(120deg,#532081,#291043);border-color:#ad61f4;padding:15px 20px}
+main{max-width:1380px;padding:42px 27px 80px}
+.studio-hero{position:relative;display:flex;align-items:center;justify-content:space-between;gap:22px;padding:12px 0 26px}
+.studio-hero .kicker{color:#e1b0ff}
+.studio-hero h1{font-size:clamp(44px,5.3vw,78px);margin:9px 0 10px;letter-spacing:-3.4px}
+.studio-hero h1 span{color:#d99aff;text-shadow:0 0 31px #aa33ff96}
+.studio-hero .intro{max-width:760px;margin:0;font-size:15px}
+.studio-tag{flex:0 0 auto;color:#f4deff;border:1px solid #a756fb;background:linear-gradient(120deg,#611ea9,#2a1151);border-radius:100px;padding:9px 15px;font-size:11px;font-weight:800;letter-spacing:.5px;box-shadow:0 0 28px #bd3dff4b}
+.studio-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(330px,.89fr);gap:24px;align-items:start}
+.studio-controls{display:grid;gap:19px;min-width:0}
+.studio-card{border:1px solid #9854cb;box-shadow:inset 0 1px #edccff2a,0 0 30px #651eab33,0 15px 50px #05010e77;background:linear-gradient(145deg,#361454e8,#1c0b30f3 70%);padding:25px;border-radius:23px}
+.studio-card h2{font-size:21px;margin:0 0 4px;letter-spacing:-.5px}
+.studio-card>p{margin:0 0 17px;color:#d4bde2;font-size:12px}
+.studio-step{display:inline-grid;place-items:center;min-width:28px;height:28px;padding:0 5px;margin-right:10px;background:#9f36f3;color:#fff;font:800 12px 'Plus Jakarta Sans',sans-serif;border-radius:9px;box-shadow:0 0 18px #a944f6c7;vertical-align:3px}
+.studio-field{display:block;margin:15px 0 0}
+.studio-field .field-label{display:block;font-size:12px;color:#edd5ff;font-weight:800;margin-bottom:9px}
+.studio-field textarea,.studio-field select,.studio-field input:not([type=color]):not([type=range]):not([type=file]){width:100%;border:1px solid #9866c3;background:#120822;color:#fff;border-radius:13px;padding:14px 15px;outline:none;font-size:14px}
+.studio-field textarea{resize:vertical;min-height:105px}
+.studio-field textarea:focus,.studio-field input:focus-visible,.studio-field select:focus-visible{outline:2px solid #d49bff;outline-offset:2px}
+.tabline{display:flex;gap:8px}
+.tabline button,.shape-options button{flex:1;min-height:45px;color:#e3c8f3;background:#1d0c33;border:1px solid #7648a3;border-radius:12px;font-weight:800;font-size:12px}
+.tabline button[aria-pressed=true],.shape-options button[aria-pressed=true]{background:linear-gradient(130deg,#a338ec,#7836d9);border-color:#edc9ff;color:#fff;box-shadow:0 0 18px #9430e87a}
+.color-presets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.preset{border:1px solid #8b59b0;border-radius:13px;min-width:0;background:#1b0d2e;padding:9px 5px;color:#e9d1fa;display:grid;justify-items:center;gap:7px;font-size:11px;font-weight:800}
+.preset .swatch{width:37px;height:37px;border-radius:10px;display:block;border:3px solid #faf3ff;box-shadow:0 0 13px #8625c8ad}
+.preset[aria-pressed=true]{border-color:#f0c6ff;background:#5e2488;box-shadow:0 0 16px #a63af777}
+.custom-colors{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.color-row{display:flex;align-items:center;gap:10px;background:#160a27;border:1px solid #895ab2;border-radius:13px;padding:8px 11px;min-height:58px}
+.color-row input[type=color]{border:0;flex:none;padding:0;background:none;width:46px;height:38px;cursor:pointer}
+.color-row strong{display:block;font-size:11px;color:#f2e3ff}
+.color-row small{display:block;font-size:10px;color:#bda2d2}
+.shape-options{display:flex;gap:9px;margin-top:10px}
+.upload-zone{display:flex;gap:15px;align-items:center;padding:16px;border:1px dashed #b87cf4;border-radius:14px;background:#280f42;cursor:pointer}
+.upload-zone:focus-within{outline:2px solid #d38fff}
+.upload-zone .upload-mark{width:55px;height:55px;border:2px solid #b873f7;border-radius:11px;background:#39155a;display:grid;place-items:center;font-size:27px;font-weight:700;color:#e9c8ff;flex:none}
+.upload-zone strong{font-size:13px;display:block}
+.upload-zone small{display:block;color:#d1afeb;font-size:11px}
+.upload-zone input{position:absolute;opacity:0;width:1px;height:1px}
+.logo-tools{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.logo-tools button{background:#2a1045;color:#dcbcf9;border:1px solid #7d4ba7;border-radius:10px;padding:10px 14px;font-weight:750;font-size:11px}
+#logo-result{margin:12px 0 0;font-size:12px;color:#dfc1fa;min-height:0}
+.preview-card{position:sticky;top:123px;background:linear-gradient(155deg,#572087 0%,#2e1050 33%,#1b092e 100%);border:1px solid #d18eff;box-shadow:0 0 35px #b048ec70,0 20px 65px #130524cb,inset 0 1px #fbdeff42;border-radius:25px;padding:26px}
+.preview-head{display:flex;justify-content:space-between;gap:9px;align-items:center;margin-bottom:18px}
+.preview-head h2{font-size:21px;margin:0}
+.preview-state{font-size:10px;color:#fff;background:#7131a1;border:1px solid #cd86ff;border-radius:20px;padding:7px 12px;font-weight:800}
+.preview-paper{background:#fff;aspect-ratio:1;max-width:405px;width:100%;margin:0 auto;border-radius:22px;box-shadow:0 0 0 7px #e2b3ff29,0 0 50px #bb65ff6e;display:grid;place-items:center;padding:17px}
+.preview-paper canvas{display:block;width:100%;height:auto;max-width:100%;image-rendering:pixelated}
+.preview-hint{margin:24px auto 12px;text-align:center;font-size:12px;color:#e9d0fd}
+.preview-hint b{color:white}
+.download-row{display:flex;gap:11px;margin-top:13px}
+.download-row button{flex:1;min-width:0;padding:15px 9px;border-radius:12px;font-size:13px;font-weight:800;background:linear-gradient(120deg,#ae3ff5,#791fe4);border:1px solid #e4a8ff;color:#fff;box-shadow:0 0 20px #a740ee83}
+.download-row button:last-child{background:#290e45;border-color:#a977d2}
+.download-row button:disabled{opacity:.4;cursor:not-allowed}
+.preview-caption{color:#c9b0de;font-size:11px;text-align:center;margin:16px 0 0}
+.status-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;color:#d9b4f5;font-size:11px;margin-top:13px}
+.error{font-size:12px;line-height:1.65;min-height:0;margin:10px 0 0}
+.tips{margin-top:20px;padding:21px 24px;border:1px solid #663e89;border-radius:15px;background:#1b0b30b5;color:#d0b7e4;font-size:12px}
+.tips strong{color:#fff}
+.help{margin-top:48px}
+@media(max-width:980px){.studio-layout{grid-template-columns:1fr}.preview-card{position:relative;top:auto}.studio-hero{align-items:flex-start}.preview-paper{max-width:430px}.studio-tag{display:none}}
+@media(max-width:680px){nav.top .navwrap{min-height:85px}main{padding:25px 15px 56px}.studio-hero{padding:10px 0 25px}.studio-hero h1{font-size:clamp(40px,11vw,56px);letter-spacing:-2px}.studio-hero .intro{font-size:13px;line-height:1.65}.studio-layout{gap:16px}.studio-card,.preview-card{padding:18px;border-radius:19px}.preview-card{order:-1}.preview-paper{max-width:300px;padding:12px;border-radius:18px}.studio-step{min-width:25px;height:25px}.studio-card h2,.preview-head h2{font-size:19px}.shape-options button{font-size:11px}.color-presets{gap:7px}.preset{font-size:9px}.preset .swatch{width:33px;height:33px}.preview-hint{margin:19px 0 10px}.preview-card{box-shadow:0 0 24px #ab3de966}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
+</style></head><body><nav class="top" aria-label="Main navigation"><div class="navwrap"><a href="/" class="logo"><img src="/knighty-approved.webp?v=8" alt=""><span>Site<b>Knight</b></span></a><a class="back" href="/#tools">All tools</a></div></nav>
+<main><div class="qr-mode-nav" role="tablist" aria-label="QR generation mode"><button role="tab" id="single-qr-tab" aria-controls="single-qr-panel" aria-selected="true" type="button">Single QR Code</button><button role="tab" id="bulk-qr-tab" aria-controls="bulk-qr-panel" aria-selected="false" type="button">Bulk QR Codes</button></div><div id="single-qr-panel" role="tabpanel" aria-labelledby="single-qr-tab">
+<section class="studio-hero"><div><div class="kicker">SITEKNIGHT CREATIVE TOOLS / FREE</div><h1>Make it <span>scan.</span></h1><p class="intro">Your link. Your colours. Your logo. Build a QR code that actually looks like your brand, then download it instantly. No account, no uploads to a server.</p></div><div class="studio-tag">FREE FOREVER</div></section>
+<div class="studio-layout">
+<div class="studio-controls">
+<section class="studio-card"><h2><span class="studio-step">1</span>What should it open?</h2><p>Paste a link or switch to text. Preview updates as you type.</p>
+<div class="tabline" role="group" aria-label="QR code content type"><button type="button" id="type-url" aria-pressed="true">Website link</button><button type="button" id="type-text" aria-pressed="false">Plain text</button></div>
+<label class="studio-field"><span class="field-label" id="qr-label">Destination URL</span><textarea id="qr-value" rows="3" maxlength="1900" placeholder="https://yourwebsite.com">https://siteknight.tools</textarea></label>
+</section>
+<section class="studio-card"><h2><span class="studio-step">2</span>Make it yours</h2><p>Choose a colour scheme or create your own.</p>
+<div class="color-presets" aria-label="Colour presets">
+<button class="preset" data-fg="#251037" data-bg="#ffffff" aria-pressed="true"><span class="swatch" style="background:#251037"></span>Royal</button>
+<button class="preset" data-fg="#8d22f5" data-bg="#ffffff" aria-pressed="false"><span class="swatch" style="background:#8d22f5"></span>Electric</button>
+<button class="preset" data-fg="#071726" data-bg="#e9d6ff" aria-pressed="false"><span class="swatch" style="background:#071726;border-color:#e9d6ff"></span>Midnight</button>
+<button class="preset" data-fg="#101010" data-bg="#ffffff" aria-pressed="false"><span class="swatch" style="background:#101010"></span>Classic</button>
+</div>
+<div class="custom-colors"><label class="color-row"><input type="color" id="qr-fg" value="#251037" aria-label="QR pattern colour"><span><strong>Pattern</strong><small>Custom colour</small></span></label><label class="color-row"><input type="color" id="qr-bg" value="#ffffff" aria-label="QR background colour"><span><strong>Background</strong><small>Custom colour</small></span></label></div>
+<div class="studio-field"><span class="field-label">Pattern style</span><div class="shape-options" role="group" aria-label="QR pattern style"><button class="shape" data-shape="square" aria-pressed="true">Classic</button><button class="shape" data-shape="round" aria-pressed="false">Soft edges</button><button class="shape" data-shape="dot" aria-pressed="false">Dots</button></div></div>
+</section>
+<section class="studio-card"><h2><span class="studio-step">3</span>Put your logo inside</h2><p>Optional. Add a logo in the middle with a protective border, while keeping the QR code scannable.</p>
+<label class="upload-zone" for="qr-logo"><span class="upload-mark">+</span><span><strong>Upload your own logo</strong><small>PNG, JPG or WebP · Max 3 MB · Stays on your device</small></span><input type="file" id="qr-logo" accept="image/png,image/jpeg,image/webp"></label>
+<div class="logo-tools"><button type="button" id="qr-brand">Use SiteKnight logo</button><button type="button" id="qr-remove">Remove logo</button></div><p id="logo-result" role="status" aria-live="polite">No logo added</p>
+</section>
+</div>
+<section class="preview-card" aria-label="QR code preview">
+<div class="preview-head"><h2>Live preview</h2><div class="preview-state" id="qr-preview-state">Ready to scan</div></div>
+<div class="preview-paper"><canvas id="qr-canvas" width="330" height="330" role="img" aria-label="Generated QR code preview"></canvas></div>
+<p class="preview-hint"><b>Download and you're done.</b> Print or share anywhere.</p>
+<div class="download-row"><button id="qr-png" disabled>Download PNG</button><button id="qr-svg" disabled>Download SVG</button></div>
+<div class="status-row"><span id="qr-modules">QR ready</span><span id="qr-err-correction">Error correction: Standard</span></div>
+<p class="error" id="qr-error" role="status" aria-live="polite"></p><p class="preview-caption">Made privately in your browser. Static QR codes do not expire.</p>
+</section></div>
+<div class="tips"><strong>Before printing:</strong> Test your QR code with a phone camera. Keep strong foreground/background contrast, especially when using a logo. SVG stays sharp for signs, labels and packaging.</div>
+<section class="help"><h2>Questions people ask</h2><details><summary>Can I add my own business logo?</summary><p>Yes. Upload a JPG, PNG or WebP logo. It sits in a white-backed centre badge, and we automatically switch to high error correction. Always scan-test your finished design before printing.</p></details><details><summary>Does my QR code expire?</summary><p>No. This makes a static QR code, with no redirect service. The destination link must still exist for scans to open it.</p></details><details><summary>Are my images or content uploaded?</summary><p>No. Your QR code and logo are rendered directly in your browser.</p></details></section>
+<footer>SiteKnight · QR Code Studio · Free, private and fast.</footer>
+</div><section id="bulk-qr-panel" role="tabpanel" aria-labelledby="bulk-qr-tab" hidden><div class="bulk-layout">
+<section class="bulk-box"><h2>Create multiple QR codes</h2><p>One URL or message per line, up to 150. Export them all in a ZIP.</p>
+<label for="urls">Links or messages</label><textarea id="urls" placeholder="https://example.com/one&#10;https://example.com/two"></textarea>
+<div class="bulk-fields">
+<div><label for="fg">Code colour</label><input id="fg" type="color" value="#251037"></div>
+<div><label for="bg">Background colour</label><input id="bg" type="color" value="#ffffff"></div>
+<div><label for="type">File type</label><select id="type"><option value="png">PNG</option><option value="svg">SVG</option></select></div>
+<div><label for="logo">Centre logo (optional)</label><input id="logo" type="file" accept="image/png,image/jpeg,image/webp"></div>
+</div>
+<div class="bulk-actions"><button type="button" id="build">Preview batch</button><button type="button" id="download">Download ZIP</button></div>
+<p id="status" role="status" aria-live="polite"></p><p>Static QR codes do not expire. Scan-test before printing.</p>
+</section><section class="bulk-box"><h2>Live batch preview</h2><p id="count">Enter your links to begin.</p><div id="preview" aria-label="QR batch preview"></div></section>
+</div></section></main><script src="/tools/qr-code-lib.js"></script><script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const el={value:$('qr-value'),fg:$('qr-fg'),bg:$('qr-bg'),canvas:$('qr-canvas'),error:$('qr-error'),state:$('qr-preview-state'),modules:$('qr-modules'),ecc:$('qr-err-correction'),png:$('qr-png'),svg:$('qr-svg'),logo:$('qr-logo'),logoResult:$('logo-result')};
+let kind='url',shape='square',qr=null,logoImage=null,logoData='',refreshTimer=null;
+const download=(blob,name)=>{const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000)};
+function inputText(){let v=el.value.value.trim();if(kind==='url'&&v&&!/^[a-z][a-z0-9+.-]*:\/\//i.test(v))v='https://'+v;return v;}
+function rgb(hex){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(c=>c<=.04045?c/12.92:Math.pow((c+.055)/1.055,2.4))}
+function contrast(a,b){const l=v=>{const c=rgb(v);return c[0]*.2126+c[1]*.7152+c[2]*.0722};const x=l(a),y=l(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
+function finder(x,y,n){return x<8&&y<8 || x>=n-8&&y<8 || x<8&&y>=n-8}
+function block(ctx,x,y,size,shape,sharp){if(sharp||shape==='square'){ctx.fillRect(x,y,size,size);return}if(shape==='dot'){ctx.beginPath();ctx.arc(x+size/2,y+size/2,size*.43,0,Math.PI*2);ctx.fill();return}const r=size*.28;ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+size-r,y);ctx.quadraticCurveTo(x+size,y,x+size,y+r);ctx.lineTo(x+size,y+size-r);ctx.quadraticCurveTo(x+size,y+size,x+size-r,y+size);ctx.lineTo(x+r,y+size);ctx.quadraticCurveTo(x,y+size,x,y+size-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.fill();}
+function render(canvas,size){if(!qr)return;const n=qr.getModuleCount(),total=n+8,cell=size/total;canvas.width=size;canvas.height=size;const ctx=canvas.getContext('2d');if(!ctx)throw Error('This browser does not support QR canvas rendering.');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.fillStyle=el.bg.value;ctx.fillRect(0,0,size,size);ctx.fillStyle=el.fg.value;for(let y=0;y<n;y++)for(let x=0;x<n;x++){if(!qr.isDark(y,x))continue;block(ctx,(x+4)*cell,(y+4)*cell,cell,shape,finder(x,y,n))}
+if(logoImage){const side=total*cell*.21,mid=size/2,r=Math.max(5,side*.15),pad=side*.17;ctx.fillStyle='#ffffff';ctx.beginPath();ctx.roundRect(mid-side/2,mid-side/2,side,side,r);ctx.fill();ctx.drawImage(logoImage,mid-side/2+pad,mid-side/2+pad,side-2*pad,side-2*pad);}
+return {n,total};
+}
+function generate(){el.error.textContent='';el.png.disabled=true;el.svg.disabled=true;qr=null;const value=inputText();if(!value){el.state.textContent='Enter a link';return}if(value.length>1900){el.error.textContent='The content is too long. Try a shorter link.';return}
+try{if(typeof qrcode!=='function')throw Error('QR generator library failed to load.');if(qrcode.stringToBytesFuncs&&qrcode.stringToBytesFuncs['UTF-8'])qrcode.stringToBytes=qrcode.stringToBytesFuncs['UTF-8'];const ecc=logoImage?'H':'M';qr=qrcode(0,ecc);qr.addData(value,'Byte');qr.make();const stats=render(el.canvas,480);el.modules.textContent=stats.n+' × '+stats.n+' modules';el.ecc.textContent='Error correction: '+(logoImage?'High':'Standard');el.state.textContent=logoImage?'Logo applied':'Ready to scan';el.png.disabled=false;el.svg.disabled=false;if(contrast(el.fg.value,el.bg.value)<3.0)el.error.textContent='Low contrast: these colours may be difficult to scan. Try a lighter background.';}catch(e){qr=null;el.error.textContent=e.message||'Could not create this code';el.state.textContent='Needs attention';}}
+function queueGenerate(){clearTimeout(refreshTimer);refreshTimer=setTimeout(generate,160)}
+function selectPressed(selector,item){document.querySelectorAll(selector).forEach(b=>b.setAttribute('aria-pressed',String(b===item)))}
+document.querySelectorAll('.preset').forEach(btn=>btn.addEventListener('click',()=>{el.fg.value=btn.dataset.fg;el.bg.value=btn.dataset.bg;selectPressed('.preset',btn);generate()}));
+for(const key of ['fg','bg'])el[key].addEventListener('input',()=>{document.querySelectorAll('.preset').forEach(b=>b.setAttribute('aria-pressed','false'));queueGenerate()});
+document.querySelectorAll('.shape').forEach(btn=>btn.addEventListener('click',()=>{shape=btn.dataset.shape;selectPressed('.shape',btn);generate()}));
+$('type-url').addEventListener('click',()=>{kind='url';$('type-url').setAttribute('aria-pressed','true');$('type-text').setAttribute('aria-pressed','false');$('qr-label').textContent='Destination URL';el.value.placeholder='https://yourwebsite.com';generate()});
+$('type-text').addEventListener('click',()=>{kind='text';$('type-text').setAttribute('aria-pressed','true');$('type-url').setAttribute('aria-pressed','false');$('qr-label').textContent='Text to encode';el.value.placeholder='Your text here';generate()});
+el.value.addEventListener('input',queueGenerate);
+function makeImage(src){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(Error('Unable to read logo image.'));img.src=src})}
+async function applyLogo(src,label){try{const img=await makeImage(src);const canvas=document.createElement('canvas');canvas.width=300;canvas.height=300;const ctx=canvas.getContext('2d');if(!ctx)throw Error('Logo processing is unavailable.');const scale=Math.min(300/img.naturalWidth,300/img.naturalHeight);const w=img.naturalWidth*scale,h=img.naturalHeight*scale;ctx.drawImage(img,(300-w)/2,(300-h)/2,w,h);logoData=canvas.toDataURL('image/png');logoImage=await makeImage(logoData);el.logoResult.textContent=label+' added. High error correction is on.';generate()}catch(e){el.logoResult.textContent=e.message;}}
+el.logo.addEventListener('change',()=>{const f=el.logo.files&&el.logo.files[0];if(!f)return;if(!['image/png','image/jpeg','image/webp'].includes(f.type)||f.size>3*1024*1024){el.logoResult.textContent='Use a PNG, JPG or WebP file smaller than 3 MB.';return}const reader=new FileReader();reader.onload=()=>applyLogo(String(reader.result),f.name);reader.onerror=()=>{el.logoResult.textContent='Could not read logo file.'};reader.readAsDataURL(f)});
+$('qr-brand').addEventListener('click',()=>applyLogo('/knighty-approved.webp?v=8','SiteKnight mascot'));
+$('qr-remove').addEventListener('click',()=>{logoImage=null;logoData='';el.logo.value='';el.logoResult.textContent='No logo added';generate()});
+el.png.addEventListener('click',()=>{if(!qr)return;try{const c=document.createElement('canvas');render(c,1024);c.toBlob(blob=>{if(blob)download(blob,'siteknight-custom-qr.png');else el.error.textContent='PNG export failed.'},'image/png')}catch(e){el.error.textContent=e.message;}});
+function svgMarkup(){const n=qr.getModuleCount(),total=n+8;let p=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+total+' '+total+'" width="1024" height="1024"><rect width="'+total+'" height="'+total+'" fill="'+el.bg.value+'"/><g fill="'+el.fg.value+'">'];for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(qr.isDark(y,x)){const xx=x+4,yy=y+4;if(shape==='dot'&&!finder(x,y,n))p.push('<circle cx="'+(xx+.5)+'" cy="'+(yy+.5)+'" r=".43"/>');else p.push('<rect x="'+xx+'" y="'+yy+'" width="1" height="1"'+(shape==='round'&&!finder(x,y,n)?' rx=".28"':'')+'/>')}p.push('</g>');if(logoImage&&logoData){const side=total*.21,at=(total-side)/2,pad=side*.17;p.push('<rect x="'+at+'" y="'+at+'" width="'+side+'" height="'+side+'" rx="'+(side*.15)+'" fill="#ffffff"/>');p.push('<image href="'+logoData+'" x="'+(at+pad)+'" y="'+(at+pad)+'" width="'+(side-pad*2)+'" height="'+(side-pad*2)+'" preserveAspectRatio="xMidYMid meet"/>')}p.push('</svg>');return p.join('')}
+el.svg.addEventListener('click',()=>{if(!qr)return;try{download(new Blob([svgMarkup()],{type:'image/svg+xml;charset=utf-8'}),'siteknight-custom-qr.svg')}catch(e){el.error.textContent=e.message}});
+generate();
+})();</script><script>const __name=(fn,name)=>fn;const skZipRun=function skZipRun(files){
+const encoder=new TextEncoder(),local=[],central=[],table=new Uint32Array(256);for(let i=0;i<256;i++){let c=i;for(let k=0;k<8;k++)c=c&1?0xedb88320^(c>>>1):c>>>1;table[i]=c>>>0}
+const put=(a,i,v,size)=>{for(let k=0;k<size;k++)a[i+k]=(v>>>8*k)&255};let offset=0;
+for(const file of files){const name=encoder.encode(file.name),data=file.data instanceof Uint8Array?file.data:new Uint8Array(file.data);let crc=0xffffffff;for(const byte of data)crc=table[(crc^byte)&255]^(crc>>>8);crc=(crc^0xffffffff)>>>0;const h=new Uint8Array(30+name.length);put(h,0,0x04034b50,4);put(h,4,20,2);put(h,6,0x800,2);put(h,14,crc,4);put(h,18,data.length,4);put(h,22,data.length,4);put(h,26,name.length,2);h.set(name,30);local.push(h,data);const c=new Uint8Array(46+name.length);put(c,0,0x02014b50,4);put(c,4,20,2);put(c,6,20,2);put(c,8,0x800,2);put(c,16,crc,4);put(c,20,data.length,4);put(c,24,data.length,4);put(c,28,name.length,2);put(c,42,offset,4);c.set(name,46);central.push(c);offset+=h.length+data.length}
+let size=central.reduce((n,c)=>n+c.length,0),end=new Uint8Array(22);put(end,0,0x06054b50,4);put(end,8,files.length,2);put(end,10,files.length,2);put(end,12,size,4);put(end,16,offset,4);return new Blob([...local,...central,end],{type:"application/zip"});
+};(function skBulkRun(){
+const $=id=>document.getElementById(id);let items=[],logo=null;
+const save=(blob,name)=>{const a=document.createElement("a"),url=URL.createObjectURL(blob);a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),7000)};
+function makeQR(value){if(typeof qrcode!=="function")throw Error("QR library not loaded.");if(qrcode.stringToBytesFuncs?.["UTF-8"])qrcode.stringToBytes=qrcode.stringToBytesFuncs["UTF-8"];const q=qrcode(0,logo?"H":"M");q.addData(value,"Byte");q.make();return q}
+function paint(q,size){let c=document.createElement("canvas");c.width=c.height=size;let x=c.getContext("2d"),n=q.getModuleCount(),cell=size/(n+8);x.fillStyle=$("bg").value;x.fillRect(0,0,size,size);x.fillStyle=$("fg").value;for(let y=0;y<n;y++)for(let j=0;j<n;j++)if(q.isDark(y,j))x.fillRect(Math.floor((j+4)*cell),Math.floor((y+4)*cell),Math.ceil(cell),Math.ceil(cell));if(logo){const d=size*.18,pad=d*.12,xy=(size-d)/2;x.fillStyle="#fff";x.fillRect(xy,xy,d,d);x.drawImage(logo,xy+pad,xy+pad,d-2*pad,d-2*pad)}return c}
+function svg(q){const n=q.getModuleCount(),a=(n+8)*10;let r=`<rect width="${a}" height="${a}" fill="${$("bg").value}"/>`;for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(q.isDark(y,x))r+=`<rect x="${(x+4)*10}" y="${(y+4)*10}" width="10" height="10" fill="${$("fg").value}"/>`;if(logo){const d=a*.18,xy=(a-d)/2,p=d*.12;r+=`<rect x="${xy}" y="${xy}" width="${d}" height="${d}" fill="white"/><image x="${xy+p}" y="${xy+p}" width="${d-2*p}" height="${d-2*p}" href="${logo.src}"/>`}return `<svg xmlns="http://www.w3.org/2000/svg" width="${a}" height="${a}" viewBox="0 0 ${a} ${a}">${r}</svg>`}
+function build(){items=[];$("preview").replaceChildren();const lines=$("urls").value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);if(!lines.length){$("status").textContent="Enter one link or message per line.";return}if(lines.length>150){$("status").textContent="Maximum 150 entries.";return}try{for(const line of lines){if(line.length>1500)throw Error("One entry exceeds 1,500 characters.");items.push({line,q:makeQR(line)})}items.slice(0,12).forEach(({line,q})=>{let f=document.createElement("figure"),caption=document.createElement("figcaption");caption.textContent=line;f.append(paint(q,210),caption);$("preview").append(f)});$("count").textContent=`${items.length} QR codes ready. Previewing ${Math.min(12,items.length)}.`;$("status").textContent="Ready to export."}catch(e){items=[];$("status").textContent=e.message}}
+$("logo").onchange=()=>{const file=$("logo").files[0];logo=null;if(!file){build();return}if(file.size>3000000||!["image/png","image/jpeg","image/webp"].includes(file.type)){$("status").textContent="Use PNG, JPG or WebP under 3 MB.";return}const img=new Image(),u=URL.createObjectURL(file);img.onload=()=>{let c=document.createElement("canvas");c.width=c.height=240;const x=c.getContext("2d"),s=Math.min(240/img.width,240/img.height);x.drawImage(img,(240-img.width*s)/2,(240-img.height*s)/2,img.width*s,img.height*s);logo=new Image();logo.onload=build;logo.src=c.toDataURL("image/png");URL.revokeObjectURL(u)};img.onerror=()=>{$("status").textContent="Invalid logo image.";URL.revokeObjectURL(u)};img.src=u};
+$("build").onclick=build;$("fg").oninput=()=>{if(items.length)build()};$("bg").oninput=()=>{if(items.length)build()};
+$("download").onclick=async()=>{if(!items.length)build();if(!items.length)return;let b=$("download");b.disabled=true;$("status").textContent="Building ZIP...";try{const out=[];for(let i=0;i<items.length;i++){const base="qr-"+String(i+1).padStart(3,"0"),q=items[i].q;if($("type").value==="svg")out.push({name:base+".svg",data:new TextEncoder().encode(svg(q))});else{const blob=await new Promise((ok,fail)=>paint(q,850).toBlob(x=>x?ok(x):fail(Error("PNG failed")),"image/png"));out.push({name:base+".png",data:new Uint8Array(await blob.arrayBuffer())})}}out.push({name:"manifest.csv",data:new TextEncoder().encode(["index,content",...items.map((x,i)=>`${i+1},"${x.line.replaceAll('"','""')}"`)].join("\r\n"))});save(skZipRun(out),"siteknight-bulk-qr.zip");$("status").textContent=`ZIP downloaded: ${items.length} QR codes.`}catch(e){$("status").textContent=e.message}finally{b.disabled=false}};
+})();(function(){const b=[document.getElementById('single-qr-tab'),document.getElementById('bulk-qr-tab')],p=[document.getElementById('single-qr-panel'),document.getElementById('bulk-qr-panel')];function show(mode,write){const index=mode==='bulk'?1:0;b.forEach((v,i)=>{v.setAttribute('aria-selected',String(i===index));v.tabIndex=i===index?0:-1});p.forEach((v,i)=>v.hidden=i!==index);if(write)history.replaceState(null,'',location.pathname+(index?'#bulk':'#single'))}b.forEach((v,i)=>{v.addEventListener('click',()=>show(i?'bulk':'single',true));v.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();const j=1-i;show(j?'bulk':'single',true);b[j].focus()}})});addEventListener('hashchange',()=>show(location.hash==='#bulk'?'bulk':'single',false));show(location.hash==='#bulk'?'bulk':'single',false)})();</script></body></html>
