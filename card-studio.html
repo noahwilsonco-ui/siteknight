@@ -183,6 +183,22 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 .brand-transfer{margin-top:13px}
 .brand-transfer summary{font-size:11px;font-weight:800;color:#79528e;cursor:pointer;padding:5px 0}
 @media(max-width:640px){.brand-save-row{grid-template-columns:1fr 1fr}.brand-save-row input{grid-column:1/-1}.brand-recall-row{grid-template-columns:minmax(0,1fr) auto auto}.brand-save-row .btn,.brand-recall-row .btn{min-width:0;padding:9px}}
+
+.card-side-tabs{display:flex;gap:7px;padding:6px;margin:0 0 16px;background:#f6f1f8;border:1px solid #e0d5e6;border-radius:11px}
+.card-side-tabs button{flex:1;border:0;border-radius:8px;background:transparent;color:#644e71;font-size:12px;font-weight:800;padding:10px}
+.card-side-tabs button[aria-pressed=true]{color:#fff;background:#292033;box-shadow:0 5px 11px #1f142a2a}
+body[data-card-side=front] [data-side-panel=back]{display:none!important}
+body[data-card-side=back] [data-side-panel=front]{display:none!important}
+.back-layout-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.back-layout-options button{min-width:0;border:1px solid #e2dbe7;border-radius:9px;background:#fff;padding:6px;color:#4b3a56}
+.back-layout-options button[aria-pressed=true]{padding:5px;border:2px solid #914cb5;background:#faf3fd}
+.back-layout-options strong{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:5px 0 1px}
+.back-layout-icon{display:block;height:46px;position:relative;border-radius:6px;background:linear-gradient(125deg,#252447,#6d4b88)}
+.back-layout-icon:after{content:"";position:absolute;top:31%;left:21%;right:21%;height:8px;background:#fffd;border-radius:2px;box-shadow:0 14px 0 #fff8}
+.statement-layout{background:linear-gradient(125deg,#cce7dc,#639f8c)}.split-layout{background:linear-gradient(90deg,#262143 0 40%,#7661ac 40% 100%)}
+.contact-layout{background:linear-gradient(120deg,#eddfd2,#bc987f)}.contact-layout:after{top:17%;left:54%;height:25px;right:13%;background:repeating-linear-gradient(0deg,#362442 0 2px,#fff 2px 5px);box-shadow:none}
+.minimal-layout{background:#f5f4f1}.minimal-layout:after{top:44%;height:5px;background:#35313a;box-shadow:none}
+@media(max-width:540px){.back-layout-options{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style></head><body>
 <header><div class="top"><a class="brand" href="/" aria-label="SiteKnight home"><img src="/knighty-approved.webp?v=8" alt=""><span>Site<b>Knight</b></span></a><div class="navlinks"><a href="/">All tools</a></div></div></header>
 <main>
@@ -191,7 +207,7 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 <button type="button" data-view="design" aria-pressed="true"><span class="mode-num">01</span><span><b>Design company card</b><small>Brand, layout and templates</small></span></button>
 <button type="button" data-view="team" aria-pressed="false"><span class="mode-num">02</span><span><b>Manage employees</b><small>People, bulk upload and exports</small></span></button>
 </div>
-<section class="quick-presets" data-workflow-panel="design" aria-label="Explore professional card designs">
+<section class="quick-presets" data-side-panel="front" data-workflow-panel="design" aria-label="Explore professional card designs">
 <div class="preset-top"><div><span class="mini-label">THE CARD COLLECTION</span><h2>Choose a direction. Make it yours.</h2><p>Actual card previews, not generic swatches. Pick a design, then customize every detail.</p></div><span class="preset-count" id="preset-count">18 styles</span></div>
 <div class="preset-filters" id="preset-filters" aria-label="Filter card styles">
 <button type="button" data-preset-filter="featured" aria-pressed="true">Featured</button>
@@ -221,7 +237,7 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 <div class="recall-section"><label for="saved-templates">Recall a saved brand</label><div class="brand-recall-row"><select id="saved-templates" aria-label="Select saved brand"><option value="">Select a saved brand</option></select><button class="btn" id="recall-template" type="button">Recall</button><button class="btn danger" id="delete-template" type="button">Delete</button></div><p class="note" id="brand-library-note">Saved brands only load when you click Recall.</p></div>
 <details class="brand-transfer"><summary>Import or export a brand</summary><div class="btn-row"><button type="button" class="btn light" id="export-template">Export brand JSON</button><label class="btn light" for="import-template" style="cursor:pointer">Import brand JSON</label><input id="import-template" type="file" accept=".json,application/json" hidden></div></details>
 </section>
-<section class="panel" data-workflow-panel="design" aria-labelledby="design-h">
+<section class="panel" data-workflow-panel="design" data-side-panel="front" aria-labelledby="design-h">
 <div class="panel-head"><h2 id="design-h">Card design</h2><span class="mini-label">MAKE IT YOURS</span></div>
 
 <div class="field-label">Background</div>
@@ -300,6 +316,49 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 </div><button type="button" class="btn light" id="reset-position">Reset positions</button></details>
 <div class="btn-row"><button type="button" class="btn secondary" id="reset-style">Reset design</button></div>
 </section>
+<section class="panel" data-workflow-panel="design" data-side-panel="back" aria-labelledby="back-design-h">
+<div class="panel-head"><h2 id="back-design-h">Design the back</h2><span class="mini-label">SECOND SIDE</span></div>
+<p class="panel-desc">This side has its own layout, colours and message. Both sides save together as one company template.</p>
+<div class="field-label">Back-side layout</div>
+<div class="back-layout-options" id="back-layout-options" role="group" aria-label="Back layout">
+<button type="button" data-back-style="brand" aria-pressed="true"><i class="back-layout-icon"></i><strong>Brand focus</strong></button>
+<button type="button" data-back-style="statement" aria-pressed="false"><i class="back-layout-icon statement-layout"></i><strong>Statement</strong></button>
+<button type="button" data-back-style="split" aria-pressed="false"><i class="back-layout-icon split-layout"></i><strong>Split</strong></button>
+<button type="button" data-back-style="contact" aria-pressed="false"><i class="back-layout-icon contact-layout"></i><strong>Contact QR</strong></button>
+<button type="button" data-back-style="minimal" aria-pressed="false"><i class="back-layout-icon minimal-layout"></i><strong>Minimal</strong></button>
+</div>
+<div class="hr"></div><h3>Back-side message</h3>
+<div class="field-grid">
+<div class="field full"><label for="back-title">Main text</label><input id="back-title" placeholder="Defaults to company name" maxlength="110"></div>
+<div class="field full"><label for="back-subtitle">Second line</label><input id="back-subtitle" placeholder="A company tagline or short message" maxlength="180"></div>
+<div class="field full"><label for="back-footer">Footer</label><input id="back-footer" placeholder="Defaults to website" maxlength="140"></div>
+</div>
+<div class="hr"></div><h3>Independent back-side colours</h3>
+<div class="field-grid">
+<div class="field full"><label for="back-background">Background</label><select id="back-background"><option value="match">Match front</option><option value="solid">Custom solid</option><option value="gradient">Custom gradient</option></select></div>
+<div class="field"><label for="back-color-one">Background colour 1</label><input id="back-color-one" type="color" value="#17101f"></div>
+<div class="field"><label for="back-color-two">Background colour 2</label><input id="back-color-two" type="color" value="#381e4c"></div>
+<div class="field"><label for="back-text-color">Text colour</label><input id="back-text-color" type="color" value="#ffffff"></div>
+<div class="field"><label for="back-accent">Accent colour</label><input id="back-accent" type="color" value="#b184d8"></div>
+<div class="field full"><label for="back-angle">Gradient direction <span id="back-angle-val">120°</span></label><input id="back-angle" type="range" min="0" max="360" step="5" value="120"></div>
+</div>
+<div class="hr"></div><h3>Elements</h3>
+<div class="option-row"><label class="check"><input id="back-show-logo" type="checkbox" checked> Logo</label><label class="check"><input id="back-show-qr" type="checkbox" checked> QR code</label><label class="check"><input id="back-show-website" type="checkbox" checked> Website</label></div>
+<div class="field-grid" style="margin-top:14px">
+<div class="field"><label for="back-logo-size">Logo size <span id="back-logo-size-val">120%</span></label><input id="back-logo-size" type="range" min="55" max="190" step="5" value="120"></div>
+<div class="field"><label for="back-qr-size">QR size <span id="back-qr-size-val">170</span></label><input id="back-qr-size" type="range" min="120" max="260" step="5" value="170"></div>
+</div>
+<details class="advanced-detail"><summary>Position back elements precisely</summary><p class="note">You can also drag them in the live preview.</p>
+<div class="field-grid">
+<div class="field"><label for="back-logo-x">Logo X <span id="back-logo-x-val">0</span></label><input id="back-logo-x" type="range" min="-210" max="210" step="5" value="0"></div>
+<div class="field"><label for="back-logo-y">Logo Y <span id="back-logo-y-val">0</span></label><input id="back-logo-y" type="range" min="-210" max="210" step="5" value="0"></div>
+<div class="field"><label for="back-text-x">Text X <span id="back-text-x-val">0</span></label><input id="back-text-x" type="range" min="-210" max="210" step="5" value="0"></div>
+<div class="field"><label for="back-text-y">Text Y <span id="back-text-y-val">0</span></label><input id="back-text-y" type="range" min="-210" max="210" step="5" value="0"></div>
+<div class="field"><label for="back-qr-x">QR X <span id="back-qr-x-val">0</span></label><input id="back-qr-x" type="range" min="-210" max="210" step="5" value="0"></div>
+<div class="field"><label for="back-qr-y">QR Y <span id="back-qr-y-val">0</span></label><input id="back-qr-y" type="range" min="-210" max="210" step="5" value="0"></div>
+</div><button class="btn light" id="reset-back-positions" type="button">Reset back positions</button></details>
+<p class="note">Remember to click <b>Save brand</b> to preserve changes to both sides.</p>
+</section>
 <section class="panel" data-workflow-panel="team" aria-labelledby="person-h">
 <div class="panel-head"><h2 id="person-h">Employee details</h2><span class="mini-label" id="editing-label">NEW CARD</span></div>
 <div class="field-grid">
@@ -324,17 +383,17 @@ input[type=range]{width:100%;accent-color:#8d4cb3;cursor:pointer;margin:6px 0}
 </div>
 <aside class="preview-col">
 <section class="panel" aria-labelledby="preview-h">
-<div class="preview-head"><h2 id="preview-h">Live card designer</h2><span class="mini-label">VECTOR DESIGN ENGINE</span></div>
+<div class="preview-head"><h2 id="preview-h">Live card designer</h2><span class="mini-label">FRONT & BACK</span></div><div id="card-side-tabs" class="card-side-tabs" role="group" aria-label="Business card side"><button type="button" data-side="front" aria-pressed="true">Front</button><button type="button" data-side="back" aria-pressed="false">Back</button></div>
 <div class="preview-card-shell"><div id="live-card" class="live-svg" role="img" aria-label="Live editable business card preview"></div></div><p class="drag-helper">Drag the logo, name, contact details or QR code directly on the card to position them.</p>
 <p class="preview-sub">What you see here is exactly what downloads. Your contact QR is embedded in the card.</p><div class="preview-shortcuts"><button type="button" data-go-view="design">Customize colours &amp; layout</button><button type="button" data-go-view="team">Manage employee cards</button></div>
 <div class="status" id="status" role="status" aria-live="polite">Enter an employee name to create a card.</div>
 <div class="export-list">
-<button class="btn" id="download-card" type="button" disabled>Download PNG (2×)</button>
+<button class="btn" id="download-card" type="button" disabled>Download front PNG (2×)</button>
 <button class="btn secondary" id="download-qr" type="button" disabled>Download contact QR</button>
-<button class="btn light" id="download-vcf" type="button" disabled>Save contact VCF</button><button class="btn secondary" id="download-svg" type="button" disabled>Download editable SVG</button>
-<button class="btn light" id="download-team" type="button" disabled>Download team ZIP</button>
+<button class="btn light" id="download-vcf" type="button" disabled>Save contact VCF</button><button class="btn secondary" id="download-svg" type="button" disabled>Download front SVG</button>
+<button class="btn light" id="download-both" type="button" disabled>Download both sides ZIP</button><button class="btn light" id="download-team" type="button" disabled>Download team ZIP</button>
 </div>
-<div class="tip">The team ZIP includes high-resolution PNG, editable vector SVG and a contact VCF for each saved employee. Your master template applies to everyone.</div>
+<div class="tip">The team ZIP includes front and back PNG and SVG files plus a VCF for each employee. Both sides share the saved company template.</div>
 </section>
 </aside>
 </div>
@@ -349,7 +408,7 @@ try{
 const $=id=>document.getElementById(id);
 const STORAGE="siteknight-card-library-v3";
 const LEGACY_STORAGE="siteknight-card-studio-v2";
-const DEFAULT_DESIGN={mode:"gradient",one:"#2349b6",two:"#17101f",three:"#552f84",useThree:false,text:"#ffffff",accent:"#a974ee",angle:120,layout:"classic",font:"grotesk",qr:true,address:false,preset:"custom",pattern:"none",patternStrength:16,backgroundOpacity:45,qrFrame:"badge",logoX:0,logoY:0,nameX:0,nameY:0,qrX:0,qrY:0,detailsX:0,detailsY:0,logoPosition:"left",logoTreatment:"original",logoSize:100,nameSize:72,jobSize:30,detailSize:23,contentSpacing:34,qrPosition:"bottom-right",qrSize:190,qrInk:"#201627",qrLabel:true,company:true,email:true,phone:true,mobile:false,website:true,linkedin:false,tagline:false,divider:true};
+const DEFAULT_DESIGN={backStyle:"brand",backTitle:"",backSubtitle:"",backFooter:"",backBackground:"match",backOne:"#17101f",backTwo:"#381e4c",backTextColor:"#ffffff",backAccent:"#b184d8",backAngle:120,backShowLogo:true,backShowQR:true,backShowWebsite:true,backLogoSize:120,backQRSize:170,backLogoX:0,backLogoY:0,backTextX:0,backTextY:0,backQRX:0,backQRY:0,mode:"gradient",one:"#2349b6",two:"#17101f",three:"#552f84",useThree:false,text:"#ffffff",accent:"#a974ee",angle:120,layout:"classic",font:"grotesk",qr:true,address:false,preset:"custom",pattern:"none",patternStrength:16,backgroundOpacity:45,qrFrame:"badge",logoX:0,logoY:0,nameX:0,nameY:0,qrX:0,qrY:0,detailsX:0,detailsY:0,logoPosition:"left",logoTreatment:"original",logoSize:100,nameSize:72,jobSize:30,detailSize:23,contentSpacing:34,qrPosition:"bottom-right",qrSize:190,qrInk:"#201627",qrLabel:true,company:true,email:true,phone:true,mobile:false,website:true,linkedin:false,tagline:false,divider:true};
 const STYLE_PRESETS={
  corporate:{mode:"solid",one:"#f6f7fb",two:"#f6f7fb",text:"#182944",accent:"#2e66aa",layout:"framed",font:"arial",logoPosition:"left",logoTreatment:"original",logoSize:115,nameSize:66,jobSize:25,detailSize:22,qrInk:"#182944",qrSize:175,qrLabel:true,divider:true,pattern:"none"},
  boardroom:{mode:"gradient",one:"#e8f0fb",two:"#c8daee",text:"#183752",accent:"#315e8d",angle:155,layout:"rail",font:"grotesk",logoPosition:"left",logoSize:120,nameSize:71,qrSize:170,qrInk:"#1a344d",qrLabel:false,pattern:"lines",patternStrength:11},
@@ -379,7 +438,7 @@ const FEATURED_PRESETS=["corporate","executive","minimal","modern","studio","ony
 let presetFilter="featured",thumbTimer=null;
 const companyDefaults={company:"",website:"",address:"",tagline:"",logo:"",background:""};
 const personDefaults={name:"",job:"",phone:"",mobile:"",email:"",linkedin:""};
-let design={...DEFAULT_DESIGN},company={...companyDefaults},person={...personDefaults},people=[],templates=[],activeId="",logoImage=null,bgImage=null,logoLoading=false,saving=false;
+let activeSide="front",design={...DEFAULT_DESIGN},company={...companyDefaults},person={...personDefaults},people=[],templates=[],activeId="",logoImage=null,bgImage=null,logoLoading=false,saving=false;
 const reduced=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
 const makeId=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
 const status=(message,error)=>{$("status").textContent=message;$("status").dataset.error=error?"true":"false"};
@@ -390,7 +449,7 @@ const jsonDownload=(obj,name)=>fileDownload(new Blob([JSON.stringify(obj,null,2)
 const on=(id,event,handler)=>$(id).addEventListener(event,handler);
 function getPerson(){const out={};for(const k of Object.keys(personDefaults))out[k]=clip($(k).value,k==="linkedin"?250:150);return out}
 function getCompany(){return {company:clip($("company").value,100),website:clip($("website").value,250),address:clip($("address").value,210),tagline:clip($("tagline").value,100),logo:company.logo||"",background:company.background||""}}
-function getDesign(){return {mode:design.mode,pattern:$("pattern").value,patternStrength:Number($("pattern-strength").value),backgroundOpacity:Number($("background-opacity").value),qrFrame:$("qr-frame").value,logoX:Number($("logo-x").value),logoY:Number($("logo-y").value),nameX:Number($("name-x").value),nameY:Number($("name-y").value),qrX:Number($("qr-x").value),qrY:Number($("qr-y").value),detailsX:Number($("details-x").value),detailsY:Number($("details-y").value),one:$("color-one").value,two:$("color-two").value,three:$("color-three").value,useThree:$("use-three").checked,text:$("text-color").value,accent:$("accent-color").value,angle:Number($("angle").value)||0,layout:$("layout").value,font:$("font").value,preset:design.preset,
+function getDesign(){return {backStyle:design.backStyle,backTitle:$("back-title").value,backSubtitle:$("back-subtitle").value,backFooter:$("back-footer").value,backBackground:$("back-background").value,backOne:$("back-color-one").value,backTwo:$("back-color-two").value,backTextColor:$("back-text-color").value,backAccent:$("back-accent").value,backAngle:Number($("back-angle").value)||0,backShowLogo:$("back-show-logo").checked,backShowQR:$("back-show-qr").checked,backShowWebsite:$("back-show-website").checked,backLogoSize:Number($("back-logo-size").value)||120,backQRSize:Number($("back-qr-size").value)||170,backLogoX:Number($("back-logo-x").value)||0,backLogoY:Number($("back-logo-y").value)||0,backTextX:Number($("back-text-x").value)||0,backTextY:Number($("back-text-y").value)||0,backQRX:Number($("back-qr-x").value)||0,backQRY:Number($("back-qr-y").value)||0,mode:design.mode,pattern:$("pattern").value,patternStrength:Number($("pattern-strength").value),backgroundOpacity:Number($("background-opacity").value),qrFrame:$("qr-frame").value,logoX:Number($("logo-x").value),logoY:Number($("logo-y").value),nameX:Number($("name-x").value),nameY:Number($("name-y").value),qrX:Number($("qr-x").value),qrY:Number($("qr-y").value),detailsX:Number($("details-x").value),detailsY:Number($("details-y").value),one:$("color-one").value,two:$("color-two").value,three:$("color-three").value,useThree:$("use-three").checked,text:$("text-color").value,accent:$("accent-color").value,angle:Number($("angle").value)||0,layout:$("layout").value,font:$("font").value,preset:design.preset,
 logoPosition:$("logo-position").value,logoTreatment:$("logo-treatment").value,logoSize:Number($("logo-size").value)||100,
 nameSize:Number($("name-size").value)||72,jobSize:Number($("job-size").value)||30,detailSize:Number($("detail-size").value)||23,contentSpacing:Number($("content-spacing").value)||34,
 qr:$("show-qr").checked,qrPosition:$("qr-position").value,qrSize:Number($("qr-size").value)||190,qrInk:$("qr-ink").value,qrLabel:$("qr-label").checked,
@@ -398,6 +457,10 @@ company:$("show-company").checked,email:$("show-email").checked,phone:$("show-ph
 function applyFields(){
  for(const k of Object.keys(companyDefaults))if(k!=="logo"&&k!=="background")$(k).value=company[k]||"";
  for(const k of Object.keys(personDefaults))$(k).value=person[k]||"";
+ ["title","subtitle","footer"].forEach(k=>$("back-"+k).value=design["back"+k[0].toUpperCase()+k.slice(1)]||"");
+ $("back-background").value=design.backBackground;$("back-color-one").value=design.backOne;$("back-color-two").value=design.backTwo;$("back-text-color").value=design.backTextColor;$("back-accent").value=design.backAccent;$("back-angle").value=design.backAngle;
+ $("back-show-logo").checked=design.backShowLogo;$("back-show-qr").checked=design.backShowQR;$("back-show-website").checked=design.backShowWebsite;
+ [["back-logo-size","backLogoSize"],["back-qr-size","backQRSize"],["back-logo-x","backLogoX"],["back-logo-y","backLogoY"],["back-text-x","backTextX"],["back-text-y","backTextY"],["back-qr-x","backQRX"],["back-qr-y","backQRY"]].forEach(([id,k])=>$(id).value=design[k]);
  $("color-one").value=design.one;$("color-two").value=design.two;$("color-three").value=design.three;$("use-three").checked=design.useThree;
  $("text-color").value=design.text;$("accent-color").value=design.accent;$("angle").value=design.angle;$("layout").value=design.layout;$("font").value=design.font;
  $("logo-position").value=design.logoPosition;$("logo-treatment").value=design.logoTreatment;$("logo-size").value=design.logoSize;
@@ -409,6 +472,9 @@ function applyFields(){
  updateControls();
 }
 function updateControls(){
+ document.querySelectorAll("#back-layout-options [data-back-style]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.backStyle===design.backStyle)));
+ [["back-angle","backAngle","°"],["back-logo-size","backLogoSize","%"],["back-qr-size","backQRSize",""],["back-logo-x","backLogoX",""],["back-logo-y","backLogoY",""],["back-text-x","backTextX",""],["back-text-y","backTextY",""],["back-qr-x","backQRX",""],["back-qr-y","backQRY",""]].forEach(([id,k,suffix])=>$(id+"-val").textContent=design[k]+suffix);
+ $("back-color-one").disabled=design.backBackground==="match";$("back-color-two").disabled=design.backBackground!=="gradient";$("back-angle").disabled=design.backBackground!=="gradient";
  document.querySelectorAll("#background-mode button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===design.mode)));
  $("second-color").hidden=design.mode==="solid";$("angle-wrap").hidden=design.mode==="solid";$("third-toggle").hidden=design.mode==="solid";$("third-color").hidden=design.mode==="solid"||!design.useThree;
  $("pattern-strength-val").textContent=design.patternStrength+"%";$("background-opacity-val").textContent=design.backgroundOpacity+"%";
@@ -955,7 +1021,7 @@ wireCardDrag();
  ["name","job","email","phone","mobile","linkedin"].forEach(id=>on(id,"input",syncPerson));
  ["color-one","color-two","color-three","use-three","text-color","accent-color","angle","layout","font",
  "logo-position","logo-treatment","logo-size","name-size","job-size","detail-size","content-spacing",
- "qr-position","qr-size","qr-ink","qr-frame","qr-label","pattern","pattern-strength","background-opacity","logo-x","logo-y","name-x","name-y","qr-x","qr-y","details-x","details-y","show-qr","show-company","show-email","show-phone",
+ "back-title","back-subtitle","back-footer","back-background","back-color-one","back-color-two","back-text-color","back-accent","back-angle","back-show-logo","back-show-qr","back-show-website","back-logo-size","back-qr-size","back-logo-x","back-logo-y","back-text-x","back-text-y","back-qr-x","back-qr-y","qr-position","qr-size","qr-ink","qr-frame","qr-label","pattern","pattern-strength","background-opacity","logo-x","logo-y","name-x","name-y","qr-x","qr-y","details-x","details-y","show-qr","show-company","show-email","show-phone",
  "show-mobile","show-website","show-address","show-linkedin","show-tagline","show-divider"].forEach(id=>{
   const el=$(id);on(id,el.type==="checkbox"||el.tagName==="SELECT"?"change":"input",manualDesign);
  });
